@@ -41,3 +41,7 @@ This project will be a full-stack website for users to publish and view posts of
 **Search:**
 
  - The posts appear on a user's dashboard. They can be filtered based on features like - uploaded date, tags, users, etc.
+
+
+
+Go starter kit credits - https://github.com/pilinux/gorest
