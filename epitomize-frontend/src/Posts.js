@@ -3,11 +3,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-
+import DeleteIcon from '@mui/icons-material/Delete';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, CardActions } from '@mui/material';
+import { Button, CardActionArea, CardActions } from '@mui/material';
+import axios from 'axios';
 
 function Posts() {
+  const baseURL = "http://0.0.0.0:8081/"
 
   const data = {
     "Posts": [
@@ -27,7 +29,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 2,
         "Type": "Tech",
         "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
         "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
@@ -39,7 +41,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 3,
         "Type": "Tech",
         "Title": "Why every software engineer should use vim",
         "Summary": "Conquer the quitting vim fear and give it a go",
@@ -51,7 +53,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 4,
         "Type": "Tech",
         "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
         "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
@@ -63,7 +65,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 5,
         "Type": "Tech",
         "Title": "Why every software engineer should use vim",
         "Summary": "Conquer the quitting vim fear and give it a go",
@@ -75,7 +77,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 6,
         "Type": "Tech",
         "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
         "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
@@ -87,7 +89,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 7,
         "Type": "Tech",
         "Title": "Why every software engineer should use vim",
         "Summary": "Conquer the quitting vim fear and give it a go",
@@ -99,7 +101,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 8,
         "Type": "Tech",
         "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
         "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
@@ -111,7 +113,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 9,
         "Type": "Tech",
         "Title": "Why every software engineer should use vim",
         "Summary": "Conquer the quitting vim fear and give it a go",
@@ -123,7 +125,7 @@ function Posts() {
         "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
         "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
         "DeletedAt": null,
-        "ID": 1,
+        "ID": 10,
         "Type": "Tech",
         "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
         "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
@@ -136,12 +138,16 @@ function Posts() {
 
   const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric' };
 
+  function handleClick(value) {
+      axios.delete(`${baseURL}deletePost/${value}`)
+        .then(() => this.setState({ status: 'Delete successful' }));
+  }
 
   return (
 
     <Stack spacing={2}>
       {data['Posts'].map(item => (
-        <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} >
+        <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.ID}>
         <CardActionArea>
           <CardContent>
             <Typography sx={{ display: 'flex', fontWeight: "bold" }} gutterBottom variant="h5" component="div">
@@ -156,48 +162,14 @@ function Posts() {
           <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
           <Divider orientation="vertical" flexItem style={{marginLeft:"10px"}} />
           <div>{item.Status}</div>
+          <Button style={{  marginLeft: 'auto'  }} onClick = {() => handleClick(item.ID)}>
+            <DeleteIcon sx={{ color: "#cb1010" }}/>
+          </Button>
         </CardActions>
       </Card>
         
       ))}
     </Stack>
-
-    // <Stack spacing={2}>
-    // <Card sx={{ maxWidth: "auto" }}>
-    //   <CardActionArea>
-    //     <CardContent>
-    //       <Typography sx={{ display: 'flex', fontWeight: "bold" }} gutterBottom variant="h5" component="div">
-    //         Title
-    //       </Typography>
-    //       <Typography variant="body2" color="text.secondary" sx={{ display: 'flex'}} >
-    //         Summary: Lizards are a widespread group of squamate reptiles, with over 6,000
-    //         species, ranging across all continents except Antarctica
-    //       </Typography>
-    //     </CardContent>
-    //   </CardActionArea>
-    //   <CardActions>
-    //     <div>Time</div>
-    //     <div>Tags</div>
-    //   </CardActions>
-    // </Card>
-    // <Card sx={{ maxWidth: "auto" }}>
-    //   <CardActionArea>
-    //     <CardContent>
-    //       <Typography sx={{ display: 'flex', fontWeight: "bold" }} gutterBottom variant="h5" component="div">
-    //         Title
-    //       </Typography>
-    //       <Typography variant="body2" color="text.secondary" sx={{ display: 'flex'}} >
-    //         Summary: Lizards are a widespread group of squamate reptiles, with over 6,000
-    //         species, ranging across all continents except Antarctica
-    //       </Typography>
-    //     </CardContent>
-    //   </CardActionArea>
-    //   <CardActions>
-    //     <div>Time</div>
-    //     <div>Tags</div>
-    //   </CardActions>
-    // </Card>
-    // </Stack>
 
   );
 }
