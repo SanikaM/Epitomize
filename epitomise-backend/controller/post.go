@@ -1,10 +1,14 @@
 package controller
 
 import (
+	"fmt"
+
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
 	"gorm.io/gorm"
 )
+
+var Posts []model.Post
 
 func seed(db *gorm.DB) {
 	posts := []model.Post{
@@ -26,10 +30,10 @@ func seed(db *gorm.DB) {
 func GetPosts() []model.Post {
 	db := database.GetDB()
 	//seed(db)
-	posts := []model.Post{}
-	db.Find(&posts)
-	//fmt.Println(posts)
 
-	return posts
+	db.Find(&Posts)
+	fmt.Println("From controller", Posts)
+
+	return Posts
 
 }
