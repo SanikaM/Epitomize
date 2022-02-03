@@ -41,8 +41,22 @@ func receivePost(w http.ResponseWriter, r *http.Request) {
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
+func accessControlMiddleware(next http.Handler) http.Handler {
+    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            w.Header().Set("Access-Control-Allow-Origin", "*")
+            w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT")
+            w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
+
+                if r.Method == "OPTIONS" {
+                    return
+                }
+
+                next.ServeHTTP(w, r)
+            })
+        }
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
+	myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/sendposts", allPost).Methods("GET")
 	myRouter.HandleFunc("/getposts", receivePost).Methods("POST")
