@@ -1,0 +1,15 @@
+nav {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(4, 18, 46);
+  }
+  
+  h1 {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 12px 14px;
+    text-decoration: none;
+  }
+  
