@@ -37,7 +37,7 @@ function Posts() {
         <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.ID}>
         <CardActionArea>
           <CardContent>
-            <Typography sx={{ display: 'flex', fontWeight: "bold" }} gutterBottom variant="h5" component="div">
+            <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
               {item.Title}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex'}} >
@@ -48,7 +48,9 @@ function Posts() {
         <CardActions sx={{ fontSize: 11 }}>
           <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
           <Divider orientation="vertical" flexItem style={{marginLeft:"10px"}} />
-          <div>{item.Status}</div>
+          <div>
+            {item.TagList && item.TagList.length <= 0 ? null: item.TagList.join(", ")}
+          </div>
           <Button style={{  marginLeft: 'auto'  }} onClick = {() => handleClick(item.ID)}>
             <DeleteIcon sx={{ color: "#cb1010" }}/>
           </Button>
