@@ -15,21 +15,21 @@ function Posts() {
 
   React.useEffect(() => {
     axios.get(baseURL + 'post')
-    .then((response) => {
-      console.log(response.data)
-      setData(response.data);
-    });
-  }, []); 
+      .then((response) => {
+        console.log(response.data)
+        setData(response.data);
+      });
+  }, []);
 
   if (!data) return null;
 
-  const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric' };
+  const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
   function handleClick(value) {
-      axios.delete(baseURL + "deleteposts/" + value.toString())
-        .then(() => 
+    axios.delete(baseURL + "deleteposts/" + value.toString())
+      .then(() =>
         window.location.reload()
-        );
+      );
   }
 
   return (
@@ -37,28 +37,28 @@ function Posts() {
     <Stack spacing={2}>
       {data['Posts'].map(item => (
         <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
-        <CardActionArea>
-          <CardContent>
-            <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
-              {item.Title}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex'}} >
-              {item.Summary}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-        <CardActions sx={{ fontSize: 11 }}>
-          <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
-          <Divider orientation="vertical" flexItem style={{marginLeft:"10px"}} />
-          <div>
-            {item.TagList && item.TagList.length <= 0 ? null: item.TagList.join(", ")}
-          </div>
-          <Button style={{  marginLeft: 'auto'  }} onClick = {() => handleClick(item.PostsUId)}>
-            <DeleteIcon sx={{ color: "#cb1010" }}/>
-          </Button>
-        </CardActions>
-      </Card>
-        
+          <CardActionArea>
+            <CardContent>
+              <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
+                {item.Title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                {item.Summary}
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+          <CardActions sx={{ fontSize: 11 }}>
+            <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+            <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
+            <div>
+              {item.TagList && item.TagList.length ? item.TagList.join(", ") :  "No Tags"}
+            </div>
+            <Button style={{ marginLeft: 'auto' }} onClick={() => handleClick(item.PostsUId)}>
+              <DeleteIcon sx={{ color: "#cb1010" }} />
+            </Button>
+          </CardActions>
+        </Card>
+
       ))}
     </Stack>
 
