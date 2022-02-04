@@ -1,18 +1,19 @@
 package model
 
 import (
-	"time"
-
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
 // Post model - `posts` table
 type Post struct {
-	PostID    uint64 `gorm:"primaryKey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-	Title     string         `json:"Title,omitempty"`
-	Body      string         `json:"Body,omitempty"`
-	IDUser    uint64         `json:"-"`
+	gorm.Model
+	ID          uint `gorm:"primaryKey"`
+	Type        string
+	Title       string `gorm:"primaryKey"`
+	Summary     string
+	Content     string
+	Linked_Post uint
+	Status      string
+	TagList     pq.StringArray `gorm:"type:text[]"`
 }

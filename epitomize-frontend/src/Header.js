@@ -140,8 +140,7 @@ export default function Header() {
             noWrap
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
-            style={{color: "black", fontFamily: 'Raleway', fontWeight: 'bold'}}
-          >
+            style={{color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26}}>
             Epitomize
           </Typography>
           <Search style={{color: "black"}}>

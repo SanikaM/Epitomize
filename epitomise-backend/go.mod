@@ -3,6 +3,7 @@ module github.com/pilinux/gorest
 go 1.17
 
 require (
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/alexedwards/argon2id v0.0.0-20211130144151-3585854a6387
 	github.com/flosch/pongo2 v0.0.0-20200913210552-0d938eb266f3
 	github.com/gin-gonic/gin v1.7.7
@@ -20,6 +21,7 @@ require (
 )
 
 require (
+	github.com/gorilla/mux v1.8.0 // indirect
 	github.com/getsentry/sentry-go v0.12.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect

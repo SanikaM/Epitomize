@@ -1,155 +1,56 @@
 package controller
 
 import (
-	"net/http"
-	"time"
+	"fmt"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
-	"github.com/pilinux/gorest/lib/middleware"
-	"github.com/pilinux/gorest/lib/renderer"
-
-	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
-// GetPosts - GET /posts
-func GetPosts(c *gin.Context) {
-	db := database.GetDB()
-	posts := []model.Post{}
+var Posts []model.Post
 
-	if err := db.Find(&posts).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "not found"}, http.StatusNotFound)
-	} else {
-		renderer.Render(c, posts, http.StatusOK)
+func seed(db *gorm.DB) {
+	posts := []model.Post{
+		{
+			ID:          1,
+			Type:        "Tech",
+			Title:       "Go",
+			Summary:     "GoLang",
+			Content:     "Kuch bhi",
+			Linked_Post: 0,
+			Status:      "Draft",
+		},
+		{
+			ID:          2,
+			Type:        "Finance",
+			Title:       "There Is a Much Larger Problem Than the Great Resignation. No One Wants to Talk About It",
+			Summary:     "Wage growth and people quitting bad jobs  ",
+			Content:     "United States likes to talk about problems. Well, ones we have solutions for, anyway. Others we tend to willfully ignore. This latter strategy is typically accomplished by either",
+			Linked_Post: 0,
+			Status:      "Draft",
+		},
+	}
+	for _, p := range posts {
+		db.Create(&p)
 	}
 }
-
-// GetPost - GET /posts/:id
-func GetPost(c *gin.Context) {
+func GetPosts() []model.Post {
 	db := database.GetDB()
-	post := model.Post{}
-	id := c.Params.ByName("id")
-	errorMsg := model.ErrorMsg{}
+	//seed(db)
+	tagArrays := []model.TagResponse{}
+	db.Find(&Posts)
+	fmt.Println("From controller", Posts)
 
-	if err := db.Where("post_id = ? ", id).First(&post).Error; err != nil {
-		errorMsg.HTTPCode = http.StatusNotFound
-		errorMsg.Message = "not found"
-		renderer.Render(c, errorMsg, http.StatusNotFound, "error.html")
-	} else {
-		renderer.Render(c, post, http.StatusOK, "read-article.html")
+	for i, p := range Posts {
+		var tagTemp model.TagResponse
+		tagTemp.Type = GetPostTags(p.ID)
+		tagArrays = append(tagArrays, tagTemp)
+		Posts[i].TagList = tagArrays[i].Type
+
 	}
-}
+	fmt.Println(tagArrays[0].Type)
 
-// CreatePost - POST /posts
-func CreatePost(c *gin.Context) {
-	db := database.GetDB()
-	user := model.User{}
-	post := model.Post{}
-	postFinal := model.Post{}
+	return Posts
 
-	userIDAuth := middleware.AuthID
-
-	// does the user have an existing profile
-	if err := db.Where("id_auth = ?", userIDAuth).First(&user).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "no user profile found"}, http.StatusForbidden)
-		return
-	}
-
-	// bind JSON
-	if err := c.ShouldBindJSON(&post); err != nil {
-		renderer.Render(c, gin.H{"msg": "bad request"}, http.StatusBadRequest)
-		return
-	}
-
-	// user must not be able to manipulate all fields
-	postFinal.Title = post.Title
-	postFinal.Body = post.Body
-	postFinal.IDUser = user.UserID
-
-	tx := db.Begin()
-	if err := tx.Create(&postFinal).Error; err != nil {
-		tx.Rollback()
-		log.WithError(err).Error("error code: 1201")
-		renderer.Render(c, gin.H{"msg": "internal server error"}, http.StatusInternalServerError)
-	} else {
-		tx.Commit()
-		renderer.Render(c, postFinal, http.StatusCreated)
-	}
-}
-
-// UpdatePost - PUT /posts/:id
-func UpdatePost(c *gin.Context) {
-	db := database.GetDB()
-	user := model.User{}
-	post := model.Post{}
-	postFinal := model.Post{}
-	id := c.Params.ByName("id")
-
-	userIDAuth := middleware.AuthID
-
-	// does the user have an existing profile
-	if err := db.Where("id_auth = ?", userIDAuth).First(&user).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "no user profile found"}, http.StatusForbidden)
-		return
-	}
-
-	// does the post exist + does user have right to modify this post
-	if err := db.Where("post_id = ?", id).Where("id_user = ?", user.UserID).First(&postFinal).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "operation not possible"}, http.StatusForbidden)
-		return
-	}
-
-	// bind JSON
-	if err := c.ShouldBindJSON(&post); err != nil {
-		renderer.Render(c, gin.H{"msg": "bad request"}, http.StatusBadRequest)
-		return
-	}
-
-	// user must not be able to manipulate all fields
-	postFinal.UpdatedAt = time.Now()
-	postFinal.Title = post.Title
-	postFinal.Body = post.Body
-
-	tx := db.Begin()
-	if err := tx.Save(&postFinal).Error; err != nil {
-		tx.Rollback()
-		log.WithError(err).Error("error code: 1211")
-		renderer.Render(c, gin.H{"msg": "internal server error"}, http.StatusInternalServerError)
-	} else {
-		tx.Commit()
-		renderer.Render(c, postFinal, http.StatusOK)
-	}
-}
-
-// DeletePost - DELETE /posts/:id
-func DeletePost(c *gin.Context) {
-	db := database.GetDB()
-	user := model.User{}
-	post := model.Post{}
-	id := c.Params.ByName("id")
-
-	userIDAuth := middleware.AuthID
-
-	// does the user have an existing profile
-	if err := db.Where("id_auth = ?", userIDAuth).First(&user).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "no user profile found"}, http.StatusForbidden)
-		return
-	}
-
-	// does the post exist + does user have right to delete this post
-	if err := db.Where("post_id = ?", id).Where("id_user = ?", user.UserID).First(&post).Error; err != nil {
-		renderer.Render(c, gin.H{"msg": "operation not possible"}, http.StatusForbidden)
-		return
-	}
-
-	tx := db.Begin()
-	if err := tx.Delete(&post).Error; err != nil {
-		tx.Rollback()
-		log.WithError(err).Error("error code: 1221")
-		renderer.Render(c, gin.H{"msg": "internal server error"}, http.StatusInternalServerError)
-	} else {
-		tx.Commit()
-		renderer.Render(c, gin.H{"Post ID# " + id: "Deleted!"}, http.StatusOK)
-	}
 }
