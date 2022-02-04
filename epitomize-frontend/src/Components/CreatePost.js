@@ -37,11 +37,13 @@ export default function CreatePost() {
 
             // }
         }
-        console.log('Hi ' + JSON.stringify(newPost));
         axios
         .post(baseURL, newPost)
         .then(response => {
             console.log(response.data);
+            alert( "Post successfully created." )
+            window.location = '/';
+
         }).catch(error => {
             console.log(error)
         });

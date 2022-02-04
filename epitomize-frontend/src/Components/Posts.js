@@ -4,9 +4,13 @@ import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
+import {
+  Link
+} from "react-router-dom";
 
 function Posts() {
   const baseURL = "http://localhost:8081/"
@@ -28,6 +32,7 @@ function Posts() {
   function handleClick(value) {
     axios.delete(baseURL + "deleteposts/" + value.toString())
       .then(() =>
+        alert( "Post successfully deleted." ),
         window.location.reload()
       );
   }
@@ -35,6 +40,11 @@ function Posts() {
   return (
 
     <Stack spacing={2}>
+      <Link to="/create" style={{ textDecoration: 'none' }}>
+        <Button variant="contained" sx={{ ':hover': {background: '#b3e6ff'},textTransform: 'none', color: "black", background: "white"}}>
+          Create New Post
+        </Button>
+      </Link>
       {data['Posts'].map(item => (
         <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
           <CardActionArea>
@@ -51,11 +61,21 @@ function Posts() {
             <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
             <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
             <div>
-              {item.TagList && item.TagList.length ? item.TagList.join(", ") :  "No Tags"}
+              {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
             </div>
-            <Button style={{ marginLeft: 'auto' }} onClick={() => handleClick(item.PostsUId)}>
-              <DeleteIcon sx={{ color: "#cb1010" }} />
-            </Button>
+            <div style={{ marginLeft: '80%' }}>
+              
+            <Link to="/edit" >
+                <EditIcon sx={{ color: "#b3e6ff" }} />
+              </Link>
+            </div>
+            
+            <div style={{ marginLeft: 'auto' }}>
+              
+              <Button onClick={() => handleClick(item.PostsUId)}>
+                <DeleteIcon sx={{ color: "#cb1010" }} />
+              </Button>
+            </div>
           </CardActions>
         </Card>
 

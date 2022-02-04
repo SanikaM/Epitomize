@@ -55,7 +55,8 @@ export default function EditPost(){
              axios
             .post(baseURL, newPost)
             .then(response => {
-            console.log(response.data);
+                alert( "Post successfully edited." )
+                window.location = '/';
             }).catch(error => {
             console.log(error)
             }); 
