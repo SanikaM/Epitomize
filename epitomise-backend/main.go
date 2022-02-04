@@ -19,13 +19,12 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("Enfpoint Hit:All Articles", posts)
 	posts := controller.GetPosts()
-	tags := controller.GetTags()
+
 	result := model.GetAllPost{
 		Posts: posts,
-		Tags:  tags,
 	}
-	fmt.Println(result)
-	fmt.Println(tags)
+	//fmt.Println(result)
+	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
 }
 func receivePost(w http.ResponseWriter, r *http.Request) {

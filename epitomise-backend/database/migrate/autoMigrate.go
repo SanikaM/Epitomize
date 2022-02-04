@@ -38,12 +38,12 @@ func main() {
 
 	// Careful! It will drop all the tables!
 	dropAllTables()
-
+	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
 	// Automatically migrate all the tables
 	migrateTables()
 
 	// Manually set foreign keys for MySQL and PostgreSQL
-
+	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
 	if errorState == 0 {
 		fmt.Println("Auto migration is completed!")
 	} else {

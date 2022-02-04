@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/lib/pq"
 	"gorm.io/gorm"
 )
 
@@ -14,4 +15,5 @@ type Post struct {
 	Content     string
 	Linked_Post uint
 	Status      string
+	TagList     pq.StringArray `gorm:"type:text[]"`
 }
