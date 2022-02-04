@@ -1,11 +1,6 @@
 package model
 
-import (
-	"gorm.io/gorm"
-)
-
 type Tag struct {
-	gorm.Model
-	ID   uint   `gorm:"primaryKey"`
-	Type string `gorm:"primaryKey"`
+	TagUId uint   `gorm:"primaryKey;auto_increment;not_null"`
+	Type   string `gorm:"unique"`
 }

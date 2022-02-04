@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -27,38 +26,42 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
 }
-func receivePost(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(w, "Check W")
-	fmt.Println(r.Body, "Check r")
-	bodyBytes, err := io.ReadAll(r.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	bodyString := string(bodyBytes)
-	fmt.Println("Values", bodyString)
+func deletePost(w http.ResponseWriter, r *http.Request) {
+
+	// fmt.Println(r.Body, "Check r")
+	// bodyBytes, err := io.ReadAll(r.Body)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println("Values", bodyString)
+	params := mux.Vars(r)
+	id := params["id"]
+	controller.DeletePost(id)
+	fmt.Println("User id", id)
 }
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
 func accessControlMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            w.Header().Set("Access-Control-Allow-Origin", "*")
-            w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT")
-            w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT,DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
 
-                if r.Method == "OPTIONS" {
-                    return
-                }
+		if r.Method == "OPTIONS" {
+			return
+		}
 
-                next.ServeHTTP(w, r)
-            })
-        }
+		next.ServeHTTP(w, r)
+	})
+}
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/sendposts", allPost).Methods("GET")
-	myRouter.HandleFunc("/getposts", receivePost).Methods("POST")
+	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 

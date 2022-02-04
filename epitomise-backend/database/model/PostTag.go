@@ -1,7 +1,7 @@
 package model
 
 type PostTag struct {
-	ID     uint `gorm:"primaryKey"`
-	PostId uint `gorm:"many2many:posttag_postid;ForeignKey:postid;References:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	TagId  uint `gorm:"many2many:posttag_tagid;ForeignKey:tagid;References:id;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	PostTagID uint `gorm:"primaryKey;auto_increment;not_null"`
+	PostId    uint `gorm:"foreignKey:PId"`
+	TagId     uint `gorm:"foreignKey:TId"`
 }

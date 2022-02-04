@@ -9,41 +9,70 @@ import (
 )
 
 func seedTag(db *gorm.DB) {
-	posts := []model.Tag{
+	tags := []model.Tag{
 		{
-			ID:   1,
+
 			Type: "Frontend",
 		},
 		{
-			ID:   2,
+
 			Type: "Backend",
 		},
 		{
-			ID:   3,
+
 			Type: "Database",
 		},
 		{
-			ID:   4,
+
 			Type: "United States",
 		},
 		{
-			ID:   5,
+
 			Type: "Finance",
 		},
+		{
+
+			Type: "BlockChain",
+		},
+		{
+
+			Type: "Crypto",
+		},
+		{
+
+			Type: "Amazon Web Service",
+		},
+		{
+
+			Type: "S3",
+		},
+		{
+
+			Type: "EC2",
+		},
+		{
+
+			Type: "Golang",
+		},
+		{
+
+			Type: "Distributed Systems",
+		},
 	}
-	for _, p := range posts {
-		db.Create(&p)
+	for _, t := range tags {
+		db.Create(&t)
 	}
 }
 func GetTags(id uint) []string {
-	db := database.GetDB()
-	//seedTag(db)
-	tags := []model.Tag{}
-	db.Where("id = ?", id).Find(&tags)
-	//fmt.Println(posts)
 	var result []string
+	db := database.GetDB()
+	// seedTag(db)
+	tags := []model.Tag{}
+	db.Where("tag_uid  = ?", id).Find(&tags)
+	fmt.Println("Inside Tagsssss", tags)
+
 	for _, t := range tags {
-		fmt.Println("ID", t.ID,
+		fmt.Println("ID", t.TagUId,
 			"Tag Type", t.Type,
 		)
 		result = append(result, t.Type)
