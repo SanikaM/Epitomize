@@ -9,7 +9,7 @@ import (
 
 func DeletePost(id string) string {
 	db := database.GetDB()
-	seedTag(db)
+	// seedTag(db)
 	IdNum, _ := strconv.ParseUint(id, 10, 32)
 	db.Delete(&model.Post{}, IdNum)
 	db.Where("post_id = ?", IdNum).Delete(&model.PostTag{})

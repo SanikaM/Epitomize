@@ -1,0 +1,102 @@
+.createpost{
+    padding-top:50px;
+}
+
+.postForm{
+    position:relative;
+}
+
+.postImg{
+    margin-left: 150px;
+    width:70vw;
+    height:250px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.postFromGroup{
+    margin-left:150px;
+    display: flex;
+    align-items: center;
+}
+.postInput{
+    font-size: 35px;
+    border: none;
+    padding:20px;
+    width: 70vw;
+    position: relative;
+
+}
+.postSummary{
+    font-size: 20px;
+    border: none;
+    padding:20px;
+    width: 70vw;
+    
+ 
+}
+.postTags{
+
+    font-size: 20px;
+    border: none;
+    padding:20px;
+    width: 70vw;
+}
+
+.postTags:focus{
+    outline: none;
+}
+
+.addImgButton{
+    
+    padding:20px;
+    margin:20px;
+    position: relative;
+    top: 20px;
+   
+    color:white;
+    background-color: teal;
+    border:none;
+    border-radius: 10px;
+    cursor:pointer;
+    font-size: 16px;
+}
+.button{
+    padding:20px;
+    margin:20px;
+    position: relative;
+    top: 20px;
+   
+    color:white;
+    background-color: teal;
+    border:none;
+    border-radius: 10px;
+    cursor:pointer;
+    font-size: 16px;
+}
+
+
+.postSummary:focus{
+    outline: none;
+}
+.postInput:focus{
+    outline: none;
+}
+.postText{
+    font-size: 20px;
+    height: 100vh;
+}
+.postSubmit{
+    padding:20px;
+    margin:20px;
+    position: relative;
+    top: 20px;
+   
+    color:white;
+    background-color: teal;
+    border:none;
+    border-radius: 10px;
+    cursor:pointer;
+    font-size: 16px;
+
+}

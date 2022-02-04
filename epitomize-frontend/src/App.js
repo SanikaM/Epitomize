@@ -4,6 +4,8 @@ import Posts from './Posts'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import CreatePost from './CreatePost.js';
+import EditPost from './EditPost';
 
 function App() {
   return (
@@ -12,6 +14,8 @@ function App() {
       <Box display="grid" gridTemplateColumns="repeat(12, 1fr)"  m={2} pt={3}>
         <Box gridColumn="span 8">
           <Posts />
+          <CreatePost />
+          <EditPost />
         </Box>
         <Divider orientation="vertical" flexItem style={{marginRight:"30px"}} />
         <Box gridColumn="span 3">
