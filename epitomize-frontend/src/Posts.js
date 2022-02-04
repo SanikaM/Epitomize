@@ -9,7 +9,7 @@ import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
 
 function Posts() {
-  const baseURL = "http://0.0.0.0:8081/"
+  const baseURL = "http://localhost:8081/"
 
   const [data, setData] = React.useState(null);
 
@@ -26,7 +26,7 @@ function Posts() {
   const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric' };
 
   function handleClick(value) {
-      axios.delete(`${baseURL}deletePost/${value}`)
+      axios.delete(`${baseURL}deleteposts/${value}`)
         .then(() => this.setState({ status: 'Delete successful' }));
   }
 

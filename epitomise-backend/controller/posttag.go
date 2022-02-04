@@ -11,34 +11,89 @@ import (
 func seedPostTag(db *gorm.DB) {
 	posttags := []model.PostTag{
 		{
-			ID:     1,
+
 			PostId: 1,
 			TagId:  1,
 		},
 		{
-			ID:     2,
+
 			PostId: 1,
 			TagId:  2,
 		},
 		{
-			ID:     3,
+
 			PostId: 1,
 			TagId:  3,
 		},
 		{
-			ID:     4,
+
 			PostId: 2,
 			TagId:  1,
 		},
 		{
-			ID:     5,
+
 			PostId: 2,
 			TagId:  4,
 		},
 		{
-			ID:     6,
+
 			PostId: 2,
 			TagId:  5,
+		},
+		{
+
+			PostId: 3,
+			TagId:  6,
+		},
+		{
+
+			PostId: 3,
+			TagId:  7,
+		},
+		{
+
+			PostId: 4,
+			TagId:  8,
+		},
+		{
+
+			PostId: 4,
+			TagId:  9,
+		},
+		{
+
+			PostId: 5,
+			TagId:  2,
+		},
+		{
+
+			PostId: 5,
+			TagId:  11,
+		},
+		{
+
+			PostId: 5,
+			TagId:  12,
+		},
+		{
+
+			PostId: 6,
+			TagId:  2,
+		},
+		{
+
+			PostId: 6,
+			TagId:  8,
+		},
+		{
+
+			PostId: 6,
+			TagId:  9,
+		},
+		{
+
+			PostId: 6,
+			TagId:  10,
 		},
 	}
 	for _, p := range posttags {
@@ -46,13 +101,15 @@ func seedPostTag(db *gorm.DB) {
 	}
 }
 func GetPostTags(pid uint) []string {
+	var res []string
 	db := database.GetDB()
-	//seedPostTag(db)
+	// seedPostTag(db)
+	// GetTags(1)
 	posttags := []model.PostTag{}
 
 	db.Where("post_id = ?", pid).Find(&posttags)
 	fmt.Println(posttags)
-	var res []string
+
 	for _, pt := range posttags {
 		var result []string = GetTags(pt.TagId)
 		res = append(res, result...)

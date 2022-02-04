@@ -38,6 +38,21 @@ func createNewPost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
+func deletePost(w http.ResponseWriter, r *http.Request) {
+
+	// fmt.Println(r.Body, "Check r")
+	// bodyBytes, err := io.ReadAll(r.Body)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	// fmt.Println("Values", bodyString)
+	params := mux.Vars(r)
+	id := params["id"]
+	controller.DeletePost(id)
+	fmt.Println("User id", id)
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
@@ -45,13 +60,12 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 func accessControlMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT,DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
 
 		if r.Method == "OPTIONS" {
 			return
 		}
-
 		next.ServeHTTP(w, r)
 	})
 }
@@ -62,6 +76,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
+	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
