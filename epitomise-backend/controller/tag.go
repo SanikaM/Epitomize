@@ -78,5 +78,4 @@ func GetTags(id uint) []string {
 		result = append(result, t.Type)
 	}
 	return result
-
 }

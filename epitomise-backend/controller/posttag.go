@@ -114,7 +114,7 @@ func GetPostTags(pid uint) []string {
 		var result []string = GetTags(pt.TagId)
 		res = append(res, result...)
 	}
-	fmt.Println("Tage array", res)
+	fmt.Println("Tag array", res)
 	return res
 
 }
