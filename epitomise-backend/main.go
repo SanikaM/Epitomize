@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 
@@ -16,10 +15,8 @@ import (
 var posts model.Post
 
 func allPost(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println("Enfpoint Hit:All Articles", posts)
+	fmt.Println("Endpoint Hit:All Articles", posts)
 	posts := controller.GetPosts()
-
 	result := model.GetAllPost{
 		Posts: posts,
 	}
@@ -27,38 +24,44 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
 }
-func receivePost(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(w, "Check W")
-	fmt.Println(r.Body, "Check r")
-	bodyBytes, err := io.ReadAll(r.Body)
+
+func createNewPost(w http.ResponseWriter, r *http.Request) {
+	// fmt.Println(w, "Check W")
+	// fmt.Println(r.Body, "Check r")
+	var post model.Post
+	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
-		log.Fatal(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
 	}
-	bodyString := string(bodyBytes)
-	fmt.Println("Values", bodyString)
+	responseType := controller.CreatePost(post)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
+
 func accessControlMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            w.Header().Set("Access-Control-Allow-Origin", "*")
-            w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT")
-            w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
 
-                if r.Method == "OPTIONS" {
-                    return
-                }
+		if r.Method == "OPTIONS" {
+			return
+		}
 
-                next.ServeHTTP(w, r)
-            })
-        }
+		next.ServeHTTP(w, r)
+	})
+}
+
 func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/sendposts", allPost).Methods("GET")
-	myRouter.HandleFunc("/getposts", receivePost).Methods("POST")
+	myRouter.HandleFunc("/post", allPost).Methods("GET")
+	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 

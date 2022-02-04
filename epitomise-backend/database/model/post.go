@@ -8,7 +8,7 @@ import (
 // Post model - `posts` table
 type Post struct {
 	gorm.Model
-	ID          uint `gorm:"primaryKey"`
+	// ID          uint `gorm:"primaryKey"`
 	Type        string
 	Title       string `gorm:"primaryKey"`
 	Summary     string
