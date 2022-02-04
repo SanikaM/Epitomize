@@ -11,130 +11,17 @@ import axios from 'axios';
 function Posts() {
   const baseURL = "http://0.0.0.0:8081/"
 
-  const data = {
-    "Posts": [
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 1,
-        "Type": "Tech",
-        "Title": "Why every software engineer should use vim",
-        "Summary": "Conquer the quitting vim fear and give it a go",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 2,
-        "Type": "Tech",
-        "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
-        "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft2"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 3,
-        "Type": "Tech",
-        "Title": "Why every software engineer should use vim",
-        "Summary": "Conquer the quitting vim fear and give it a go",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 4,
-        "Type": "Tech",
-        "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
-        "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft2"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 5,
-        "Type": "Tech",
-        "Title": "Why every software engineer should use vim",
-        "Summary": "Conquer the quitting vim fear and give it a go",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 6,
-        "Type": "Tech",
-        "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
-        "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft2"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 7,
-        "Type": "Tech",
-        "Title": "Why every software engineer should use vim",
-        "Summary": "Conquer the quitting vim fear and give it a go",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 8,
-        "Type": "Tech",
-        "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
-        "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft2"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 9,
-        "Type": "Tech",
-        "Title": "Why every software engineer should use vim",
-        "Summary": "Conquer the quitting vim fear and give it a go",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft"
-      },
-      {
-        "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-        "DeletedAt": null,
-        "ID": 10,
-        "Type": "Tech",
-        "Title": "21 lessons I wish I’d known earlier in my software engineering career.",
-        "Summary": "Learning programming is hard. I felt like quitting 6 years back when I started my web development journey.",
-        "Content": "Kuch bhi",
-        "Linked_Post": 0,
-        "Status": "Draft2"
-      }
-    ]
-  }
+  const [data, setData] = React.useState(null);
+
+  React.useEffect(() => {
+    axios.get(baseURL + 'sendposts')
+    .then((response) => {
+      console.log(response.data)
+      setData(response.data);
+    });
+  }, []); 
+
+  if (!data) return null;
 
   const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric' };
 
