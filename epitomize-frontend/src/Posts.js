@@ -14,7 +14,7 @@ function Posts() {
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
-    axios.get(baseURL + 'sendposts')
+    axios.get(baseURL + 'post')
     .then((response) => {
       console.log(response.data)
       setData(response.data);
@@ -26,15 +26,17 @@ function Posts() {
   const DATE_OPTIONS = {year: 'numeric', month: 'short', day: 'numeric' };
 
   function handleClick(value) {
-      axios.delete(`${baseURL}deleteposts/${value}`)
-        .then(() => this.setState({ status: 'Delete successful' }));
+      axios.delete(baseURL + "deleteposts/" + value.toString())
+        .then(() => 
+        window.location.reload()
+        );
   }
 
   return (
 
     <Stack spacing={2}>
       {data['Posts'].map(item => (
-        <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.ID}>
+        <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
         <CardActionArea>
           <CardContent>
             <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
@@ -51,7 +53,7 @@ function Posts() {
           <div>
             {item.TagList && item.TagList.length <= 0 ? null: item.TagList.join(", ")}
           </div>
-          <Button style={{  marginLeft: 'auto'  }} onClick = {() => handleClick(item.ID)}>
+          <Button style={{  marginLeft: 'auto'  }} onClick = {() => handleClick(item.PostsUId)}>
             <DeleteIcon sx={{ color: "#cb1010" }}/>
           </Button>
         </CardActions>
