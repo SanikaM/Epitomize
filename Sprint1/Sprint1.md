@@ -12,7 +12,7 @@ In Sprint 1 the following user stories were successfully implemented:
 
 ## Video Demo Link
 
-https://drive.google.com/file/d/11BznULqFFZLzS6ZYBZ-0H2jFjGwgj0wA/view?usp=sharing
+https://drive.google.com/file/d/1JQ3h65-LKTYs6ZUlJprnTckoYmYwV7Ms/view?usp=sharing
 
 # Back-end DataBase Schema and APIs
 
