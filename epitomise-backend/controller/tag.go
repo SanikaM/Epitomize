@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -63,6 +65,7 @@ func seedTag(db *gorm.DB) {
 		db.Create(&t)
 	}
 }
+
 func GetTags(id uint) []string {
 	var result []string
 	db := database.GetDB()
@@ -78,4 +81,20 @@ func GetTags(id uint) []string {
 		result = append(result, t.Type)
 	}
 	return result
+}
+
+func createTag(tags []string) int {
+	db := database.GetDB()
+	for _, tag := range tags {
+		tagType := strings.ToLower(tag)
+		var tagModel model.Tag
+		// tagModel.Type = tagType
+		if err := db.First(&tagModel, "type = ?", tagType).Error; err == gorm.ErrRecordNotFound {
+			tagModel.Type = tagType
+			if err := db.Create(&tagModel).Error; err != nil {
+				return http.StatusConflict
+			}
+		}
+	}
+	return http.StatusCreated
 }
