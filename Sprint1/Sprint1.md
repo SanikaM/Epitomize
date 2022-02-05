@@ -1,3 +1,113 @@
+# Back-end DataBase Schema and APIs
+
+### Database Design
+
+ **1. Post Table**
+
+Post table is important table for the site, as it stores all the posts data created by the user. The post table schema: 
+
+   
+
+    CREATE TABLE Post(
+	        PostsUId int, `gorm:"primaryKey;auto_increment;not_null"` 
+	        Type string,
+	        Summary string
+	        Content string
+	        Linked_Post uint
+	        Status string
+	        CreatedAt time.Time
+	        UpdatedAt time.Time
+	        TagList pq.StringArray `gorm:"type:text[]"`
+	        Tags string
+        )
+
+ **2. Tag Table**
+
+We have also created Tag table to store the customize tags associated with posts created by users.
+
+     CREATE TABLE Tag(
+	     TagUId uint  `gorm:"primaryKey;auto_increment;not_null"` 
+	     Type string  `gorm:"unique"`
+    )
+
+ **3. PostTag Table**
+
+We have created the PostTag table to link the post created by the users and its appropriate tags .
+
+    CREATE TABLE PostTag(
+	    PostTagID uint  `gorm:"primaryKey;auto_increment;not_null"` 
+	    PostId uint  `gorm:"foreignKey:PId"`
+	    TagId uint  `gorm:"foreignKey:TId"`
+    )
+
+### APIs
+ 
+
+ **1. Get Post API**
+
+This API is get all the posts present in the database along with tags present in each post.
+
+
+ 
+ #### Example Request:
+
+    GET  /post
+
+Responses contains all the posts in the database.
+
+#### Example Response:
+
+    {
+       "Posts":[
+          {
+             "PostsUId":1,
+             "Type":"Blog",
+             "Title":"Go",
+             "Summary":"GoLang",
+             "Content":"Content",
+             "Linked_Post":0,
+             "Status":"Draft",
+             "CreatedAt":"2022-02-04T13:24:29.270929-05:00",
+             "UpdatedAt":"2022-02-04T13:24:29.270929-05:00",
+             "TagList":[
+                "Frontend",
+                "Backend",
+                "Database"
+             ]
+          }
+       ]
+    }
+#### Status Codes:
+
+ 1.   **200**: No error
+ 2.   **500**: Internal Server Error
+
+
+
+ **2. Delete Post  API**
+
+This API is used to delete any post that user don't want it in his dashboard.
+
+ #### Example Request:
+
+    /deleteposts/{id}
+id is the post's unique id that user wants to be deleted.
+
+#### Example Request:
+
+
+     DELETE  /deleteposts/2
+
+#### Example Response:
+
+    {
+	    result: "Successfully Deleted"
+    }
+
+#### Status Codes:
+
+-   **200**: No error
+-   **500**: Internal Server Error
 # Front-end Features and Usage
 ## Posts
 ### Create New Post Page
