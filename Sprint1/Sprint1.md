@@ -1,3 +1,15 @@
+# Sprint 1
+
+In Sprint 1 the following user stories were successfully implemented:
+1. As a user, I should be able to create a new post feature.
+	* In this user story, the user has the ability to create new posts by providing the post's title, summary, tags, type, and content.
+2. As a user, I should be able to view the list of posts.
+	* In this user story, the user has the ability to view the list of posts the user has created. Each item in the list contains the post's title, summary, tags and the date it was created. 
+3. As a user, I should be able to edit the post.
+	* In this user story, the user has the ability to edit a post. The user can edit the post's title, summary, content, and tag but not the type of the post.
+4. As a user, I should be able to delete a post.
+	* In this user story, the user has the ability to delete the post.
+
 # Back-end DataBase Schema and APIs
 
 ### Database Design
