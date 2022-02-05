@@ -1,9 +1,10 @@
 import './App.css';
 import Header from './Header';
-import Posts from './Posts'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import Components from './Components';
+
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
       <Header />
       <Box display="grid" gridTemplateColumns="repeat(12, 1fr)"  m={2} pt={3}>
         <Box gridColumn="span 8">
-          <Posts />
+          <Components />
         </Box>
         <Divider orientation="vertical" flexItem style={{marginRight:"30px"}} />
         <Box gridColumn="span 3">
@@ -38,6 +39,7 @@ function App() {
             Software Engineering
           </Button>
         </Box>
+        
       </Box>
     </div>
   );

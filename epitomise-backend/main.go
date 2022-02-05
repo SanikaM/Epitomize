@@ -57,27 +57,33 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
 
-func accessControlMiddleware(next http.Handler) http.Handler {
+func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT,DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
+	log.Println("Executing middleware", r.Method)
+   
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, Authorization")
+	w.Header().Set("Content-Type", "application/json")
 
-		if r.Method == "OPTIONS" {
-			return
-		}
-		next.ServeHTTP(w, r)
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	
+	next.ServeHTTP(w, r)
+	log.Println("Executing middleware again")
 	})
-}
+   }
 
 func handleRequests() {
-	myRouter := mux.NewRouter().StrictSlash(true)
-	myRouter.Use(accessControlMiddleware)
+	myRouter := mux.NewRouter()
+	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
 	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":8081", myRouter))
+	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(myRouter)))
 }
 
 func main() {
