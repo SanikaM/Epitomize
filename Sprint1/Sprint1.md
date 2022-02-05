@@ -59,6 +59,7 @@ We have created the PostTag table to link the post created by the users and its 
 
 This API is get all the posts present in the database along with tags present in each post.
 
+    GET /post
 
  
  #### Example Request:
@@ -102,13 +103,14 @@ This API is used to delete any post that user don't want it in his dashboard.
 
  #### Example Request:
 
-    /deleteposts/{id}
+     DELETE /deleteposts/{id}
+
 id is the post's unique id that user wants to be deleted.
 
 #### Example Request:
 
 
-     DELETE  /deleteposts/2
+     DELETE /deleteposts/2
 
 #### Example Response:
 
@@ -141,17 +143,15 @@ This API creates a new Post
 
 #### Example Responses:
 
-##### 1. Status Code - 200
-
     {
         "result": "Created"
     }
-##### 2.  Status Code - 400
 
-    {
-       "result": "Bad request"
-    }
 
+#### Status Codes:
+
+-   **200**: No error
+-   **500**: Internal Server Error
 
 
 # Front-end Features and Usage
