@@ -132,7 +132,7 @@ This API creates a new Post
 ##### 1. Status Code - 200
 
     {
-        "result": "Status Created"
+        "result": "Created"
     }
 ##### 2.  Status Code - 400
 
