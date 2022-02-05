@@ -108,6 +108,40 @@ id is the post's unique id that user wants to be deleted.
 
 -   **200**: No error
 -   **500**: Internal Server Error
+
+
+#### 3. Create new Post API
+This API creates a new Post
+
+    POST  /post
+
+#### Example Request:
+
+    {	
+        "Type": "Blockchain", 
+        "Title": "Trade on Margin with 0% Interest",
+        "Summary": "Get up to 5x leverage with 0% interest ",
+        "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+        "Linked_Post": 0,
+        "Status": "Draft",
+        "Tags": "Crypto,Bitcoin"
+    }
+
+#### Example Responses:
+
+##### 1. Status Code - 200
+
+    {
+        "result": "Status Created"
+    }
+##### 2.  Status Code - 400
+
+    {
+       "result": "Bad request"
+    }
+
+
+
 # Front-end Features and Usage
 ## Posts
 ### Create New Post Page
