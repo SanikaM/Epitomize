@@ -10,6 +10,10 @@ In Sprint 1 the following user stories were successfully implemented:
 4. As a user, I should be able to delete a post.
 	* In this user story, the user has the ability to delete the post.
 
+## Video Demo Link
+
+https://drive.google.com/file/d/11BznULqFFZLzS6ZYBZ-0H2jFjGwgj0wA/view?usp=sharing
+
 # Back-end DataBase Schema and APIs
 
 ### Database Design
