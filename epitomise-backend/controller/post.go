@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -91,6 +92,13 @@ func CreatePost(post model.Post) int {
 	db := database.GetDB()
 	if err := db.Create(&post).Error; err != nil {
 		return http.StatusBadRequest
+	}
+	tags := strings.Split(post.Tags, ",")
+
+	if createTag(tags) == http.StatusCreated {
+		fmt.Println("tags created - creating posttags!")
+		createPostTag(post.PostsUId, tags)
+		return http.StatusCreated
 	}
 	return http.StatusCreated
 }
