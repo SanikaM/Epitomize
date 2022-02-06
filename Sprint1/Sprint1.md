@@ -14,9 +14,9 @@ In Sprint 1 the following user stories were successfully implemented:
 
 https://drive.google.com/file/d/1JQ3h65-LKTYs6ZUlJprnTckoYmYwV7Ms/view?usp=sharing
 
-Backend: https://drive.google.com/file/d/13ZHzFeZJPTB7dyNaNAfVZxnxzmHLGz3H/view?usp=sharing
+Frontend: https://drive.google.com/file/d/13ZHzFeZJPTB7dyNaNAfVZxnxzmHLGz3H/view?usp=sharing
 
-Frontend: https://drive.google.com/file/d/1sdfFOsT047y7BAdDZ0r0gWQhf5cyAoHI/view?usp=sharing 
+Backend: https://drive.google.com/file/d/1sdfFOsT047y7BAdDZ0r0gWQhf5cyAoHI/view?usp=sharing 
 
 # Back-end DataBase Schema and APIs
 
