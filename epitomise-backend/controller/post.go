@@ -67,6 +67,7 @@ func seed(db *gorm.DB) {
 		db.Create(&p)
 	}
 }
+
 func GetPosts() []model.Post {
 	db := database.GetDB()
 	// seed(db)
@@ -83,9 +84,7 @@ func GetPosts() []model.Post {
 
 	}
 	// fmt.Println(tagArrays[0].Type)
-
 	return Posts
-
 }
 
 func CreatePost(post model.Post) int {
@@ -101,4 +100,17 @@ func CreatePost(post model.Post) int {
 		return http.StatusCreated
 	}
 	return http.StatusCreated
+}
+
+func EditPost(id uint64, post model.Post) (error, int) {
+	db := database.GetDB()
+	var postModel model.Post
+	if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+		post.PostsUId = uint(id)
+		if err := db.Save(&post).Error; err != nil {
+			return err, http.StatusBadRequest
+		}
+		return nil, http.StatusOK
+	}
+	return nil, http.StatusNotFound
 }
