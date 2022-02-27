@@ -15,6 +15,7 @@ import (
 )
 
 var posts model.Post
+var postTag model.PostTag
 
 func allPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit:All Articles", posts)
@@ -25,6 +26,16 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(result)
 	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
+}
+
+func topTags(w http.ResponseWriter, r *http.Request) {
+
+	postTag := controller.GetTopTags()
+	fmt.Println(postTag)
+	//fmt.Println(result)
+	//fmt.Println(tags)
+	json.NewEncoder(w).Encode(postTag)
+
 }
 
 func createNewPost(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +125,7 @@ func handleRequests() {
 	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
+	myRouter.HandleFunc("/topTags", topTags).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
 	myRouter.HandleFunc("/post/{id}", editPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
