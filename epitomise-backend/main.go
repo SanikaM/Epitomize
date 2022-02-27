@@ -51,6 +51,23 @@ func createNewPost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
+func getPost(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	post, responseType := controller.GetPost(postId)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func editPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	err := json.NewDecoder(r.Body).Decode(&post)
@@ -126,6 +143,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
 	myRouter.HandleFunc("/topTags", topTags).Methods("GET")
+	myRouter.HandleFunc("/post/{id}", getPost).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
 	myRouter.HandleFunc("/post/{id}", editPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")

@@ -102,6 +102,19 @@ func CreatePost(post model.Post) int {
 	return http.StatusCreated
 }
 
+func GetPost(id uint64) (model.Post, int) {
+	db := database.GetDB()
+	var postModel model.Post
+	if err := db.First(&postModel, "posts_uid = ?", id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return postModel, http.StatusNotFound
+		} else {
+			return postModel, http.StatusBadRequest
+		}
+	}
+	return postModel, http.StatusOK
+}
+
 func EditPost(id uint64, post model.Post) (error, int) {
 	db := database.GetDB()
 	var postModel model.Post
