@@ -13,6 +13,7 @@ import (
 )
 
 var posts model.Post
+var postTag model.PostTag
 
 func allPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit:All Articles", posts)
@@ -23,6 +24,16 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println(result)
 	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
+}
+
+func topTags(w http.ResponseWriter, r *http.Request) {
+
+	postTag := controller.GetTopTags()
+	fmt.Println(postTag)
+	//fmt.Println(result)
+	//fmt.Println(tags)
+	json.NewEncoder(w).Encode(postTag)
+
 }
 
 func createNewPost(w http.ResponseWriter, r *http.Request) {
@@ -59,28 +70,29 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	log.Println("Executing middleware", r.Method)
-   
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, Authorization")
-	w.Header().Set("Content-Type", "application/json")
+		log.Println("Executing middleware", r.Method)
 
-	if r.Method == "OPTIONS" {
-		w.WriteHeader(http.StatusOK)
-		return
-	}
-	
-	next.ServeHTTP(w, r)
-	log.Println("Executing middleware again")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, X-Auth-Token, Authorization")
+		w.Header().Set("Content-Type", "application/json")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+		log.Println("Executing middleware again")
 	})
-   }
+}
 
 func handleRequests() {
 	myRouter := mux.NewRouter()
 	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
+	myRouter.HandleFunc("/topTags", topTags).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
 	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(myRouter)))
