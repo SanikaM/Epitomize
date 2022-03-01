@@ -72,7 +72,7 @@ function Posts() {
             
             <div style={{ marginLeft: 'auto' }}>
               
-              <Button onClick={() => handleClick(item.PostsUId)}>
+              <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                 <DeleteIcon sx={{ color: "#cb1010" }} />
               </Button>
             </div>
