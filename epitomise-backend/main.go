@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/pilinux/gorest/controller"
@@ -47,6 +49,54 @@ func createNewPost(w http.ResponseWriter, r *http.Request) {
 	}
 	responseType := controller.CreatePost(post)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func getPost(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	post, responseType := controller.GetPost(postId)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+func editPost(w http.ResponseWriter, r *http.Request) {
+	var post model.Post
+	err := json.NewDecoder(r.Body).Decode(&post)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	err, responseType := controller.EditPost(postId, post)
+	// result := http.Response{
+	// 	StatusCode: responseType,
+	// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
+	// }
+	// if err != nil {
+	// 	json.NewEncoder(w).Encode(err.Error())
+	// } else {
+	// 	json.NewEncoder(w).Encode(result)
+	// }
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+	} else {
+		json.NewEncoder(w).Encode(http.StatusText(responseType))
+	}
 }
 
 func deletePost(w http.ResponseWriter, r *http.Request) {
@@ -93,7 +143,9 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/post", allPost).Methods("GET")
 	myRouter.HandleFunc("/topTags", topTags).Methods("GET")
+	myRouter.HandleFunc("/post/{id}", getPost).Methods("GET")
 	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
+	myRouter.HandleFunc("/post/{id}", editPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(myRouter)))
 }
