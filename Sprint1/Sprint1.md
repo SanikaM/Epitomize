@@ -162,6 +162,28 @@ This API creates a new Post
 -   **500**: Internal Server Error
 
 
+#### 4. TopTags API
+This API is used to display top tags to user
+
+ GET  /topTags
+
+#### Example Request:
+{
+}
+
+#### Example Responses:
+
+    {
+    "TagList":["Backend","S3","Amazon Web Service","Frontend","Distributed Systems","Golang","EC2","Crypto","BlockChain","Finance","United States","Database"]
+    }
+
+#### Status Codes:
+
+-   **200**: No error
+-   **500**: Internal Server Error
+
+
+
 # Front-end Features and Usage
 ## Posts
 ### Create New Post Page
