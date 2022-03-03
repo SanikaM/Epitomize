@@ -8,9 +8,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
-import {
-  Link
-} from "react-router-dom";
+import { Link } from 'react-router-dom';
+
 
 function Posts() {
   const baseURL = "http://localhost:8081/"
@@ -40,7 +39,7 @@ function Posts() {
   return (
 
     <Stack spacing={2}>
-      <Link to="/create" style={{ textDecoration: 'none' }}>
+      <Link to="/create" style={{ textDecoration: 'none', textAlign: "center" }}>
         <Button variant="contained" sx={{ ':hover': {background: '#b3e6ff'},textTransform: 'none', color: "black", background: "white"}}>
           Create New Post
         </Button>
@@ -49,9 +48,11 @@ function Posts() {
         <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
           <CardActionArea>
             <CardContent>
+            <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black"}}>
               <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
                 {item.Title}
               </Typography>
+              </Link>
               <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                 {item.Summary}
               </Typography>
@@ -72,7 +73,7 @@ function Posts() {
             
             <div style={{ marginLeft: 'auto' }}>
               
-              <Button onClick={() => handleClick(item.PostsUId)}>
+              <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                 <DeleteIcon sx={{ color: "#cb1010" }} />
               </Button>
             </div>
