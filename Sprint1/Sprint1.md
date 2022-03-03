@@ -165,11 +165,7 @@ This API creates a new Post
 #### 4. TopTags API
 This API is used to display top tags to user
 
- GET  /topTags
-
-#### Example Request:
-{
-}
+    GET  /topTags
 
 #### Example Responses:
 
