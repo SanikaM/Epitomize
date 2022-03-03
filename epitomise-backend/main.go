@@ -15,7 +15,6 @@ import (
 )
 
 var posts model.Post
-var postTag model.PostTag
 
 func allPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit:All Articles", posts)
@@ -30,11 +29,12 @@ func allPost(w http.ResponseWriter, r *http.Request) {
 
 func topTags(w http.ResponseWriter, r *http.Request) {
 
-	postTag := controller.GetTopTags()
-	fmt.Println(postTag)
-	//fmt.Println(result)
+	topTag := controller.GetTopTags()
+	result := make(map[string][]string)
+	result["TagList"] = topTag
+	fmt.Println(result)
 	//fmt.Println(tags)
-	json.NewEncoder(w).Encode(postTag)
+	json.NewEncoder(w).Encode(result)
 
 }
 
