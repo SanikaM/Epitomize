@@ -1,110 +1,119 @@
 import React, { useState } from 'react'
 import "./CreatePost.css"
 import axios from "axios";
+import {
+    useParams
+} from "react-router-dom";
 
-export default function EditPost(){
 
-    const baseURL = "http://localhost:8081/post"
+export default function EditPost() {
 
-    const data = {
-        "Posts": [
-          {
-            "CreatedAt": "2022-02-02T13:11:52.722628-05:00",
-            "UpdatedAt": "2022-02-02T13:11:52.722628-05:00",
-            "DeletedAt": null,
-            "ID": 1,
-            "Type": "Tech",
-            "Title": "Why every software engineer should use vim",
-            "Summary": "Conquer the quitting vim fear and give it a go",
-            "Content": "Kuch bhi",
-            "Linked_Post": 0,
-            "Status": "Draft",
-            "Tags" : "Blog"
-    }]}
+    const baseURL = "http://localhost:8081/post/"
+    let { id } = useParams();
 
-    const dataItem = data.Posts[0];
+    const [dataItem, setData] = useState("")
+    const [file, setFile] = useState("")
 
-    const [Title,setTitle]=useState("")
-    const [Content,setContent]=useState("")
-    const [Summary,setSummary]=useState("")
-    const [Type,setType]=useState("")
-    const [Tags,setTags]=useState("")
-    const[file,setFile]=useState(null)
-    let Status = "Draft"
-    
-    const handleSubmit = async(e)=>{
+    const initialValues = {
+        Title: dataItem.Title,
+        Content: dataItem.Content,
+        Summary: dataItem.Summary,
+        Tags: dataItem.Tags,
+        Type: dataItem.Type,
+        LinkedPost: 1,
+        Status: "Draft"
+    }
+    const [values, setValues] = useState(initialValues);
+
+
+    React.useEffect(() => {
+        axios.get(baseURL + id)
+            .then((response) => {
+                setData(response.data);
+                setValues(response.data)
+            });
+    }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setValues({
+          ...values,
+          [name]: value,
+        });
+      };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const newPost = {
-            Title,
-            Content,
-            Summary,
-            Tags,
-            Type,
-            Status,
-        };
-        if(file){
+        const newPost = values
+        if (file) {
             const data = new FormData();
             const filename = Date.now() + file.name;
-            data.append("name",filename);
-            data.append("file",file);
+            data.append("name", filename);
+            data.append("file", file);
             //newPost.photo=filename;
-            
-        }
-        console.log('Hi '+JSON.stringify(newPost));
 
-             axios
-            .post(baseURL, newPost)
+        }
+        axios
+            .put(baseURL + id, newPost)
             .then(response => {
-                alert( "Post successfully edited." )
+                alert("Post successfully edited.")
                 window.location = '/';
             }).catch(error => {
-            console.log(error)
-            }); 
+                console.log(error)
+            });
     }
-    return(
-        <div className="createpost">         
-           
+    return (
+        <div className="createpost">
+
             {file && (
                 <img className="postImg" src={URL.createObjectURL(file)} alt="" />
             )}
             <form className="postForm" onSubmit={handleSubmit}>
                 <div className="postFromGroup">
-                    
+
                     <label className="addImgButton" htmlFor="fileInput">
-                    Add Image
+                        Add Image
                     </label>
                     <button className="postSubmit" type="submit" >Publish</button>
-                    
-                </div>
-                    <div className="postFromGroup">
-                    <input type="file" id="fileInput" style={{display:"none"}}  onChange={(e) => setFile(e.target.files[0])}/>
-                    <input type="text"  className="postInput" autoFocus={true}
-                     defaultValue={dataItem.Title} onChange={e=>setTitle(e.target.value)}/>
-                   
+
                 </div>
                 <div className="postFromGroup">
-                <input type="text" placeholder="Summary" className="postSummary" autoFocus={true}
-                     defaultValue={dataItem.Summary} onChange={e=>setSummary(e.target.value)}/>
-                     
+                    {/* <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} /> */}
+                    <input type="text" className="postInput" autoFocus={true} name="Title"
+                        defaultValue={dataItem.Title} 
+                        onChange={handleInputChange}
+                         />
+
                 </div>
                 <div className="postFromGroup">
-                
+                    <input type="text" placeholder="Summary" className="postSummary" autoFocus={true}
+                        defaultValue={dataItem.Summary} name="Summary"
+                        onChange={handleInputChange}
+                         />
+
                 </div>
                 <div className="postFromGroup">
-                <input type="text" placeholder="Tags" className="postTags" autoFocus={true}
-                     defaultValue={dataItem.Tags} onChange={e=>setTags(e.target.value)}/>
+
                 </div>
                 <div className="postFromGroup">
-                <input type="text" placeholder="Type" className="postTags" autoFocus={true}
-                     value={dataItem.Type} onChange={e=>setType(e.target.value)}/>
+                    <input type="text" placeholder="Tags" className="postTags" autoFocus={true}
+                        defaultValue={dataItem.Tags} name="Tags" disabled="true" style={{backgroundColor: "white"}}
+                        onChange={handleInputChange}
+                        />
                 </div>
                 <div className="postFromGroup">
-                
+                    <input type="text" placeholder="Type" className="postTags" autoFocus={true}
+                        value={dataItem.Type} name="Type"
+                        onChange={handleInputChange}
+                         />
+                </div>
+                <div className="postFromGroup">
                     <textarea placeholder="Tell your story.." type="text" className="postInput postText"
-                     defaultValue={dataItem.Content} onChange={e=>setContent(e.target.value)}></textarea>
+                        defaultValue={dataItem.Content} name="Content"
+                        onChange={handleInputChange}></textarea>
                 </div>
-                
+
             </form>
         </div>
     )
- }
+}

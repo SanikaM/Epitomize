@@ -66,7 +66,7 @@ function Posts() {
             </div>
             <div style={{ marginLeft: '80%' }}>
               
-            <Link to="/edit" >
+            <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black"}} >
                 <EditIcon sx={{ color: "#b3e6ff" }} />
               </Link>
             </div>
