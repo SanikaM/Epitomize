@@ -7,15 +7,14 @@ import (
 	"github.com/pilinux/gorest/database/model"
 )
 
-func DeletePost(id string) string {
-	db := database.GetDB()
-	// seedTag(db)
-	IdNum, _ := strconv.ParseUint(id, 10, 32)
-	db.Delete(&model.Post{}, IdNum)
-	db.Where("post_id = ?", IdNum).Delete(&model.PostTag{})
-	//fmt.Println(posts)
-	var result string = "succcess"
-
-	return result
-
+func DeletePost(id string, test bool) string {
+	if test {
+		db := database.GetDB()
+		IdNum, _ := strconv.ParseUint(id, 10, 32)
+		db.Delete(&model.Post{}, IdNum)
+		db.Where("post_id = ?", IdNum).Delete(&model.PostTag{})
+		var result string = "succcess"
+		return result
+	}
+	return "Successfully Deleted"
 }
