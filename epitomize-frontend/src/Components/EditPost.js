@@ -74,7 +74,7 @@ export default function EditPost() {
                     <label className="addImgButton" htmlFor="fileInput">
                         Add Image
                     </label>
-                    <button className="postSubmit" type="submit" >Publish</button>
+                    <button className="postSubmit" type="submit" id="publish">Publish</button>
 
                 </div>
                 <div className="postFromGroup">
