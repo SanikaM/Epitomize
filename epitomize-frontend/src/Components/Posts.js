@@ -19,7 +19,6 @@ function Posts() {
   React.useEffect(() => {
     axios.get(baseURL + 'post')
       .then((response) => {
-        console.log(response.data)
         setData(response.data);
       });
   }, []);
