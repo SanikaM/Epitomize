@@ -21,7 +21,7 @@ function App() {
       });
   }, []);
 
-  if (data) {
+  if (data && data['TagList'] !== null ) {
 
   return (
     <>

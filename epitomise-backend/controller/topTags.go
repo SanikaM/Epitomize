@@ -28,7 +28,6 @@ func GetTopTags(testflag bool) ([]string, int) {
 				return tagResponse.Type, http.StatusBadRequest
 			}
 		}
-		fmt.Println("From controller", tag[1].Type)
 		for i := 0; i < len(tag); i++ { //looping from 0 to the length of the array
 
 			tagResponse.Type = append(tagResponse.Type, tag[i].Type)
