@@ -16,50 +16,71 @@ import (
 
 var posts model.Post
 
-func allPost(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Endpoint Hit:All Articles", posts)
-	posts := controller.GetPosts()
+func AllPostTest(w http.ResponseWriter, r *http.Request) {
+	posts := controller.GetPosts(false)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
-	//fmt.Println(result)
-	//fmt.Println(tags)
 	json.NewEncoder(w).Encode(result)
 }
-
-func topTags(w http.ResponseWriter, r *http.Request) {
-
-	topTag := controller.GetTopTags()
-	result := make(map[string][]string)
-	result["TagList"] = topTag
-	fmt.Println(result)
-	//fmt.Println(tags)
-	json.NewEncoder(w).Encode(result)
-
-}
-
-func createNewPost(w http.ResponseWriter, r *http.Request) {
-	// fmt.Println(w, "Check W")
-	// fmt.Println(r.Body, "Check r")
-	var post model.Post
-	err := json.NewDecoder(r.Body).Decode(&post)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+func AllPost(w http.ResponseWriter, r *http.Request) {
+	posts := controller.GetPosts(true)
+	result := model.GetAllPost{
+		Posts: posts,
 	}
-	responseType := controller.CreatePost(post)
+	json.NewEncoder(w).Encode(result)
+}
+
+func TopTagsTest(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	topTag, responseType := controller.GetTopTags(false)
+	if responseType == http.StatusOK {
+		result := make(map[string][]string)
+		result["TagList"] = topTag
+		json.NewEncoder(w).Encode(result)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func TopTags(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	topTag, responseType := controller.GetTopTags(true)
+	if responseType == http.StatusOK {
+		result := make(map[string][]string)
+		result["TagList"] = topTag
+		json.NewEncoder(w).Encode(result)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
+	var post model.Post
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&post)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
+	responseType := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
-
-func getPost(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
-	postId, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
+func CreateNewPost(w http.ResponseWriter, r *http.Request) {
+	var post model.Post
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&post)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.CreatePost(post, true)
+		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
-	post, responseType := controller.GetPost(postId)
+}
+func GetPostTest(w http.ResponseWriter, r *http.Request) {
+	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return
@@ -68,13 +89,7 @@ func getPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func editPost(w http.ResponseWriter, r *http.Request) {
-	var post model.Post
-	err := json.NewDecoder(r.Body).Decode(&post)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+func GetPost(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 	postId, err := strconv.ParseUint(id, 10, 64)
@@ -82,43 +97,74 @@ func editPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	err, responseType := controller.EditPost(postId, post)
-	// result := http.Response{
-	// 	StatusCode: responseType,
-	// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
-	// }
-	// if err != nil {
-	// 	json.NewEncoder(w).Encode(err.Error())
-	// } else {
-	// 	json.NewEncoder(w).Encode(result)
-	// }
+	post, responseType := controller.GetPost(postId, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func EditPostTest(w http.ResponseWriter, r *http.Request) {
+	var post model.Post
+	err, responseType := controller.EditPost(1, post, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	} else {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
-
-func deletePost(w http.ResponseWriter, r *http.Request) {
-
-	// fmt.Println(r.Body, "Check r")
-	// bodyBytes, err := io.ReadAll(r.Body)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println("Values", bodyString)
-	params := mux.Vars(r)
-	id := params["id"]
-	controller.DeletePost(id)
-	fmt.Println("User id", id)
+func EditPost(w http.ResponseWriter, r *http.Request) {
+	var post model.Post
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&post)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		params := mux.Vars(r)
+		id := params["id"]
+		postId, err := strconv.ParseUint(id, 10, 64)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		err, responseType := controller.EditPost(postId, post, true)
+		// result := http.Response{
+		// 	StatusCode: responseType,
+		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
+		// }
+		// if err != nil {
+		// 	json.NewEncoder(w).Encode(err.Error())
+		// } else {
+		// 	json.NewEncoder(w).Encode(result)
+		// }
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		} else {
+			json.NewEncoder(w).Encode(http.StatusText(responseType))
+		}
+	}
 }
 
-func homePage(w http.ResponseWriter, r *http.Request) {
+func DeletePostTest(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	id := params["id"]
+	controller.DeletePost(id, false)
+}
+func DeletePost(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+	id := params["id"]
+	controller.DeletePost(id, true)
+}
+
+func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
 }
 
-func corsMiddleware(next http.Handler) http.Handler {
+func CorsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Executing middleware", r.Method)
 
@@ -137,17 +183,17 @@ func corsMiddleware(next http.Handler) http.Handler {
 	})
 }
 
-func handleRequests() {
+func HandleRequests() {
 	myRouter := mux.NewRouter()
 	// myRouter.Use(accessControlMiddleware)
-	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/post", allPost).Methods("GET")
-	myRouter.HandleFunc("/topTags", topTags).Methods("GET")
-	myRouter.HandleFunc("/post/{id}", getPost).Methods("GET")
-	myRouter.HandleFunc("/post", createNewPost).Methods("POST")
-	myRouter.HandleFunc("/post/{id}", editPost).Methods("PUT")
-	myRouter.HandleFunc("/deleteposts/{id}", deletePost).Methods("DELETE")
-	log.Fatal(http.ListenAndServe(":8081", corsMiddleware(myRouter)))
+	myRouter.HandleFunc("/", HomePage)
+	myRouter.HandleFunc("/post", AllPost).Methods("GET")
+	myRouter.HandleFunc("/topTags", TopTags).Methods("GET")
+	myRouter.HandleFunc("/post/{id}", GetPost).Methods("GET")
+	myRouter.HandleFunc("/post", CreateNewPost).Methods("POST")
+	myRouter.HandleFunc("/post/{id}", EditPost).Methods("PUT")
+	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
+	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
 func main() {
@@ -156,5 +202,5 @@ func main() {
 		return
 	}
 
-	handleRequests()
+	HandleRequests()
 }
