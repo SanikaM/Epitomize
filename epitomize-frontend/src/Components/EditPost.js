@@ -79,15 +79,15 @@ export default function EditPost() {
                 </div>
                 <div className="postFromGroup">
                     {/* <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} /> */}
-                    <input type="text" className="postInput" autoFocus={true} name="Title"
+                    <input type="text" className="postInput" autoFocus={true} name="Title" id="title" data-testid="title"
                         defaultValue={dataItem.Title} 
                         onChange={handleInputChange}
                          />
 
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Summary" className="postSummary" autoFocus={true}
-                        defaultValue={dataItem.Summary} name="Summary"
+                    <input type="text" placeholder="Summary" className="postSummary" autoFocus={true} id="summary"
+                        defaultValue={dataItem.Summary} name="Summary" data-testid="summary"
                         onChange={handleInputChange}
                          />
 
@@ -96,20 +96,20 @@ export default function EditPost() {
 
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Tags" className="postTags" autoFocus={true}
-                        defaultValue={dataItem.Tags} name="Tags" disabled="true" style={{backgroundColor: "white"}}
-                        onChange={handleInputChange}
+                    <input type="text" placeholder="Tags" className="postTags" autoFocus={true} id="tags"
+                        defaultValue={dataItem.Tags} name="Tags" disabled={true} style={{backgroundColor: "white"}}
+                        onChange={handleInputChange} data-testid="tags"
                         />
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Type" className="postTags" autoFocus={true}
-                        value={dataItem.Type} name="Type"
+                    <input type="text" placeholder="Type" className="postTags" autoFocus={true}  id="posttype"
+                        value={dataItem.Type} name="Type" data-testid="posttype"
                         onChange={handleInputChange}
                          />
                 </div>
                 <div className="postFromGroup">
-                    <textarea placeholder="Tell your story.." type="text" className="postInput postText"
-                        defaultValue={dataItem.Content} name="Content"
+                    <textarea placeholder="Tell your story.." type="text" className="postInput postText"  id="content"
+                        defaultValue={dataItem.Content} name="Content" data-testid="content"
                         onChange={handleInputChange}></textarea>
                 </div>
 
