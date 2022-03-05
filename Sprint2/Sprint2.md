@@ -87,6 +87,9 @@ The user can select a specific post from the list of posts and edit it. The init
 
 - Tell your story - The content of the post can be edited.
 
+
+![](EditPost.gif)
+
   
   
 
