@@ -63,7 +63,7 @@ Note: Tags linked with the post cannot be edited.
 #### Status Codes:
 
 -   **200**: Status OK
--   **500**: Bad Request
+-   **400**: Bad Request
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable 
 
