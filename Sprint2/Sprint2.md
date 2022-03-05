@@ -96,6 +96,8 @@ The user can select a specific post from the list of posts and edit it. The init
 
 For the post, the user can see the selected post's title, summary, the date it was created, content, and the tags associated with that post.
 
+![](SinglePostPage.gif)
+
   
 
 ## Tags
