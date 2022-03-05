@@ -32,7 +32,40 @@ Frontend: https://drive.google.com/file/d/1VXnWDP_RAeiLM4qFqcNMUCS51oirq35T/view
 
 Backend:
 
-  
+#### 1. Edit existing Post API
+This API updates the contents of an existing Post.
+Note: Tags linked with the post cannot be edited.
+
+    PUT  /post/{POST_ID}
+
+#### Example Request Body:
+
+    {	
+        "Type": "Blockchain", 
+        "Title": "Trade on Margin with 0% Interest",
+        "Summary": "Get up to 5x leverage with 0% interest ",
+        "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+        "Linked_Post": 0,
+        "Status": "Post",
+    }
+
+#### Example Responses:
+
+    {
+        "result": "OK"
+    }
+
+
+    {
+        "result": "Bad Request"
+    }
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **500**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable 
 
 # Front-end Features and Usage
 
