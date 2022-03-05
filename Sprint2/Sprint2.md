@@ -97,6 +97,23 @@ This API returns the contents of a single Post based on the Post_ID.
 -   **503**: Service Unavailable 
 
 
+#### 3. Get Top 10 Tags API
+This API is used to display top 10 tags to the user.
+
+    GET  /topTags
+
+#### Example Responses:
+
+    {
+    "TagList":["Backend","S3","Amazon Web Service","Frontend","Distributed Systems","Golang","EC2","Crypto","BlockChain","Finance","United States","Database"]
+    }
+
+#### Status Codes:
+
+-   **200**: No error
+-   **500**: Internal Server Error
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
