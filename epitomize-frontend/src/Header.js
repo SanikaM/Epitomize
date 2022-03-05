@@ -134,7 +134,7 @@ export default function Header() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" style={{background: "white"}}>
         <Toolbar>
-          <img src="icon.png" alt="logo" style={{maxWidth: 30, marginRight: '10px'}}/>
+          <img src="/favicon.ico" alt="logo" style={{maxWidth: 30, marginRight: '10px'}}/>
           <Typography
             variant="h6"
             noWrap

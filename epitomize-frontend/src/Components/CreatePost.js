@@ -59,17 +59,19 @@ export default function CreatePost() {
                     <label className="addImgButton" htmlFor="fileInput">
                         Add Image
                     </label>
-                    <button className="postSubmit" type="submit" >Publish</button>
+                    <button className="postSubmit" type="submit" id="publish">Publish</button>
 
                 </div>
                 <div className="postFromGroup">
                     <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
-                    <input type="text" placeholder="Title" className="postInput" autoFocus={true}
+                    <input type="text" placeholder="Title" className="postInput" autoFocus={true} id="title"
+                    data-testid="title"
                         onChange={e => setTitle(e.target.value)} />
 
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Summary" className="postSummary" autoFocus={true}
+                    <input type="text" placeholder="Summary" className="postSummary" autoFocus={true} id="summary"
+                    data-testid="summary"
                         onChange={e => setSummary(e.target.value)} />
 
                 </div>
@@ -77,16 +79,19 @@ export default function CreatePost() {
 
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Tags" className="postTags" autoFocus={true}
+                    <input type="text" placeholder="Tags" className="postTags" autoFocus={true} id="tags"
+                    data-testid="tags"
                         onChange={e => setTags(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
-                    <input type="text" placeholder="Type" className="postTags" autoFocus={true}
+                    <input type="text" placeholder="Type" className="postTags" autoFocus={true} id="posttype"
+                    data-testid="posttype"
                         onChange={e => setType(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
 
-                    <textarea placeholder="Tell your story.." type="text" className="postInput postText"
+                    <textarea placeholder="Tell your story.." type="text" className="postInput postText" id="content"
+                    data-testid="content"
                         onChange={e => setContent(e.target.value)}></textarea>
                 </div>
 

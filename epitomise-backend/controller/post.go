@@ -67,38 +67,74 @@ func seed(db *gorm.DB) {
 		db.Create(&p)
 	}
 }
-func GetPosts() []model.Post {
-	db := database.GetDB()
-	// seed(db)
-	// GetPostTags(1)
-	tagArrays := []model.TagResponse{}
-	db.Find(&Posts)
-	fmt.Println("From controller", Posts)
 
-	for i, p := range Posts {
-		var tagTemp model.TagResponse
-		tagTemp.Type = GetPostTags(p.PostsUId)
-		tagArrays = append(tagArrays, tagTemp)
-		Posts[i].TagList = tagArrays[i].Type
+func GetPosts(test bool) []model.Post {
+	if test {
+		db := database.GetDB()
+		// seed(db)
+		// GetPostTags(1)
+		tagArrays := []model.TagResponse{}
+		db.Find(&Posts)
+		fmt.Println("From controller", Posts)
 
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			tagTemp.Type = GetPostTags(p.PostsUId)
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+
+		}
 	}
-	// fmt.Println(tagArrays[0].Type)
-
 	return Posts
-
 }
 
-func CreatePost(post model.Post) int {
-	db := database.GetDB()
-	if err := db.Create(&post).Error; err != nil {
-		return http.StatusBadRequest
-	}
-	tags := strings.Split(post.Tags, ",")
+func CreatePost(post model.Post, test bool) int {
+	if test {
+		db := database.GetDB()
+		if err := db.Create(&post).Error; err != nil {
+			return http.StatusBadRequest
+		}
+		tags := strings.Split(post.Tags, ",")
 
-	if createTag(tags) == http.StatusCreated {
-		fmt.Println("tags created - creating posttags!")
-		createPostTag(post.PostsUId, tags)
+		if createTag(tags) == http.StatusCreated {
+			fmt.Println("tags created - creating posttags!")
+			createPostTag(post.PostsUId, tags)
+			return http.StatusCreated
+		}
 		return http.StatusCreated
 	}
 	return http.StatusCreated
+}
+
+func GetPost(id uint64, test bool) (model.Post, int) {
+	var postModel model.Post
+	if test {
+		db := database.GetDB()
+		if err := db.First(&postModel, "posts_uid = ?", id).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return postModel, http.StatusNotFound
+			} else {
+				return postModel, http.StatusBadRequest
+			}
+		}
+		return postModel, http.StatusOK
+	}
+	return postModel, http.StatusOK
+
+}
+
+func EditPost(id uint64, post model.Post, test bool) (error, int) {
+	if test {
+		db := database.GetDB()
+		var postModel model.Post
+		if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+			post.PostsUId = uint(id)
+			if err := db.Save(&post).Error; err != nil {
+				return err, http.StatusBadRequest
+			}
+			return nil, http.StatusOK
+		}
+		return nil, http.StatusNotFound
+	}
+	return nil, http.StatusOK
 }

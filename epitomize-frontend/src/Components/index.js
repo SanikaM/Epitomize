@@ -12,7 +12,7 @@ import {
 import Posts from './Posts'
 import CreatePost from './CreatePost'
 import EditPosts from './EditPost'
-
+import Post from './Post'
 
 const Components = () => {
     return(
@@ -20,7 +20,8 @@ const Components = () => {
             <Routes>
             <Route path = "/create" element={<CreatePost />} />
             <Route path = "/" element={<Posts />}  />
-            <Route path = "/edit" element={<EditPosts />} />
+            <Route path = "/edit/:id" element={<EditPosts />} />
+            <Route path = "/post/:id" element={<Post />} />
             </Routes>
         </Router>
     );
