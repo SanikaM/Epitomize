@@ -67,6 +67,26 @@ Note: Tags linked with the post cannot be edited.
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable 
 
+## Back-end tests
+
+To run the unit test, following command is to be used -
+
+    go test -v
+
+1. TestTopTags - In this test, if we can get mock top tags used in our mock db in this test case.
+
+2. TestDeletePost  - In this test, we check id send post id is deleted from our mock db and we receive required resposnses.
+
+3. TestAllPost - In this test, we check if we can retrieve all the posts with corresponding tags and asserts that with our mock data.
+
+4. TestCreatePost- In this test, we check if our send mock request can create entry in our mock database.
+
+5. TestGetPost - In this test, we are checking if the single requested post is send correctly in the response.
+
+6. TestEditPost - In this test, we check if the request body makes an update in our mock database.
+
+ 
+
 # Front-end Features and Usage
 
 ## Posts
@@ -147,3 +167,4 @@ To run the Functional tests, we run the following command -
 4. Edit post test - For this test we are checking if the edit values of a specific post are getting updated and if all the fields and values are rendering properly on the Edit post page.
 
 5. Delete post - In this test, we are checking if the post is correctly getting deleted.
+
