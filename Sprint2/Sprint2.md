@@ -200,6 +200,8 @@ To run all tests enter "a", to quit enter "q".
 
 3. Header - We do the unit test of Header component by checking if all the header values such as title are rendering.
 
+![](JTestUnitTests.png)
+
 ### Functional Tests (Using Cypress)
 
 To run the Functional tests, we run the following command -
@@ -215,4 +217,6 @@ To run the Functional tests, we run the following command -
 4. Edit post test - For this test we are checking if the edit values of a specific post are getting updated and if all the fields and values are rendering properly on the Edit post page.
 
 5. Delete post - In this test, we are checking if the post is correctly getting deleted.
+
+![](CypressFunctionalTests.png)
 
