@@ -85,6 +85,7 @@ To run the unit test, following command is to be used -
 
 6. TestEditPost - In this test, we check if the request body makes an update in our mock database.
 
+![](Backend_Features_TestCases.png)
  
 
 # Front-end Features and Usage
