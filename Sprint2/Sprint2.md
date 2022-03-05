@@ -56,10 +56,6 @@ Note: Tags linked with the post cannot be edited.
     }
 
 
-    {
-        "result": "Bad Request"
-    }
-
 #### Status Codes:
 
 -   **200**: Status OK
