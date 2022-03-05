@@ -1,6 +1,3 @@
-
-  
-
 # Sprint 2
 
   
@@ -102,8 +99,21 @@ This API is used to display top 10 tags to the user.
 
 #### Example Responses:
 
-    {
-    "TagList":["Backend","S3","Amazon Web Service","Frontend","Distributed Systems","Golang","EC2","Crypto","BlockChain","Finance","United States","Database"]
+      {
+        "TagList": [
+            "Backend",
+            "S3",
+            "Amazon Web Service",
+            "Frontend",
+            "Distributed Systems",
+            "Golang",
+            "EC2",
+            "Crypto",
+            "BlockChain",
+            "Finance",
+            "United States",
+            "Database"
+        ]
     }
 
 #### Status Codes:
@@ -217,4 +227,5 @@ To run the Functional tests, we run the following command -
 5. Delete post - In this test, we are checking if the post is correctly getting deleted.
 
 ![](CypressFunctionalTests.png)
+
 
