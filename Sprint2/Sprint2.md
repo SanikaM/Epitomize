@@ -67,6 +67,36 @@ Note: Tags linked with the post cannot be edited.
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable 
 
+
+#### 2. Get single Post API
+This API returns the contents of a single Post based on the Post_ID.
+
+    GET  /post/{POST_ID}
+
+#### Example Response Body:
+
+    {	
+    "PostsUId": 5,
+    "Type": "Post",
+    "Title": "Golang structs",
+    "Summary": "How to marshal a struct field that doesn’t implement the Marshaler interface",
+    "Content": "We needed to marshal a Go struct to JSON and BSON (binary JSON, a serialization format developed by MongoDB), but one of the fields in my struct was an interface that needed special handling.",
+    "Linked_Post": 1,
+    "Status": "Draft",
+    "CreatedAt": "0001-01-01T00:00:00Z",
+    "UpdatedAt": "2022-02-27T17:01:32.29849-05:00",
+    "TagList": null,
+    "Tags": "Golang,Tech"
+    }
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable 
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
