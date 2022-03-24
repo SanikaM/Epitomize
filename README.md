@@ -11,13 +11,17 @@ This project will be a full-stack website for users to publish and view posts of
 
 ## Project Members
 
+Backend:
+
 1. Ankit Anil Kulkarni
 
+2. Sagar Piyush Parikh
+
+Frontend:
+
+1. Sanika Avinash Mathapati
+
 2. Nayan Jain
-
-3. Sagar Piyush Parikh
-
-4. Sanika Avinash Mathapati
 
   
 ## Tech Stack:
