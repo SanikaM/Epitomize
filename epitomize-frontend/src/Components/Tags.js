@@ -1,5 +1,7 @@
 import Button from '@mui/material/Button';
 import * as React from 'react';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import axios from 'axios';
 
 function Tags() {
@@ -21,13 +23,13 @@ function Tags() {
         return (
             <div>
                 <h2>Recommended Topics: </h2>
+                <Stack direction="row" spacing={1}>
                 {
                     data['TagList'].map(item => (
-                        <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20 }}>
-                            {item}
-                        </Button>
+                        <Chip label={item} size="medium" variant="filled" key={item}/>
                     ))
                 }
+                </Stack>
             </div>
         )
     }
