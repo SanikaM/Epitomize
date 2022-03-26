@@ -35,11 +35,11 @@ export default function Header() {
   const myposts = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    window.location = '/posts'; 
+    window.location = '/myposts'; 
   };
 
   const logout = () => {
-    cookies.remove("user", {path:'/'})
+    cookies.remove("access_token", {path:'/'})
     setAnchorEl(null);
     handleMobileMenuClose();
     window.location.reload(); 

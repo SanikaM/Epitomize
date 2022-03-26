@@ -7,12 +7,14 @@ import Tags from './Components/Tags'
 import SignIn from './Components/Signin';
 import * as React from 'react';
 import Cookies from 'universal-cookie';
+import Users from './Components/Users'
+import { useLocation } from 'react-router-dom';
 
 
 function App() {
   const cookies = new Cookies();
-
-  if (cookies.get('user') === "Authorized") {
+  console.log(window.location.pathname)
+  if (cookies.get('access_token')) {
     return (
 
       <div className="App">
@@ -21,10 +23,12 @@ function App() {
           <Box gridColumn="span 8">
             <Components />
           </Box>
-          <Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} />
-          <Box gridColumn="span 3">
-            <Tags />
-          </Box>
+          {window.location.pathname != "/alluser" &&
+          <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} /><Box gridColumn="span 3" id="sidebar">
+              <Tags />
+              <Users />
+            </Box></>
+        }
         </Box>
       </div>
     )
