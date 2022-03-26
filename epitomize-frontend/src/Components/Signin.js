@@ -9,24 +9,38 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'universal-cookie';
+import axios from "axios";
 
 const theme = createTheme();
 const cookies = new Cookies();
+const baseURL = "http://localhost:8081/login"
 
-const changeRouteHome = () => {
-  window.location = '/';
-}
+// const changeRouteHome = () => {
+//   window.location = '/';
+// }
 
 function SignIn({ auth }) {
 
   const handleSubmit = (event) => {
+
     event.preventDefault();
-    cookies.set('user', 'Authorized', { path: '/' });
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
+    const formdata = new FormData(event.currentTarget);
+    const data = ({
+      Emailid: formdata.get('email'),
+      Password: formdata.get('password'),
     });
+    axios
+        .post(baseURL, data)
+        .then(response => {
+            console.log(response.data);
+            cookies.set('access_token', response.data['Access_Token'], { path: '/' });
+            window.location = '/';
+
+        }).catch(error => {
+            console.log(error)
+        });
+    
+    
   };
 
   return (
@@ -72,7 +86,7 @@ function SignIn({ auth }) {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={changeRouteHome}
+              // onClick={changeRouteHome}
             >
               Sign In
             </Button>

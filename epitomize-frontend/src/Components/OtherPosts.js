@@ -27,16 +27,11 @@ function OtherPosts() {
             .then((response) => {
                 console.log(response.data)
                 setFollowingData(response.data);
-                console.log(followingData)
-                console.log(followingData['Posts'][0].PostsUId)
             });
 
         axios.get(baseURL + 'topTags')
             .then((response) => {
-                console.log(response.data)
                 setRecommendedData(response.data);
-                console.log(recommendedData['TagList'][0])
-                // console.log(recommendedData['Posts'][0].PostsUId)
             });
 
     }, []);
@@ -109,7 +104,7 @@ function OtherPosts() {
                         </Stack>
                     </TabPanel>
                     <TabPanel value="2">
-                    <Stack spacing={2}>
+                        <Stack spacing={2}>
                             {followingData['Posts'].map(item => (
                                 <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                                     <CardActionArea>
