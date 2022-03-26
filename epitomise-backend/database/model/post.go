@@ -19,4 +19,5 @@ type Post struct {
 	UpdatedAt   time.Time
 	TagList     pq.StringArray `gorm:"type:text[]"`
 	Tags        string
+	IDUser      uint `json:"-"`
 }

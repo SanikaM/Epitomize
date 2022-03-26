@@ -42,7 +42,7 @@ export default function CreatePost() {
         .then(response => {
             console.log(response.data);
             alert( "Post successfully created." )
-            window.location = '/';
+            window.location = '/myposts';
 
         }).catch(error => {
             console.log(error)
