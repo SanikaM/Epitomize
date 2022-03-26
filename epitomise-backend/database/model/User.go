@@ -9,12 +9,14 @@ import (
 type User struct {
 	UserId         uint `gorm:"primaryKey;auto_increment;not_null"`
 	Username       string
+	Emailid        string
 	Password       string
 	Profilepicture string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
-	Posts          []Post         `gorm:"foreignkey:IDuser;references:UserId:constraint:onUpdate:CASCADE,onDelete:CASCADE" json:",omitempty"`
+	PostID         uint
+	Posts          Post           `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	Following      pq.StringArray `gorm:"type:uint[]"`
 	FollowedBy     pq.StringArray `gorm:"type:uint[]"`
 }
