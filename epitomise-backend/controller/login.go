@@ -23,8 +23,10 @@ func Login(login model.Login) model.LoginResponse {
 	db := database.GetDB()
 	user := []model.User{}
 	db.Where("Emailid   = ?", login.Emailid).Find(&user)
-	fmt.Println(user[0].Password)
-	fmt.Println(user[0].Username)
+	if len(user) == 0 {
+		res.Result = "Unauthorized user"
+		return res
+	}
 	if login.Password != user[0].Password {
 		res.Result = "Unauthorized user"
 		return res
