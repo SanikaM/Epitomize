@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/pilinux/gorest/controller"
 	"github.com/pilinux/gorest/database"
@@ -15,6 +17,13 @@ import (
 )
 
 var posts model.Post
+var jwtKey = []byte("my_secret_key")
+
+type Claims struct {
+	Username string `json:"username"`
+	Userid   uint
+	jwt.StandardClaims
+}
 
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
 	posts := controller.GetPosts(false)
@@ -78,6 +87,39 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		responseType := controller.Login(login)
 		json.NewEncoder(w).Encode(responseType)
 	}
+}
+func UserList(w http.ResponseWriter, r *http.Request) {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	fmt.Println((claims.Username))
+	responseType := controller.UserList()
+	result := model.UserListResponses{
+		Users: responseType,
+	}
+
+	json.NewEncoder(w).Encode(result)
 }
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
@@ -206,6 +248,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/post/{id}", EditPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
+	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

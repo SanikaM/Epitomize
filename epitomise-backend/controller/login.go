@@ -14,6 +14,7 @@ var jwtKey = []byte("my_secret_key")
 
 type Claims struct {
 	Username string `json:"username"`
+	Userid   uint
 	jwt.StandardClaims
 }
 
@@ -34,6 +35,7 @@ func Login(login model.Login) model.LoginResponse {
 	expirationTime := time.Now().Add(120 * time.Minute)
 	claims := &Claims{
 		Username: user[0].Emailid,
+		Userid:   user[0].UserId,
 		StandardClaims: jwt.StandardClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTime.Unix(),
