@@ -67,6 +67,18 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 	responseType := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
+func LoginUser(w http.ResponseWriter, r *http.Request) {
+	var login model.Login
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&login)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.Login(login)
+		json.NewEncoder(w).Encode(responseType)
+	}
+}
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	if r.Body != nil {
@@ -193,6 +205,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/post", CreateNewPost).Methods("POST")
 	myRouter.HandleFunc("/post/{id}", EditPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
+	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
