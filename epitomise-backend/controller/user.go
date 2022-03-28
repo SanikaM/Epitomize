@@ -11,13 +11,20 @@ import (
 
 func CreateUser(user model.User) model.ErrorResponse {
 	db := database.GetDB()
-	// fmt.Println(user.Password)
 	if service.IsStringFieldEmpty(user.Username) {
 		err := model.ErrorResponse{
 			HTTPCode: http.StatusBadRequest,
 			Message:  "Username cannot be empty",
 		}
 		return err
+	}
+
+	if err := db.Where("username = ?", user.Username).First(&user).Error; err == nil {
+		errorResponse := model.ErrorResponse{
+			HTTPCode: http.StatusBadRequest,
+			Message:  "Email ID already exists",
+		}
+		return errorResponse
 	}
 
 	if service.IsStringFieldEmpty(user.Emailid) || !service.IsEmailValid(user.Emailid) {
