@@ -94,6 +94,18 @@ func CreateNewUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	username := params["username"]
+	user, responseType := controller.GetUser(username)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(user)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -273,6 +285,8 @@ func HandleRequests() {
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
 	myRouter.HandleFunc("/user", CreateNewUser).Methods("POST")
+	myRouter.HandleFunc("/user/{username}", GetUser).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

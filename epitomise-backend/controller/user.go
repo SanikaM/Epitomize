@@ -7,6 +7,7 @@ import (
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
 	"github.com/pilinux/gorest/service"
+	"gorm.io/gorm"
 )
 
 func CreateUser(user model.User) model.ErrorResponse {
@@ -22,7 +23,7 @@ func CreateUser(user model.User) model.ErrorResponse {
 	if err := db.Where("username = ?", user.Username).First(&user).Error; err == nil {
 		errorResponse := model.ErrorResponse{
 			HTTPCode: http.StatusBadRequest,
-			Message:  "Email ID already exists",
+			Message:  "Username already exists",
 		}
 		return errorResponse
 	}
@@ -73,4 +74,18 @@ func CreateUser(user model.User) model.ErrorResponse {
 		HTTPCode: http.StatusOK,
 		Message:  "New user successfully created",
 	}
+}
+
+func GetUser(username string) (model.User, int) {
+	var userModel model.User
+	db := database.GetDB()
+	if err := db.First(&userModel, "username = ?", username).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return userModel, http.StatusNotFound
+		} else {
+			return userModel, http.StatusBadRequest
+		}
+	}
+	userModel.Password = ""
+	return userModel, http.StatusOK
 }
