@@ -96,8 +96,14 @@ func CreateNewUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	username := params["username"]
-	user, responseType := controller.GetUser(username)
+	id := params["id"]
+	userId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	user, responseType := controller.GetUser(userId)
+
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(user)
 		return
@@ -285,7 +291,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
 	myRouter.HandleFunc("/user", CreateNewUser).Methods("POST")
-	myRouter.HandleFunc("/user/{username}", GetUser).Methods("GET")
+	myRouter.HandleFunc("/user/{id}", GetUser).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }

@@ -76,10 +76,10 @@ func CreateUser(user model.User) model.ErrorResponse {
 	}
 }
 
-func GetUser(username string) (model.User, int) {
+func GetUser(userId uint64) (model.User, int) {
 	var userModel model.User
 	db := database.GetDB()
-	if err := db.First(&userModel, "username = ?", username).Error; err != nil {
+	if err := db.First(&userModel, "user_id = ?", userId).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return userModel, http.StatusNotFound
 		} else {
