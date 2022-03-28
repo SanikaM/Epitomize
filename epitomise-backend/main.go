@@ -240,6 +240,39 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	responseType := controller.FollowUser(uint(Val), claims.Userid)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
+func UnFollowUser(w http.ResponseWriter, r *http.Request) {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	fmt.Println("Username")
+	fmt.Println((claims.Username))
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.UnFollowUser(uint(Val), claims.Userid)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
@@ -283,6 +316,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
 	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
+	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
