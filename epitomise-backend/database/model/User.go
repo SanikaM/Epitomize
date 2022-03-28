@@ -1,8 +1,6 @@
 package model
 
 import (
-	"encoding/json"
-	"errors"
 	"time"
 
 	"github.com/alexedwards/argon2id"
@@ -15,7 +13,7 @@ type User struct {
 	UserId         uint `gorm:"primaryKey;auto_increment;not_null"`
 	Username       string
 	About          string
-	Emailid        string `json:"Email"`
+	Emailid        string `json:"Emailid"`
 	Password       string `json:"Password"`
 	Profilepicture string
 	CreatedAt      time.Time
@@ -27,33 +25,7 @@ type User struct {
 	FollowedBy     pq.StringArray `gorm:"type:uint[]"`
 }
 
-func (v *User) UnmarshalJSON(b []byte) error {
-	aux := struct {
-		UserId   uint   `json:"UserId"`
-		Emailid  string `json:"Email"`
-		Password string `json:"Password"`
-	}{}
-	if err := json.Unmarshal(b, &aux); err != nil {
-		return err
-	}
-
-	// check password length
-	// if more checks are required i.e. password pattern,
-	// add all conditions here
-	if len(aux.Password) < 6 {
-		return errors.New("short password")
-	}
-
-	v.UserId = aux.UserId
-	v.Emailid = aux.Emailid
-	if v.Password = HashPass(aux.Password); v.Password == "error" {
-		return errors.New("HashPass failed")
-	}
-
-	return nil
-}
-
-// HashPass ...
+// HashPass for password
 func HashPass(pass string) string {
 	configureHash := config.Security().HashPass
 	params := &argon2id.Params{
@@ -68,17 +40,4 @@ func HashPass(pass string) string {
 		return "error"
 	}
 	return h
-}
-
-// MarshalJSON ...
-func (v User) MarshalJSON() ([]byte, error) {
-	aux := struct {
-		UserId  uint   `json:"AuthId"`
-		Emailid string `json:"Email"`
-	}{
-		UserId:  v.UserId,
-		Emailid: v.Emailid,
-	}
-
-	return json.Marshal(aux)
 }

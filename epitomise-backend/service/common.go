@@ -36,8 +36,8 @@ func RemoveSpace(s string) string {
 
 func IsStringFieldEmpty(s string) bool {
 	if len(s) <= 0 {
-		return false
-	} else {
 		return true
+	} else {
+		return false
 	}
 }
