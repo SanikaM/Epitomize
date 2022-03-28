@@ -281,7 +281,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
-	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("POST")
+	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

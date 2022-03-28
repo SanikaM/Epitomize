@@ -20,9 +20,11 @@ func UserList(userid uint) []model.UserList {
 		userTemp.Username = p.Username
 		userTemp.About = p.About
 		userTemp.Follow = 0
-		if follower[count].FollowingUserId == p.UserId {
-			userTemp.Follow = 1
-			count += 1
+		if count < len(follower) {
+			if follower[count].FollowingUserId == p.UserId {
+				userTemp.Follow = 1
+				count += 1
+			}
 		}
 		res = append(res, userTemp)
 
