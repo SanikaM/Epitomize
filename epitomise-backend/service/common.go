@@ -33,3 +33,11 @@ func IsEmailValid(e string) bool {
 func RemoveSpace(s string) string {
 	return strings.ReplaceAll(s, " ", "")
 }
+
+func IsStringFieldEmpty(s string) bool {
+	if len(s) <= 0 {
+		return false
+	} else {
+		return true
+	}
+}
