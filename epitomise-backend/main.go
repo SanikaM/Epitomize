@@ -87,7 +87,7 @@ func CreateNewUser(w http.ResponseWriter, r *http.Request) {
 		}
 		errorResponse := controller.CreateUser(user)
 		if errorResponse.HTTPCode == http.StatusOK {
-			json.NewEncoder(w).Encode(errorResponse)
+			json.NewEncoder(w).Encode(errorResponse.Message)
 			return
 		}
 		http.Error(w, errorResponse.Message, errorResponse.HTTPCode)
