@@ -232,6 +232,7 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+	fmt.Println("Username")
 	fmt.Println((claims.Username))
 	params := mux.Vars(r)
 	id := params["userid"]
