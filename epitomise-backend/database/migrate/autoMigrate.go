@@ -16,6 +16,7 @@ type Tag model.Tag
 type PostTag model.PostTag
 type post model.Post
 type user model.User
+type follow model.Follow
 
 var db *gorm.DB
 var errorState int
@@ -54,7 +55,7 @@ func main() {
 
 func dropAllTables() {
 	// Careful! It will drop all the tables!
-	if err := db.Migrator().DropTable(&Tag{}, &PostTag{}, &post{}, &user{}); err != nil {
+	if err := db.Migrator().DropTable(&Tag{}, &PostTag{}, &post{}, &user{}, &follow{}); err != nil {
 		errorState = 1
 		fmt.Println(err)
 	} else {
@@ -65,7 +66,7 @@ func dropAllTables() {
 func migrateTables() {
 
 	if err := db.AutoMigrate(&Tag{},
-		&post{}, &PostTag{}, &user{}); err != nil {
+		&post{}, &PostTag{}, &user{}, &follow{}); err != nil {
 		errorState = 1
 		fmt.Println(err)
 	} else {

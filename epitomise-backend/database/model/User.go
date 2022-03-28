@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/alexedwards/argon2id"
-	"github.com/lib/pq"
 
 	"github.com/pilinux/gorest/config"
 )
@@ -20,9 +19,7 @@ type User struct {
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
 	PostID         uint
-	Posts          Post           `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Following      pq.StringArray `gorm:"type:uint[]"`
-	FollowedBy     pq.StringArray `gorm:"type:uint[]"`
+	Posts          Post `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 // HashPass for password
