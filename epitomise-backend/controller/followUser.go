@@ -14,7 +14,11 @@ func FollowUser(followingid uint, currentid uint) int {
 		CurrentUserId:   currentid,
 	}
 	db := database.GetDB()
-	result := db.Select("FollowingUserId", "CurrentUserId").Create(&follower)
-	fmt.Println(result.Rows())
+	db.Where("following_user_id = ? AND current_user_id = ?", followingid, currentid).Find(&follower)
+	if follower == (model.Follow{}) {
+		result := db.Select("FollowingUserId", "CurrentUserId").Create(&follower)
+		fmt.Println(result.Rows())
+	}
+
 	return http.StatusCreated
 }

@@ -9,14 +9,24 @@ func UserList(userid uint) []model.UserList {
 	res := []model.UserList{}
 	db := database.GetDB()
 	user := []model.User{}
+	follower := []model.Follow{}
+	db.Where("current_user_id = ?", userid).Find(&follower)
+	var count = 0
 	db.Where("user_id  <> ?", userid).Find(&user)
 	for _, p := range user {
+
 		var userTemp model.UserList
 		userTemp.UserId = p.UserId
 		userTemp.Username = p.Username
 		userTemp.About = p.About
+		userTemp.Follow = 0
+		if follower[count].FollowingUserId == p.UserId {
+			userTemp.Follow = 1
+			count += 1
+		}
 		res = append(res, userTemp)
 
 	}
+
 	return res
 }
