@@ -114,7 +114,7 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println((claims.Username))
-	responseType := controller.UserList()
+	responseType := controller.UserList(claims.Userid)
 	result := model.UserListResponses{
 		Users: responseType,
 	}
@@ -207,6 +207,38 @@ func DeletePostTest(w http.ResponseWriter, r *http.Request) {
 	id := params["id"]
 	controller.DeletePost(id, false)
 }
+func FollowUser(w http.ResponseWriter, r *http.Request) {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	fmt.Println((claims.Username))
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.FollowUser(uint(Val), claims.Userid)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 
 	params := mux.Vars(r)
@@ -249,6 +281,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
+	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
