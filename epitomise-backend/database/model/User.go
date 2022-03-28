@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	"github.com/lib/pq"
 )
 
 type User struct {
@@ -17,7 +15,5 @@ type User struct {
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
 	PostID         uint
-	Posts          Post           `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Following      pq.StringArray `gorm:"type:uint[]"`
-	FollowedBy     pq.StringArray `gorm:"type:uint[]"`
+	Posts          Post `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
