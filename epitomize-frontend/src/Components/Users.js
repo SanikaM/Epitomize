@@ -17,6 +17,7 @@ function Users() {
     const cookies = new Cookies();
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
+        console.log(tokenStr)
         axios.get(baseURL + 'userlist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
@@ -24,9 +25,28 @@ function Users() {
             });
     }, []);
 
+    function handleFollow(value) {
+        const tokenStr = cookies.get('access_token')
+        axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then((response) =>
+                alert("Successfully followed the user."),
+                window.location.reload()
+            );
+    }
+
+    function handleUnfollow(value) {
+        const tokenStr = cookies.get('access_token')
+        axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then((response) =>
+                alert("Successfully unfollowed the user."),
+                window.location.reload()
+            );
+    }
+
+
     function randomColor() {
         let hex = Math.floor(Math.random() * 0xFFFFFF);
-        return  "#" + hex.toString(16);
+        return "#" + hex.toString(16);
     }
 
     if (data && data['Users'] !== null) {
@@ -37,13 +57,13 @@ function Users() {
                 <List sx={{ width: '100%', maxWidth: 360, }}>
                     {
                         data['Users'].slice(0, 3).map(item => (
-                            <ListItem alignItems="flex-start">
+                            <ListItem alignItems="flex-start" key={item.UserId}>
                                 <ListItemAvatar>
                                     <Avatar style={{
                                         backgroundColor: randomColor()
                                     }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
                                 </ListItemAvatar>
-                                <ListItemText
+                                <ListItemText sx={{textTransform: 'capitalize'}}
                                     primary={item.Username}
                                     secondary={
                                         <React.Fragment>
@@ -51,7 +71,13 @@ function Users() {
                                         </React.Fragment>
                                     }
                                 />
-                                <Chip label="Follow" color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                {item.Follow ? (
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+
+                                ) : (
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                )
+                                }
                             </ListItem>
                         ))
                     }
