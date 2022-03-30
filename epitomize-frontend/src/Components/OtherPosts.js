@@ -6,7 +6,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import axios from "axios";
 import Stack from '@mui/material/Stack';
-
+import Cookies from 'universal-cookie';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
@@ -17,17 +17,20 @@ import { Link } from 'react-router-dom';
 function OtherPosts() {
 
     const baseURL = "http://localhost:8081/"
+    const cookies = new Cookies();
     const [followingData, setFollowingData] = React.useState(null);
     const [recommendedData, setRecommendedData] = React.useState(null);
 
     React.useEffect(() => {
-        axios.get(baseURL + 'post')
+        const tokenStr = cookies.get('access_token')
+
+        axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setFollowingData(response.data);
             });
 
-        axios.get(baseURL + 'topTags')
+        axios.get(baseURL + 'topTags', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setRecommendedData(response.data);
             });

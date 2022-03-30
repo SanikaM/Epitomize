@@ -8,16 +8,18 @@ import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 
 
 function Posts() {
   const baseURL = "http://localhost:8081/"
-
+  const cookies = new Cookies();
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
-    axios.get(baseURL + 'post')
+    const tokenStr = cookies.get('access_token')
+    axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
         setData(response.data);
       });
@@ -28,7 +30,8 @@ function Posts() {
   const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
   function handleClick(value) {
-    axios.delete(baseURL + "deleteposts/" + value.toString())
+    const tokenStr = cookies.get('access_token')
+    axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then(() =>
         alert( "Post successfully deleted." ),
         window.location.reload()
