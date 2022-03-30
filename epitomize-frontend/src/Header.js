@@ -35,14 +35,14 @@ export default function Header() {
   const myposts = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    window.location = '/myposts'; 
+    window.location = '/myposts';
   };
 
   const logout = () => {
-    cookies.remove("access_token", {path:'/'})
+    cookies.remove("access_token", { path: '/' })
     setAnchorEl(null);
     handleMobileMenuClose();
-    window.location.reload(); 
+    window.location.reload();
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -66,9 +66,9 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} style={{color: "black", fontFamily: 'Raleway'}}>Profile</MenuItem>
-      <MenuItem onClick={myposts} style={{color: "black", fontFamily: 'Raleway'}}>My Posts</MenuItem>
-      <MenuItem onClick={logout} style={{color: "black", fontFamily: 'Raleway'}}>Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
+      <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
+      <MenuItem onClick={logout} style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -106,17 +106,20 @@ export default function Header() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{background: "white"}}>
+      <AppBar position="static" style={{ background: "white" }}>
         <Toolbar>
-          <img src="/favicon.ico" alt="logo" style={{maxWidth: 30, marginRight: '10px'}}/>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-            style={{color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26}}>
-            Epitomize
-          </Typography>
+          <img src="/favicon.ico" alt="logo" style={{ maxWidth: 30, marginRight: '10px' }} />
+          <a href="/" style={{ textDecoration: 'none' }} >
+
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26 }}>
+              Epitomize
+            </Typography>
+          </a>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
@@ -127,7 +130,7 @@ export default function Header() {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
-              style={{color: "black"}}
+              style={{ color: "black" }}
             >
               <AccountCircle />
             </IconButton>

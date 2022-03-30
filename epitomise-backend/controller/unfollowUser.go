@@ -8,7 +8,7 @@ import (
 	"github.com/pilinux/gorest/database/model"
 )
 
-func FollowUser(followingid uint, currentid uint) int {
+func UnFollowUser(followingid uint, currentid uint) int {
 	fmt.Println("Current user", currentid)
 	fmt.Println("Following user", followingid)
 	user := []model.User{}
@@ -16,15 +16,11 @@ func FollowUser(followingid uint, currentid uint) int {
 		FollowingUserId: followingid,
 		CurrentUserId:   currentid,
 	}
-	followCheck := []model.Follow{}
 	db := database.GetDB()
 	db.Where("user_id = ?", followingid).Find(&user)
 	if len(user) > 0 {
-		db.Where("following_user_id = ? AND current_user_id = ?", followingid, currentid).Find(&followCheck)
-		if len(followCheck) == 0 {
-			result := db.Select("FollowingUserId", "CurrentUserId").Create(&follower)
-			fmt.Println(result.Rows())
-		}
+
+		db.Where("following_user_id = ? AND current_user_id = ?", followingid, currentid).Delete(follower)
 
 		return http.StatusCreated
 	}

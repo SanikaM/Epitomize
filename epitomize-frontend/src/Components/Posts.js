@@ -63,7 +63,7 @@ function Posts() {
             <div>
               {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
             </div>
-            <div style={{ marginLeft: '80%' }}>
+            <div style={{ marginLeft: '75%' }}>
               
             <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black"}} >
                 <EditIcon sx={{ color: "#b3e6ff" }} />

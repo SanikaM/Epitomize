@@ -10,10 +10,8 @@ import Stack from '@mui/material/Stack';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea, CardActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 function OtherPosts() {
@@ -44,14 +42,6 @@ function OtherPosts() {
 
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
-    function handleClick(value) {
-        axios.delete(baseURL + "deleteposts/" + value.toString())
-            .then(() =>
-                alert("Post successfully deleted."),
-                window.location.reload()
-            );
-    }
-
     if (followingData && followingData['Posts'] !== null && recommendedData) {
         return (
             <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -59,6 +49,7 @@ function OtherPosts() {
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
                             <Tab label="Following" value="1" />
+                            <Divider orientation="vertical" flexItem style={{ height: "25px", marginTop: "10px" }} />
                             <Tab label="Recommended" value="2" />
                         </TabList>
                     </Box>
@@ -83,19 +74,6 @@ function OtherPosts() {
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
                                         <div>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
-                                        </div>
-                                        <div style={{ marginLeft: '80%' }}>
-
-                                            <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
-                                                <EditIcon sx={{ color: "#b3e6ff" }} />
-                                            </Link>
-                                        </div>
-
-                                        <div style={{ marginLeft: 'auto' }}>
-
-                                            <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
-                                                <DeleteIcon sx={{ color: "#cb1010" }} />
-                                            </Button>
                                         </div>
                                     </CardActions>
                                 </Card>
@@ -125,19 +103,7 @@ function OtherPosts() {
                                         <div>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
-                                        <div style={{ marginLeft: '80%' }}>
 
-                                            <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
-                                                <EditIcon sx={{ color: "#b3e6ff" }} />
-                                            </Link>
-                                        </div>
-
-                                        <div style={{ marginLeft: 'auto' }}>
-
-                                            <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
-                                                <DeleteIcon sx={{ color: "#cb1010" }} />
-                                            </Button>
-                                        </div>
                                     </CardActions>
                                 </Card>
 

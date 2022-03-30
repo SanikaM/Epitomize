@@ -76,6 +76,42 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 	responseType := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
+
+func CreateNewUser(w http.ResponseWriter, r *http.Request) {
+	var user model.User
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		errorResponse := controller.CreateUser(user)
+		if errorResponse.HTTPCode == http.StatusOK {
+			json.NewEncoder(w).Encode(errorResponse.Message)
+			return
+		}
+		http.Error(w, errorResponse.Message, errorResponse.HTTPCode)
+	}
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["id"]
+	userId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	user, responseType := controller.GetUser(userId)
+
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(user)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -88,6 +124,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(responseType)
 	}
 }
+
 func UserList(w http.ResponseWriter, r *http.Request) {
 	reqToken := r.Header.Get("Authorization")
 	if len(reqToken) == 0 {
@@ -121,6 +158,7 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(result)
 }
+
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	if r.Body != nil {
@@ -133,6 +171,7 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
 	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
@@ -159,6 +198,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	err, responseType := controller.EditPost(1, post, false)
@@ -168,6 +208,7 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+
 func EditPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	if r.Body != nil {
@@ -232,11 +273,45 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
+	fmt.Println("Username")
 	fmt.Println((claims.Username))
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), claims.Userid)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+func UnFollowUser(w http.ResponseWriter, r *http.Request) {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	fmt.Println("Username")
+	fmt.Println((claims.Username))
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.UnFollowUser(uint(Val), claims.Userid)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -281,7 +356,10 @@ func HandleRequests() {
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
+	myRouter.HandleFunc("/user", CreateNewUser).Methods("POST")
+	myRouter.HandleFunc("/user/{id}", GetUser).Methods("GET")
 	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
+	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
