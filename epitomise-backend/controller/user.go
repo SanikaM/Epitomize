@@ -76,7 +76,7 @@ func CreateUser(user model.User) model.ErrorResponse {
 	}
 }
 
-func GetUser(userId uint64) (model.User, int) {
+func GetUser(userId uint) (model.User, int) {
 	var userModel model.User
 	db := database.GetDB()
 	if err := db.First(&userModel, "user_id = ?", userId).Error; err != nil {

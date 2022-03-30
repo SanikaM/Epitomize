@@ -25,7 +25,37 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+func Authentification(w http.ResponseWriter, r *http.Request) uint {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return http.StatusUnauthorized
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return http.StatusUnauthorized
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return http.StatusBadRequest
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return http.StatusUnauthorized
+	}
+	fmt.Println("userid", claims.Userid)
+	return claims.Userid
+}
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	fmt.Println(userid)
 	posts := controller.GetPosts(false)
 	result := model.GetAllPost{
 		Posts: posts,
@@ -33,6 +63,8 @@ func AllPostTest(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 func AllPost(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	fmt.Println(userid)
 	posts := controller.GetPosts(true)
 	result := model.GetAllPost{
 		Posts: posts,
@@ -41,6 +73,7 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func TopTagsTest(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(false)
 	if responseType == http.StatusOK {
@@ -53,6 +86,7 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func TopTags(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(true)
 	if responseType == http.StatusOK {
@@ -73,7 +107,7 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, false)
+	responseType := controller.CreatePost(post, 1, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -95,14 +129,8 @@ func CreateNewUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
-	userId, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	user, responseType := controller.GetUser(userId)
+	userid := Authentification(w, r)
+	user, responseType := controller.GetUser(userid)
 
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(user)
@@ -126,32 +154,10 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserList(w http.ResponseWriter, r *http.Request) {
-	reqToken := r.Header.Get("Authorization")
-	if len(reqToken) == 0 {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	splitToken := strings.Split(reqToken, "Bearer ")
-	reqToken = splitToken[1]
-	tknStr := reqToken
-	claims := &Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println((claims.Username))
-	responseType := controller.UserList(claims.Userid)
+	fmt.Println("userid")
+	userid := Authentification(w, r)
+	fmt.Println(userid)
+	responseType := controller.UserList(userid)
 	result := model.UserListResponses{
 		Users: responseType,
 	}
@@ -160,6 +166,8 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	fmt.Println(userid)
 	var post model.Post
 	if r.Body != nil {
 		err := json.NewDecoder(r.Body).Decode(&post)
@@ -167,12 +175,13 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		responseType := controller.CreatePost(post, true)
+		responseType := controller.CreatePost(post, userid, true)
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
@@ -183,6 +192,7 @@ func GetPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPost(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	params := mux.Vars(r)
 	id := params["id"]
 	postId, err := strconv.ParseUint(id, 10, 64)
@@ -200,6 +210,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	var post model.Post
 	err, responseType := controller.EditPost(1, post, false)
 	if err != nil {
@@ -210,6 +221,7 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPost(w http.ResponseWriter, r *http.Request) {
+	Authentification(w, r)
 	var post model.Post
 	if r.Body != nil {
 		err := json.NewDecoder(r.Body).Decode(&post)
@@ -243,79 +255,29 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
-
+	Authentification(w, r)
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, false)
 }
 func FollowUser(w http.ResponseWriter, r *http.Request) {
-	reqToken := r.Header.Get("Authorization")
-	if len(reqToken) == 0 {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	splitToken := strings.Split(reqToken, "Bearer ")
-	reqToken = splitToken[1]
-	tknStr := reqToken
-	claims := &Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println("Username")
-	fmt.Println((claims.Username))
+	userid := Authentification(w, r)
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
-	responseType := controller.FollowUser(uint(Val), claims.Userid)
+	responseType := controller.FollowUser(uint(Val), userid)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUser(w http.ResponseWriter, r *http.Request) {
-	reqToken := r.Header.Get("Authorization")
-	if len(reqToken) == 0 {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	splitToken := strings.Split(reqToken, "Bearer ")
-	reqToken = splitToken[1]
-	tknStr := reqToken
-	claims := &Claims{}
-	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtKey, nil
-	})
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	if !tkn.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-	fmt.Println("Username")
-	fmt.Println((claims.Username))
+	userid := Authentification(w, r)
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
-	responseType := controller.UnFollowUser(uint(Val), claims.Userid)
+	responseType := controller.UnFollowUser(uint(Val), userid)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-
+	Authentification(w, r)
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, true)
@@ -357,7 +319,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
 	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
 	myRouter.HandleFunc("/user", CreateNewUser).Methods("POST")
-	myRouter.HandleFunc("/user/{id}", GetUser).Methods("GET")
+	myRouter.HandleFunc("/user", GetUser).Methods("GET")
 	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
 	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))

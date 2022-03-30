@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -19,16 +18,17 @@ type Claims struct {
 }
 
 func Login(login model.Login) model.LoginResponse {
-	fmt.Println(login)
 	res := model.LoginResponse{}
 	db := database.GetDB()
 	user := []model.User{}
+	password := login.Password
 	db.Where("Emailid   = ?", login.Emailid).Find(&user)
 	if len(user) == 0 {
 		res.Result = "Unauthorized user"
 		return res
 	}
-	if login.Password != user[0].Password {
+
+	if !model.CheckPassword(password, user[0].Password) {
 		res.Result = "Unauthorized user"
 		return res
 	}
@@ -48,7 +48,6 @@ func Login(login model.Login) model.LoginResponse {
 		res.Result = "Internal Server error"
 		return res
 	}
-	fmt.Println(tokenString)
 	res.Access_Token = tokenString
 	res.Email = user[0].Emailid
 	res.UserName = user[0].Username
