@@ -8,12 +8,11 @@ import SignIn from './Components/Signin';
 import * as React from 'react';
 import Cookies from 'universal-cookie';
 import Users from './Components/Users'
-import { useLocation } from 'react-router-dom';
-
+import Search from './Components/Search';
 
 function App() {
   const cookies = new Cookies();
-  console.log(window.location.pathname)
+
   if (cookies.get('access_token')) {
     return (
 
@@ -23,12 +22,14 @@ function App() {
           <Box gridColumn="span 8">
             <Components />
           </Box>
-          {window.location.pathname != "/alluser" &&
-          <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} /><Box gridColumn="span 3" id="sidebar">
+          {window.location.pathname !== "/alluser" && window.location.pathname !== "/searchresults" &&
+            <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} /><Box gridColumn="span 3" id="sidebar">
+              
+              <Search />
               <Tags />
               <Users />
             </Box></>
-        }
+          }
         </Box>
       </div>
     )
