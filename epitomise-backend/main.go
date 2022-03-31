@@ -56,7 +56,7 @@ func Authentification(w http.ResponseWriter, r *http.Request) uint {
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
 	fmt.Println(userid)
-	posts := controller.GetPosts(false)
+	posts := controller.GetPosts(userid, false)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
@@ -65,7 +65,7 @@ func AllPostTest(w http.ResponseWriter, r *http.Request) {
 func AllPost(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
 	fmt.Println(userid)
-	posts := controller.GetPosts(true)
+	posts := controller.GetPosts(userid, true)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
@@ -167,6 +167,7 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	fmt.Println(userid)
 	fmt.Println(userid)
 	var post model.Post
 	if r.Body != nil {
