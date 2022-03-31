@@ -5,10 +5,12 @@ import Divider from '@mui/material/Divider';
 import Components from './Components';
 import Tags from './Components/Tags'
 import SignIn from './Components/Signin';
+import SignUp from './Components/Signup';
 import * as React from 'react';
 import Cookies from 'universal-cookie';
 import Users from './Components/Users'
 import Search from './Components/Search';
+import UserProfile from './Components/UserProfile';
 
 function App() {
   const cookies = new Cookies();
@@ -37,7 +39,8 @@ function App() {
   }
   else {
     return (
-      <SignIn />
+        <SignIn />
+      
     )
   }
 
