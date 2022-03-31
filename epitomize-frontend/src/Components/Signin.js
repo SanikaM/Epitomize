@@ -84,6 +84,7 @@ function SignIn({ auth }) {
             <Button
               type="submit"
               fullWidth
+              id="signin"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               // onClick={changeRouteHome}

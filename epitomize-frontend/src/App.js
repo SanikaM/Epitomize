@@ -5,10 +5,12 @@ import Divider from '@mui/material/Divider';
 import Components from './Components';
 import Tags from './Components/Tags'
 import SignIn from './Components/Signin';
+import SignUp from './Components/Signup';
 import * as React from 'react';
 import Cookies from 'universal-cookie';
 import Users from './Components/Users'
 import Search from './Components/Search';
+import UserProfile from './Components/UserProfile';
 
 function App() {
   const cookies = new Cookies();
@@ -23,12 +25,13 @@ function App() {
             <Components />
           </Box>
           {window.location.pathname !== "/alluser" && window.location.pathname !== "/searchresults" &&
-            <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} /><Box gridColumn="span 3" id="sidebar">
-              
-              <Search />
-              <Tags />
-              <Users />
-            </Box></>
+            <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} />
+              <Box gridColumn="span 3" id="sidebar">
+
+                <Search />
+                <Tags />
+                <Users />
+              </Box></>
           }
         </Box>
       </div>
@@ -36,7 +39,8 @@ function App() {
   }
   else {
     return (
-      <SignIn />
+        <SignIn />
+      
     )
   }
 

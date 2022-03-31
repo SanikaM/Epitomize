@@ -17,6 +17,8 @@ import SignIn from './Signin';
 import OtherPosts from './OtherPosts';
 import AllUsers from './AllUsers';
 import Users from './Users'
+import SignUp from './Signup';
+import UserProfile from './UserProfile';
 
 const Components = () => {
     return(
@@ -30,6 +32,8 @@ const Components = () => {
             <Route path = "/signin" element={<SignIn />} />
             <Route path = "/" element={<OtherPosts />} />
             <Route path = "/users" element={<Users />} />
+            <Route path = "/signup" element={<SignUp />} />
+            <Route path = "/userprofile" element={<UserProfile />} />
             </Routes>
         </Router>
     );
