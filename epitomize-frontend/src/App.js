@@ -23,12 +23,13 @@ function App() {
             <Components />
           </Box>
           {window.location.pathname !== "/alluser" && window.location.pathname !== "/searchresults" &&
-            <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} /><Box gridColumn="span 3" id="sidebar">
-              
-              <Search />
-              <Tags />
-              <Users />
-            </Box></>
+            <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} />
+              <Box gridColumn="span 3" id="sidebar">
+
+                <Search />
+                <Tags />
+                <Users />
+              </Box></>
           }
         </Box>
       </div>

@@ -13,7 +13,7 @@ var DB *gorm.DB
 // InitDB - function to initialize db
 func InitDB() *gorm.DB {
 	var db = DB
-	db, err := gorm.Open(sqlite.Open("/Users/akashparikh/Desktop/database.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("/Users/nayanjain/Desktop/database.db"), &gorm.Config{})
 	if err != nil {
 		panic("Error in Database connection")
 	}
