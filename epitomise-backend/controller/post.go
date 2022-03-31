@@ -68,13 +68,15 @@ func seed(db *gorm.DB) {
 	}
 }
 
-func GetPosts(test bool) []model.Post {
+func GetPosts(userid uint, test bool) []model.Post {
 	if test {
 		db := database.GetDB()
 		// seed(db)
 		// GetPostTags(1)
 		tagArrays := []model.TagResponse{}
-		db.Find(&Posts)
+		if err := db.Where("id_user = ?", userid).Find(&Posts).Error; err == nil {
+			return Posts
+		}
 		fmt.Println("From controller", Posts)
 
 		for i, p := range Posts {
