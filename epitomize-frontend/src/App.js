@@ -39,8 +39,15 @@ function App() {
   }
   else {
     return (
+      <div>
+      {window.location.pathname !== "/signin" && window.location.pathname !== "/" &&
+        <SignUp />
+    }
+    {window.location.pathname !== "/signup" &&
         <SignIn />
-      
+    }
+    </div>
+
     )
   }
 
