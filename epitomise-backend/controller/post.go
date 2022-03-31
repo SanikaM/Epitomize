@@ -88,9 +88,11 @@ func GetPosts(test bool) []model.Post {
 	return Posts
 }
 
-func CreatePost(post model.Post, test bool) int {
+func CreatePost(post model.Post, userid uint, test bool) int {
 	if test {
 		db := database.GetDB()
+		fmt.Println(userid)
+		post.IDUser = userid
 		if err := db.Create(&post).Error; err != nil {
 			return http.StatusBadRequest
 		}

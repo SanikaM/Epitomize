@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/alexedwards/argon2id"
@@ -18,12 +19,11 @@ type User struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
-	PostID         uint
-	Posts          Post `gorm:"foreignkey:PostID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 // HashPass for password
 func HashPass(pass string) string {
+	fmt.Print(pass)
 	configureHash := config.Security().HashPass
 	params := &argon2id.Params{
 		Memory:      configureHash.Memory * 1024, // the amount of memory used by the Argon2 algorithm (in kibibytes)
@@ -37,4 +37,12 @@ func HashPass(pass string) string {
 		return "error"
 	}
 	return h
+}
+
+func CheckPassword(password string, hashe string) bool {
+	match, err := argon2id.ComparePasswordAndHash(password, hashe)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return match
 }

@@ -3,15 +3,18 @@ import * as React from 'react';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 function Tags() {
 
     const baseURL = "http://localhost:8081/"
-
+    const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 
     React.useEffect(() => {
-        axios.get(baseURL + 'topTags')
+        const tokenStr = cookies.get('access_token')
+
+        axios.get(baseURL + 'topTags', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setData(response.data);
