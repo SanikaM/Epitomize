@@ -46,7 +46,7 @@ export default function UserProfile() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{marginLeft: "50%"}}>
         <CssBaseline />
         <Box
           sx={{

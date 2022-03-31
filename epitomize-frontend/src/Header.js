@@ -30,6 +30,7 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    window.location = '/userprofile';
   };
 
   const myposts = () => {

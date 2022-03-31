@@ -24,7 +24,7 @@ function App() {
           <Box gridColumn="span 8">
             <Components />
           </Box>
-          {window.location.pathname !== "/alluser" && window.location.pathname !== "/searchresults" &&
+          {window.location.pathname !== "/alluser" && window.location.pathname !== "/searchresults" && window.location.pathname !== "/userprofile" &&
             <><Divider orientation="vertical" flexItem style={{ marginRight: "30px" }} />
               <Box gridColumn="span 3" id="sidebar">
 
