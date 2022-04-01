@@ -60,8 +60,8 @@ PUT  /login
 
 ```
 {
-"Emailid":"test@test.com",
-"Password":"pass"
+    "Emailid":"test@test.com",
+    "Password":"pass"
 }
 ```
 
@@ -69,10 +69,10 @@ PUT  /login
 
 ```
 {
-"Access_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InMucGFyaWtoQHVmbC5lZHUiLCJVc2VyaWQiOjIsImV4cCI6MTY0ODgzODE2MH0.N6KzeI3T5pfJycYpdoTlr_Dr4jpKYbiXK-Z_64BYFec",
-"Email": "test@test.com",
-"Result": "Successfully logged in.",
-"UserName": "test"
+    "Access_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InMucGFyaWtoQHVmbC5lZHUiLCJVc2VyaWQiOjIsImV4cCI6MTY0ODgzODE2MH0.N6KzeI3T5pfJycYpdoTlr_Dr4jpKYbiXK-Z_64BYFec",
+    "Email": "test@test.com",
+    "Result": "Successfully logged in.",
+    "UserName": "test"
 }
 ```
 
@@ -97,7 +97,7 @@ GET  /follow/{userid}
 
 ```
 {	
-"result": "Created"
+    "result": "Created"
 }
 ```
 
@@ -122,7 +122,7 @@ GET  /unfollow/{userid}
 
 ```
 {	
-"result": "Created"
+    "result": "Created"
 }
 ```
 
@@ -147,14 +147,14 @@ GET  /userlist
 
 ```
 {
-"Users": [
-{
-"UserId": 1,
-"Username": "test",
-"About": "about test",
-"Follow": 0
-}
-]
+    "Users": [
+        {
+        "UserId": 1,
+        "Username": "test",
+        "About": "about test",
+        "Follow": 0
+        }
+    ]
 }
 ```
 
@@ -182,24 +182,24 @@ GET  /post
 
 ```
 {
-"Posts": [
-{
-"PostsUId": 2,
-"Type": "Blockchain kj",
-"Title": "Trade on Margin with 0% Interest jnkdv dcsac cjhdsbv",
-"Summary": "Get up to 5x leverage with 0% interest ",
-"Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
-"Linked_Post": 0,
-"Status": "Draft",
-"CreatedAt": "2022-03-30T17:55:08.115856-04:00",
-"UpdatedAt": "2022-03-30T17:55:08.115856-04:00",
-"TagList": [
-"crypto",
-"bitcoin"
-],
-"Tags": "Crypto,Bitcoin"
-}
-]
+    "Posts": [
+        {
+        "PostsUId": 2,
+        "Type": "Blockchain kj",
+        "Title": "Trade on Margin with 0% Interest jnkdv dcsac cjhdsbv",
+        "Summary": "Get up to 5x leverage with 0% interest ",
+        "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade  with up to 5x leverage.",
+        "Linked_Post": 0,
+        "Status": "Draft",
+        "CreatedAt": "2022-03-30T17:55:08.115856-04:00",
+        "UpdatedAt": "2022-03-30T17:55:08.115856-04:00",
+        "TagList": [
+            "crypto",
+            "bitcoin"
+            ],
+        "Tags": "Crypto,Bitcoin"
+        }
+    ]
 }
 ```
 
@@ -221,7 +221,7 @@ POST /search
 
 ```
 {
-"Text": "movie"
+    "Text": "movie"
 }
 ```
 
@@ -232,18 +232,18 @@ POST /search
 
 ```
 {
-"Posts": [
-{
-"PostsUId": 3,
-"Type": "Moview",
-"Title": "Food",
-"Summary": "Get up to 5x leverage with 0% interest ",
-"TagList": [
-"crypto",
-"bitcoin"
-]
-}
-]
+    "Posts": [
+        {
+        "PostsUId": 3,
+        "Type": "Moview",
+        "Title": "Food",
+        "Summary": "Get up to 5x leverage with 0% interest ",
+        "TagList": [
+            "crypto",
+            "bitcoin"
+            ]
+        }
+    ]
 }
 ```
 
