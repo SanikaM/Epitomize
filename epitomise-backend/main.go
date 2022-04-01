@@ -73,7 +73,11 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func TopTagsTest(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(false)
 	if responseType == http.StatusOK {
@@ -86,7 +90,11 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func TopTags(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(true)
 	if responseType == http.StatusOK {
@@ -140,6 +148,27 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func SearchUserPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	var search model.Search
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&search)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.SearchPost(search)
+		result := model.GetAllSearchPost{
+			Posts: responseType,
+		}
+		json.NewEncoder(w).Encode(result)
+	}
+}
+
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -182,7 +211,11 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
@@ -193,7 +226,11 @@ func GetPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPost(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	postId, err := strconv.ParseUint(id, 10, 64)
@@ -211,7 +248,11 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	var post model.Post
 	err, responseType := controller.EditPost(1, post, false)
 	if err != nil {
@@ -222,7 +263,11 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPost(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	var post model.Post
 	if r.Body != nil {
 		err := json.NewDecoder(r.Body).Decode(&post)
@@ -256,7 +301,11 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, false)
@@ -278,7 +327,11 @@ func UnFollowUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-	Authentification(w, r)
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, true)
@@ -323,6 +376,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/user", GetUser).Methods("GET")
 	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
 	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
+	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
