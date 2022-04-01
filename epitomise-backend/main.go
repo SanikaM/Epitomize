@@ -90,11 +90,6 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func TopTags(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(true)
 	if responseType == http.StatusOK {
