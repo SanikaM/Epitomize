@@ -1,48 +1,255 @@
 # Sprint 3
 
-  
-
 In Sprint 3 the following user stories were successfully implemented:
-1. As a user, I should be able to register.
 
-* In this user story, the user has the ability to register themselves to the application.
+1.  As a user, I should be able to register.
 
-2. As a user, I should be able to login.
+-   In this user story, the user has the ability to register themselves to the application.
 
-* In this user story, the user has the ability to log in to the application.
+2.  As a user, I should be able to login.
 
-3. As a user, I should be able to logout.
+-   In this user story, the user has the ability to log in to the application.
 
-* In this user story, the user has the ability to logout from the application.
+3.  As a user, I should be able to logout.
 
-4. As a user, I should be able to follow other users.
+-   In this user story, the user has the ability to logout from the application.
 
-* In this user story, the user has the ability to follow other users.
+4.  As a user, I should be able to follow other users.
 
-5. As a user, I should be able to unfollow other users.
+-   In this user story, the user has the ability to follow other users.
 
-* In this user story, the user has the ability to unfollow other users.
+5.  As a user, I should be able to unfollow other users.
 
-6. As a user, I should be able to view the posts of people I follow.
+-   In this user story, the user has the ability to unfollow other users.
 
-* In this user story, the user has the ability to view the posts of all the users that they follow.
+6.  As a user, I should be able to view the posts of people I follow.
 
-7. As a user, I should be able to view the posts of preferred tags.
+-   In this user story, the user has the ability to view the posts of all the users that they follow.
 
-* In this user story, the user has the ability to view the posts of all tags that they prefer. These preferred tags are submitted by the user while they are registering to the system.
+7.  As a user, I should be able to view the posts of preferred tags.
 
-8. As a user, I should be able to view own posts.
+-   In this user story, the user has the ability to view the posts of all tags that they prefer. These preferred tags are submitted by the user while they are registering to the system.
 
-* In this user story, the user has the ability to view their own posts by clicking the my post option in the avatar menu.
+8.  As a user, I should be able to view own posts.
 
-9. As a user, I should be able to search posts.
+-   In this user story, the user has the ability to view their own posts by clicking the my post option in the avatar menu.
 
-* In this user story, the user has the ability to search the whole system for posts by typing any word. The user will be shown the results containg their own posts or others as well.
+9.  As a user, I should be able to search posts.
 
-10. As a user, I should be able to see my own profile.
+-   In this user story, the user has the ability to search the whole system for posts by typing any word. The user will be shown the results containg their own posts or others as well.
 
-* In this user story, the user has the ability to view their own profile which shows them their username, email, about and profile picture.
+10.  As a user, I should be able to see my own profile.
 
-11. As a User, I should be able to view list of other users.
+-   In this user story, the user has the ability to view their own profile which shows them their username, email, about and profile picture.
 
-* In this user story, the user has the ability to view the list of all users in the system. A few of the users are shown in the sidebar and on clicking see more suggestions the user can see rest of the users as well.
+11.  As a User, I should be able to view list of other users.
+
+-   In this user story, the user has the ability to view the list of all users in the system. A few of the users are shown in the sidebar and on clicking see more suggestions the user can see rest of the users as well.
+
+## Backend:
+
+#### 1. Login User API
+
+This API is used for user login.
+
+```
+PUT  /login
+```
+
+#####  Example Request Body:
+
+```
+{
+"Emailid":"test@test.com",
+"Password":"pass"
+}
+```
+
+##### Example Responses:
+
+```
+{
+"Access_Token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InMucGFyaWtoQHVmbC5lZHUiLCJVc2VyaWQiOjIsImV4cCI6MTY0ODgzODE2MH0.N6KzeI3T5pfJycYpdoTlr_Dr4jpKYbiXK-Z_64BYFec",
+"Email": "test@test.com",
+"Result": "Successfully logged in.",
+"UserName": "test"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 2. Follow User API
+
+This API allows user to follow other users and this foolowed user are linked with current users.
+
+```
+GET  /follow/{userid}
+```
+##### Header:
+
+    Authorization: Access token
+##### Example Response Body:
+
+```
+{	
+"result": "Created"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+####  3. Get UnFollow API
+
+This API is used to unfollow a user that current user wants to remove connection with followed user.
+
+```
+GET  /unfollow/{userid}
+```
+##### Header:
+
+    Authorization: Access token
+##### Example Responses:
+
+```
+{	
+"result": "Created"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+####  4. Get UserList API
+
+This API is used to get list of all users except the current user. As this list is used by user to foolow or unfollow other user's.
+
+```
+GET  /userlist
+```
+##### Header:
+
+    Authorization: Access token
+##### Example Responses:
+
+```
+{
+"Users": [
+{
+"UserId": 1,
+"Username": "test",
+"About": "about test",
+"Follow": 0
+}
+]
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+####  5. Get User's Own Post API
+
+This API is used to show all post created by the user.
+
+```
+GET  /post
+```
+
+
+##### Header:
+
+    Authorization: Access token
+
+##### Example Response:
+
+```
+{
+"Posts": [
+{
+"PostsUId": 2,
+"Type": "Blockchain kj",
+"Title": "Trade on Margin with 0% Interest jnkdv dcsac cjhdsbv",
+"Summary": "Get up to 5x leverage with 0% interest ",
+"Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+"Linked_Post": 0,
+"Status": "Draft",
+"CreatedAt": "2022-03-30T17:55:08.115856-04:00",
+"UpdatedAt": "2022-03-30T17:55:08.115856-04:00",
+"TagList": [
+"crypto",
+"bitcoin"
+],
+"Tags": "Crypto,Bitcoin"
+}
+]
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+####  6. Get SearchPost  API
+
+This API is used to get all the post searched by user.
+
+```
+POST /search
+```
+#####  Example Request Body:
+
+```
+{
+"Text": "movie"
+}
+```
+
+##### Header:
+
+    Authorization: Access token
+##### Example Responses:
+
+```
+{
+"Posts": [
+{
+"PostsUId": 3,
+"Type": "Moview",
+"Title": "Food",
+"Summary": "Get up to 5x leverage with 0% interest ",
+"TagList": [
+"crypto",
+"bitcoin"
+]
+}
+]
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
