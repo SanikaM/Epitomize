@@ -66,6 +66,7 @@ function SignIn({ auth }) {
               required
               fullWidth
               id="email"
+              data-testid="email"
               label="Email Address"
               name="email"
               autoComplete="email"
@@ -75,6 +76,7 @@ function SignIn({ auth }) {
               margin="normal"
               required
               fullWidth
+              data-testid="password"
               name="password"
               label="Password"
               type="password"

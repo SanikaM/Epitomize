@@ -81,8 +81,10 @@ export default function UserProfile() {
                     xs={12}>
                     <TextField
                       fullWidth
+                      id="Username"
                       label="Username"
                       name="Username"
+                      data-testid="Username"
                       value={data.Username}
                       variant="outlined"
                       InputProps={{
@@ -96,8 +98,10 @@ export default function UserProfile() {
                     xs={12}>
                     <TextField
                       fullWidth
+                      id="Emailid"
                       label="Email"
                       name="Emailid"
+                      data-testid="Emailid"
                       value={data.Emailid}
                       variant="outlined"
                       InputProps={{
@@ -112,8 +116,10 @@ export default function UserProfile() {
                     xs={12}>
                     <TextField
                       fullWidth
+                      id="About"
                       label="About"
                       name="About"
+                      data-testid="About"
                       value={data.About}
                       variant="outlined"
                       InputProps={{
