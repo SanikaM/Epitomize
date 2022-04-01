@@ -253,3 +253,48 @@ POST /search
 -   **400**: Bad Request
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
+
+# Front-end Features and Usage
+
+  
+
+## Front-end tests
+
+### Unit Tests (Using JTest)
+
+To run the unit test, following command is to be used -
+
+  
+
+    npm test
+
+To run all tests enter "a", to quit enter "q".
+  
+The following tests are added in Sprint3:
+
+1. Signin User - In this test we check all the components of the signin functionality are being displayed.
+
+2. Signup User - In this test we check all the components of the signup functionality are being displayed.
+
+
+
+### Functional Tests (Using Cypress)
+
+To run the Functional tests, we run the following command -
+
+    npx cypress open  
+    
+The following tests are added in Sprint3:
+
+1. Register test- In this test, we are checking if a new user is successfully registered. We also create another user to test the follow-unfollow functionality.
+
+2. Login test - In this test, we are checking if the created user is succesfully logged in.
+
+3. User Profile test - In this test, we are checking the profile of the user created above.
+
+4. Follow user test - In this test, we follow the other user created while registering and test the follow functionality.
+
+5. Unfollow user test - In this test, we unfollow the other user created while registering and test the unfollow functionality.
+6. Logout test - In this test, we logout the current user to show the signin page.
+
+
