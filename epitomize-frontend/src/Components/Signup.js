@@ -10,35 +10,53 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
+import Autocomplete from '@mui/material/Autocomplete';
 
-const baseURL = "http://localhost:8081/user"
+
+const baseURL = "http://localhost:8081/"
 
 const theme = createTheme();
 
 export default function SignUp() {
+
+  const [taglist, setTagList] = React.useState([]);
+
+  React.useEffect(() => {
+    axios.get(baseURL + 'alltags')
+      .then((response) => {
+        console.log(response.data)
+        setTagList(response.data['TagList']);
+      });
+  }, []);
+
+  const [tags, setTags] = React.useState([]);
+
+  function handleTags(value) {
+    setTags(tags.concat(value[value.length - 1]))
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
     const data = ({
-        Emailid: formdata.get('Emailid'),
-        Password: formdata.get('Password'),
-        Username: formdata.get('Username'),
-	    Profilepicture: formdata.get('Profilepicture'),
-	    About: formdata.get('About')
-      });
-    console.log(data);
-   
+      Emailid: formdata.get('Emailid'),
+      Password: formdata.get('Password'),
+      Username: formdata.get('Username'),
+      Profilepicture: formdata.get('Profilepicture'),
+      About: formdata.get('About'),
+      Tags: tags.toString()
+    });
+    // console.log(data);
+
 
     axios
-        .post(baseURL, data)
-        .then(response => {
-            console.log(response.data);
-            //cookies.set('access_token', response.data['Access_Token'], { path: '/' });
-            window.location = '/signin';
+      .post(baseURL + 'user', data)
+      .then(response => {
+        window.location = '/signin';
 
-        }).catch(error => {
-            console.log(error)
-        });
+      }).catch(error => {
+        console.log(error)
+      });
 
   };
 
@@ -55,7 +73,7 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <img src="/favicon.ico" alt="logo" style={{ maxWidth: 50 }} />
+            <img src="/favicon.ico" alt="logo" style={{ maxWidth: 50 }} />
           </Avatar>
           <Typography component="h1" variant="h4">
             Epitomize
@@ -75,7 +93,7 @@ export default function SignUp() {
                 />
               </Grid>
 
-             
+
               <Grid item xs={12}>
                 <TextField
                   required
@@ -124,6 +142,25 @@ export default function SignUp() {
                   label="Profile Picture"
                   autoFocus
                 />
+              </Grid>
+              <Grid item xs={12}>
+                <Autocomplete
+                  multiple
+                  name="Tags"
+                  id="tags-outlined"
+                  options={taglist}
+                  onChange={(event, value) => handleTags(value)}
+                  getOptionLabel={(option) => option}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Favorite Tags"
+                      placeholder="Favorite Tags"
+                    />
+                  )}
+                />
+
               </Grid>
 
             </Grid>

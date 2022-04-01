@@ -89,6 +89,18 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+func AllTags(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	topTag, responseType := controller.GetAllTags(true)
+	if responseType == http.StatusOK {
+		result := make(map[string][]string)
+		result["TagList"] = topTag
+		json.NewEncoder(w).Encode(result)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
 func TopTags(w http.ResponseWriter, r *http.Request) {
 	code := Authentification(w, r)
 	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
@@ -274,7 +286,7 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var post model.Post
-	err, responseType := controller.EditPost(1, post, false)
+	err, responseType := controller.EditPost(1, post, code, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	} else {
@@ -302,7 +314,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err, responseType := controller.EditPost(postId, post, true)
+		err, responseType := controller.EditPost(postId, post, code, true)
 		// result := http.Response{
 		// 	StatusCode: responseType,
 		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
@@ -385,6 +397,7 @@ func HandleRequests() {
 	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", HomePage)
 	myRouter.HandleFunc("/post", AllPost).Methods("GET")
+	myRouter.HandleFunc("/alltags", AllTags).Methods("GET")
 	myRouter.HandleFunc("/topTags", TopTags).Methods("GET")
 	myRouter.HandleFunc("/post/{id}", GetPost).Methods("GET")
 	myRouter.HandleFunc("/post", CreateNewPost).Methods("POST")
