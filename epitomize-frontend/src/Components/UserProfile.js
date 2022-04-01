@@ -2,14 +2,10 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Cookies from 'universal-cookie';
-import Link from '@mui/material/Link';
-
 import {
   Box,
-  Button,
   Card,
   CardContent,
-  CardHeader,
   Divider,
   Grid,
   TextField
@@ -18,11 +14,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
-import {
-  useParams
-} from "react-router-dom";
-
-const baseURL = "http://localhost:8081/user"
 
 const theme = createTheme();
 
@@ -32,7 +23,6 @@ export default function UserProfile() {
   const baseURL = "http://localhost:8081/"
 
   const [data, setData] = React.useState(null);
-  let { id } = useParams();
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')

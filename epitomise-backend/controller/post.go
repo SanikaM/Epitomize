@@ -74,9 +74,9 @@ func GetPosts(userid uint, test bool) []model.Post {
 		// seed(db)
 		// GetPostTags(1)
 		tagArrays := []model.TagResponse{}
-		if err := db.Where("id_user = ?", userid).Find(&Posts).Error; err == nil {
-			return Posts
-		}
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ?", userid).Find(&Posts)
+
 		fmt.Println("From controller", Posts)
 
 		for i, p := range Posts {

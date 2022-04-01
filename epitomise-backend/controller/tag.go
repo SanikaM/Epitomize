@@ -71,6 +71,7 @@ func GetTags(id uint) []string {
 	db := database.GetDB()
 	// seedTag(db)
 	tags := []model.Tag{}
+	fmt.Println("Inside Tagsssss")
 	db.Where("tag_uid  = ?", id).Find(&tags)
 	fmt.Println("Inside Tagsssss", tags)
 
