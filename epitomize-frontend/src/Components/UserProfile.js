@@ -5,22 +5,22 @@ import Cookies from 'universal-cookie';
 import Link from '@mui/material/Link';
 
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Divider,
-    Grid,
-    TextField
-  } from '@mui/material';
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
+  Grid,
+  TextField
+} from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import {
-    useParams
-  } from "react-router-dom";
+  useParams
+} from "react-router-dom";
 
 const baseURL = "http://localhost:8081/user"
 
@@ -28,25 +28,25 @@ const theme = createTheme();
 
 export default function UserProfile() {
 
-    const cookies = new Cookies();
-    const baseURL = "http://localhost:8081/"
+  const cookies = new Cookies();
+  const baseURL = "http://localhost:8081/"
 
-    const [data, setData] = React.useState(null);
-    let { id } = useParams();
+  const [data, setData] = React.useState(null);
+  let { id } = useParams();
 
-    React.useEffect(() => {
-      const tokenStr = cookies.get('access_token')
-      axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
-        .then((response) => {
-          setData(response.data);
-        });
-    }, []);
-  
-    if (!data) return null;
+  React.useEffect(() => {
+    const tokenStr = cookies.get('access_token')
+    axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then((response) => {
+        setData(response.data);
+      });
+  }, []);
+
+  if (!data) return null;
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" sx={{ marginLeft: "50%" }}>
         <CssBaseline />
         <Box
           sx={{
@@ -57,87 +57,88 @@ export default function UserProfile() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <img src="/favicon.ico" alt="logo" style={{ maxWidth: 50 }} />
+            <img src="/favicon.ico" alt="logo" style={{ maxWidth: 50 }} />
           </Avatar>
           <Typography component="h1" variant="h5">
             Profile
           </Typography>
-          <Box component="form" noValidate 
-            sx={{ mt: 3,
-            display: 'flex',
-          }}>
-            
+          <Box component="form" noValidate
+            sx={{
+              mt: 3,
+              display: 'flex',
+            }}>
+
             <Card>
-                <Divider />
+              <Divider />
 
-                <CardContent>
-                    <Grid
-                        container
-                        spacing={3}
-                    >
-                        <Grid item
-                         md={12}
-                         xs={12}>
-                            <TextField
-                               fullWidth
-                                label="Username"
-                                name="Username"
-                                value={data.Username}
-                                variant="outlined"
-                                InputProps={{
-                                    readOnly: true,
-                                  }}
-                            />
-                        </Grid>  
-                        
-                        <Grid item
-                         md={12}
-                         xs={12}>
-                            <TextField
-                               fullWidth
-                                label="Email"
-                                name="Emailid"
-                                value={data.Emailid}
-                                variant="outlined"
-                                InputProps={{
-                                    readOnly: true,
-                                  }}
-                            />
-                        </Grid>  
-                        
+              <CardContent>
+                <Grid
+                  container
+                  spacing={3}
+                >
+                  <Grid item
+                    md={12}
+                    xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Username"
+                      name="Username"
+                      value={data.Username}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid>
 
-                        <Grid item
-                         md={12}
-                         xs={12}>
-                            <TextField
-                               fullWidth
-                                label="About"
-                                name="About"
-                                value={data.About}
-                                variant="outlined"
-                                InputProps={{
-                                    readOnly: true,
-                                  }}
-                            />
-                        </Grid>  
+                  <Grid item
+                    md={12}
+                    xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Email"
+                      name="Emailid"
+                      value={data.Emailid}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid>
 
-                        <Grid item
-                         md={12}
-                         xs={12}>
-                            <TextField
-                               fullWidth
-                                label="Profilepicture"
-                                name="Profilepicture"
-                                value={data.Profilepicture}
-                                variant="outlined"
-                                InputProps={{
-                                    readOnly: true,
-                                  }}
-                            />
-                        </Grid>  
 
-                    </Grid>
-                </CardContent>
+                  <Grid item
+                    md={12}
+                    xs={12}>
+                    <TextField
+                      fullWidth
+                      label="About"
+                      name="About"
+                      value={data.About}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid>
+
+                  {/* <Grid item
+                    md={12}
+                    xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Profilepicture"
+                      name="Profilepicture"
+                      value={data.Profilepicture}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid> */}
+
+                </Grid>
+              </CardContent>
 
             </Card>
           </Box>

@@ -72,10 +72,10 @@ function Users() {
                                     }
                                 />
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id="unfollow" edge="end" sx={{ marginTop: "5%" }} />
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id="follow" edge="end" sx={{ marginTop: "5%" }} />
                                 )
                                 }
                             </ListItem>
