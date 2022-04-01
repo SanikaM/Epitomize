@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"strings"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -112,4 +113,30 @@ func SortPostsByDate(posts []model.Post) []model.Post {
 		return posts[i].PostsUId < posts[j].PostsUId
 	})
 	return posts
+}
+
+func GetUserRecommendations(userId uint) ([]model.Post, int) {
+	Posts := []model.Post{}
+	user, resp := GetUser(userId)
+
+	if resp != http.StatusOK {
+		return Posts, resp
+	}
+	tags := strings.Split(user.Tags, ",")
+	for _, tag := range tags {
+		Posts = append(Posts, GetPostsWithTag(tag)...)
+	}
+	Posts = SortPostsByDate(Posts)
+	return Posts, http.StatusOK
+}
+
+func GetPostsWithTag(tag string) []model.Post {
+	db := database.GetDB()
+	Posts := []model.Post{}
+	if err := db.Where("tags LIKE ?", "%"+tag+"%").Find(&Posts).Error; err == gorm.ErrRecordNotFound {
+		return Posts
+	} else if err == nil {
+		return Posts
+	}
+	return Posts
 }
