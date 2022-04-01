@@ -89,7 +89,24 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+func AllTags(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	topTag, responseType := controller.GetAllTags(true)
+	if responseType == http.StatusOK {
+		result := make(map[string][]string)
+		result["TagList"] = topTag
+		json.NewEncoder(w).Encode(result)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
 func TopTags(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(true)
 	if responseType == http.StatusOK {
@@ -380,6 +397,7 @@ func HandleRequests() {
 	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", HomePage)
 	myRouter.HandleFunc("/post", AllPost).Methods("GET")
+	myRouter.HandleFunc("/alltags", AllTags).Methods("GET")
 	myRouter.HandleFunc("/topTags", TopTags).Methods("GET")
 	myRouter.HandleFunc("/post/{id}", GetPost).Methods("GET")
 	myRouter.HandleFunc("/post", CreateNewPost).Methods("POST")
