@@ -95,10 +95,11 @@ func CreatePost(post model.Post, userid uint, test bool) int {
 		db := database.GetDB()
 		fmt.Println(userid)
 		post.IDUser = userid
+		tags := strings.Split(post.Tags, ",")
+		post.TagList = tags
 		if err := db.Create(&post).Error; err != nil {
 			return http.StatusBadRequest
 		}
-		tags := strings.Split(post.Tags, ",")
 
 		if createTag(tags) == http.StatusCreated {
 			fmt.Println("tags created - creating posttags!")
