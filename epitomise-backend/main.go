@@ -182,6 +182,26 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func GetUserFeed(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	posts, responseType := controller.GetUserFeed(userid)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func GetUserRecommendations(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	posts, responseType := controller.GetUserRecommendations(userid)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
 func UserList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("userid")
 	userid := Authentification(w, r)
@@ -376,6 +396,8 @@ func HandleRequests() {
 	myRouter.HandleFunc("/user", GetUser).Methods("GET")
 	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
 	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
+	myRouter.HandleFunc("/user/feed", GetUserFeed).Methods("GET")
+	myRouter.HandleFunc("/user/recommended", GetUserRecommendations).Methods("GET")
 	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
@@ -385,6 +407,5 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	HandleRequests()
 }
