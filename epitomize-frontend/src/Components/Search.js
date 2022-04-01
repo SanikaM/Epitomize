@@ -43,8 +43,9 @@ function Search() {
             let body = {
                 "Text": event.target.value
             }
-            axios.post(baseURL + 'post', body,  { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
                 .then((response) => {
+                    console.log(response.data)
                     setData(response.data);
                 })
                 .catch((error) => {
@@ -75,7 +76,7 @@ function Search() {
                 />
             </Box>
 
-            {data &&
+            {data && data.length > 0 &&
 
                 data['Posts'].map(item => (
                     <Card sx={{ maxWidth: "auto", marginTop: "5px" }} key={item.PostsUId}>
