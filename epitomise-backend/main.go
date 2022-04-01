@@ -274,7 +274,7 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var post model.Post
-	err, responseType := controller.EditPost(1, post, false)
+	err, responseType := controller.EditPost(1, post, code, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	} else {
@@ -302,7 +302,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err, responseType := controller.EditPost(postId, post, true)
+		err, responseType := controller.EditPost(postId, post, code, true)
 		// result := http.Response{
 		// 	StatusCode: responseType,
 		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),

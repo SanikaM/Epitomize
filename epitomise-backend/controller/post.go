@@ -127,11 +127,12 @@ func GetPost(id uint64, test bool) (model.Post, int) {
 
 }
 
-func EditPost(id uint64, post model.Post, test bool) (error, int) {
+func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 	if test {
 		db := database.GetDB()
 		var postModel model.Post
 		if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+			post.IDUser = userid
 			post.PostsUId = uint(id)
 			if err := db.Save(&post).Error; err != nil {
 				return err, http.StatusBadRequest
