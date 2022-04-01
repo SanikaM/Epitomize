@@ -257,17 +257,38 @@ POST /search
 # Front-end Features and Usage
 
 ### Register Page
-### Login Page
-### User Profile Page
-### User's own Posts Page
-### Logout
-### List of users
-### Follow User
-### Unfollow User
-### Posts of following users
-### Posts of preferred tags
-### Search Posts
 
+### Login Page
+This page is used to log in the user to the application. The following information is required from the user:
+
+- Email Address - Email of the user
+- Password - Password of the user
+
+The user's email and password are verified on the backend and if the user gets verified then the access token is stored in the cookies which are used for authorization for other endpoints.
+
+### User Profile Page
+
+### User's own Posts Page
+This page shows all the posts created by the user. The user has the option to edit or delete these posts as well as view the content of the post by clicking on them.
+
+### Logout
+The user can logout of the application by clicking the logout button. When the user log outs then the cookie is cleared. 
+
+### List of users
+This page displays the list of users showing the username and about of each user. The list does not contain the current user and the current user gets the option to follow/unfollow every user. A few users are displayed in the sidebar. 
+
+### Follow User
+The current user can follow any other user from the list of users and gets an alert message when the operation is successful. Once the user follows another user, then the current user can see the posts of that user, if any, immediately on the dashboard under the following tab.
+
+### Unfollow User
+The current user can unfollow any other user from the list of users and gets an alert message when the operation is successful. Once the user unfollows another user, then the current user can no longer see the posts of that user, if any.
+
+### Posts of Following Users
+
+### Posts of Preferred Tags
+
+### Search Posts
+The current user can use the search functionality to search for posts. The results contains all those posts whose title, or summary matches the search word. These results contain the posts of the current user as well all the other users in the system. 
 
 ## Front-end tests
 
