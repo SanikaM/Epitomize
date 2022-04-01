@@ -64,6 +64,10 @@ func AllPostTest(w http.ResponseWriter, r *http.Request) {
 }
 func AllPost(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	fmt.Println(userid)
 	posts := controller.GetPosts(userid, true)
 	result := model.GetAllPost{
@@ -150,6 +154,10 @@ func CreateNewUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	user, responseType := controller.GetUser(userid)
 
 	if responseType == http.StatusOK {
@@ -196,6 +204,10 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 
 func GetUserFeed(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	posts, responseType := controller.GetUserFeed(userid)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(posts)
@@ -206,6 +218,10 @@ func GetUserFeed(w http.ResponseWriter, r *http.Request) {
 
 func GetUserRecommendations(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	posts, responseType := controller.GetUserRecommendations(userid)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(posts)
@@ -218,6 +234,10 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("userid")
 	userid := Authentification(w, r)
 	fmt.Println(userid)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	responseType := controller.UserList(userid)
 	result := model.UserListResponses{
 		Users: responseType,
@@ -228,6 +248,10 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	fmt.Println(userid)
 	fmt.Println(userid)
 	var post model.Post
@@ -344,6 +368,10 @@ func DeletePostTest(w http.ResponseWriter, r *http.Request) {
 }
 func FollowUser(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
@@ -352,6 +380,10 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 }
 func UnFollowUser(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
