@@ -256,7 +256,18 @@ POST /search
 
 # Front-end Features and Usage
 
-  
+### Register Page
+### Login Page
+### User Profile Page
+### User's own Posts Page
+### Logout
+### List of users
+### Follow User
+### Unfollow User
+### Posts of following users
+### Posts of preferred tags
+### Search Posts
+
 
 ## Front-end tests
 
