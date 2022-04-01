@@ -20,7 +20,6 @@ function Users() {
         console.log(tokenStr)
         axios.get(baseURL + 'userlist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
-                console.log(response.data)
                 setData(response.data);
             });
     }, []);

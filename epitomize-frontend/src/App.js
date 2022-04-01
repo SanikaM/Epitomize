@@ -10,11 +10,10 @@ import * as React from 'react';
 import Cookies from 'universal-cookie';
 import Users from './Components/Users'
 import Search from './Components/Search';
-import UserProfile from './Components/UserProfile';
 
 function App() {
-  const cookies = new Cookies();
 
+  const cookies = new Cookies();
   if (cookies.get('access_token')) {
     return (
 
@@ -40,13 +39,14 @@ function App() {
   else {
     return (
       <div>
-      {window.location.pathname !== "/signin" && window.location.pathname !== "/" &&
-        <SignUp />
-    }
-    {window.location.pathname !== "/signup" &&
+        {window.location.pathname === "/signup"  ?
+          <SignUp />
+        :
+
         <SignIn />
-    }
-    </div>
+      }
+
+      </div>
 
     )
   }

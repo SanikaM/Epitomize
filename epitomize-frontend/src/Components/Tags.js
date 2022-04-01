@@ -13,7 +13,6 @@ function Tags() {
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
-
         axios.get(baseURL + 'topTags', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)

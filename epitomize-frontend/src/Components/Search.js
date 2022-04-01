@@ -75,7 +75,7 @@ function Search() {
                 />
             </Box>
 
-            {data &&
+            {data && data['Posts'] &&
                 data['Posts'].map(item => (
                     <Card sx={{ maxWidth: "auto", marginTop: "5px" }} key={item.PostsUId}>
                         <CardActionArea>

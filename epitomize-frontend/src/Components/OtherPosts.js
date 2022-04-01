@@ -24,14 +24,16 @@ function OtherPosts() {
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
 
-        axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + 'user/feed', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setFollowingData(response.data);
             });
 
-        axios.get(baseURL + 'topTags', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + 'user/recommended', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
+                console.log(response.data)
+
                 setRecommendedData(response.data);
             });
 
@@ -45,7 +47,9 @@ function OtherPosts() {
 
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
-    if (followingData && followingData['Posts'] !== null && recommendedData) {
+    // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
+        if (followingData && recommendedData && followingData.length > 0 && recommendedData.length > 0) {
+
         return (
             <Box sx={{ width: '100%', typography: 'body1' }}>
                 <TabContext value={value}>
@@ -58,7 +62,7 @@ function OtherPosts() {
                     </Box>
                     <TabPanel value="1">
                         <Stack spacing={2}>
-                            {followingData['Posts'].map(item => (
+                            {followingData.map(item => (
                                 <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                                     <CardActionArea>
                                         <CardContent>
@@ -86,7 +90,7 @@ function OtherPosts() {
                     </TabPanel>
                     <TabPanel value="2">
                         <Stack spacing={2}>
-                            {followingData['Posts'].map(item => (
+                            {recommendedData.map(item => (
                                 <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                                     <CardActionArea>
                                         <CardContent>
@@ -131,9 +135,8 @@ function OtherPosts() {
                         Follow people to see their posts...
 
                     </TabPanel>
-                    {/* <TabPanel value="2">{recommendedData['TagList'][0]}</TabPanel> */}
                     <TabPanel vaue="2">
-                        Top tags posts will be available soon..
+                        Recommended tags posts will be available soon..
                     </TabPanel>
                 </TabContext>
             </Box>
