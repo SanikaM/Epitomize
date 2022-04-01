@@ -16,6 +16,7 @@ type User struct {
 	Emailid        string `json:"Emailid"`
 	Password       string `json:"Password"`
 	Profilepicture string
+	Tags           string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
