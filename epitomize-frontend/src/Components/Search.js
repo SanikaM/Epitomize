@@ -40,8 +40,10 @@ function Search() {
         }
         else {
             const tokenStr = cookies.get('access_token')
-
-            axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            let body = {
+                "Text": event.target.value
+            }
+            axios.post(baseURL + 'post', body,  { headers: { "Authorization": `Bearer ${tokenStr}` } })
                 .then((response) => {
                     setData(response.data);
                 })

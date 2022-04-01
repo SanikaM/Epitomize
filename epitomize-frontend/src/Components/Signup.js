@@ -72,6 +72,7 @@ export default function SignUp() {
                   required
                   fullWidth
                   id="Username"
+                  data-testid="Username"
                   label="Username"
                   autoFocus
                 />
@@ -85,6 +86,7 @@ export default function SignUp() {
                   id="Emailid"
                   label="Email Address"
                   name="Emailid"
+                  data-testid="Emailid"
                   autoComplete="email"
                 />
               </Grid>
@@ -97,6 +99,7 @@ export default function SignUp() {
                   fullWidth
                   id="About"
                   label="About"
+                  data-testid="About"
                   autoFocus
                 />
               </Grid>
@@ -109,6 +112,7 @@ export default function SignUp() {
                   label="Password"
                   type="password"
                   id="Password"
+                  data-testid="Password"
                   autoComplete="new-password"
                 />
               </Grid>
