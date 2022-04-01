@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -88,4 +89,27 @@ func GetUser(userId uint) (model.User, int) {
 	}
 	userModel.Password = ""
 	return userModel, http.StatusOK
+}
+
+func GetUserFeed(userId uint) ([]model.Post, int) {
+	db := database.GetDB()
+	Posts := []model.Post{}
+	Followers := []model.Follow{}
+
+	if err := db.Where("current_user_id = ?", userId).Find(&Followers).Error; err == gorm.ErrRecordNotFound {
+		return Posts, http.StatusOK
+	} else if err == nil {
+		for _, obj := range Followers {
+			Posts = append(Posts, GetPosts(obj.FollowingUserId, true)...)
+		}
+	}
+	Posts = SortPostsByDate(Posts)
+	return Posts, http.StatusOK
+}
+
+func SortPostsByDate(posts []model.Post) []model.Post {
+	sort.Slice(posts, func(i, j int) bool {
+		return posts[i].PostsUId < posts[j].PostsUId
+	})
+	return posts
 }
