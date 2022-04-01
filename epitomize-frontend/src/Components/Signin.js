@@ -66,6 +66,7 @@ function SignIn({ auth }) {
               required
               fullWidth
               id="email"
+              data-testid="email"
               label="Email Address"
               name="email"
               autoComplete="email"
@@ -75,6 +76,7 @@ function SignIn({ auth }) {
               margin="normal"
               required
               fullWidth
+              data-testid="password"
               name="password"
               label="Password"
               type="password"
@@ -84,6 +86,7 @@ function SignIn({ auth }) {
             <Button
               type="submit"
               fullWidth
+              id="signin"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               // onClick={changeRouteHome}
@@ -97,7 +100,7 @@ function SignIn({ auth }) {
                 </Link> */}
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

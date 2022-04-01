@@ -30,6 +30,7 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    window.location = '/userprofile';
   };
 
   const myposts = () => {
@@ -68,7 +69,7 @@ export default function Header() {
     >
       <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
       <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
-      <MenuItem onClick={logout} style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
+      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -130,6 +131,7 @@ export default function Header() {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
+              id="account"
               style={{ color: "black" }}
             >
               <AccountCircle />
