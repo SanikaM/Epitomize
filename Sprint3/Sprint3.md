@@ -329,4 +329,6 @@ The following tests are added in Sprint3:
 5. Unfollow user test - In this test, we unfollow the other user created while registering and test the unfollow functionality.
 6. Logout test - In this test, we logout the current user to show the signin page.
 
+![](CypressTest.gif)
+
 
