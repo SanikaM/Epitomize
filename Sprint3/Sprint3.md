@@ -480,7 +480,7 @@ This page  is used to show the personal information of the logged in user. Follo
 - Email Address - Email of the user
 - Username - User name of the user
 - About - About the user
-- Profile Picture - Profile picture of the user
+- Favourite tags - Favourite tags of the user
 
 The access token of the logged in user which is stored in the cookies is used to authorize the logged in user and we get the information regarding that user from the backend.
 
