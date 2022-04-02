@@ -46,6 +46,13 @@ In Sprint 3 the following user stories were successfully implemented:
 
 -   In this user story, the user has the ability to view the list of all users in the system. A few of the users are shown in the sidebar and on clicking see more suggestions the user can see rest of the users as well.
 
+## Video Demo Link
+
+
+Backend: 
+
+Frontend: https://drive.google.com/file/d/1fRZ8LH97QA-mg2O1nQTcuKDQhAV_CJCJ/view?usp=sharing
+
 ## Backend:
 
 #### 1. Login User API
