@@ -464,6 +464,8 @@ This page is used to register a new user to the application. The following infor
 
 The registration information is sent to the backend and a new user is getting created. After this, the user of the application is routed to the Login page. 
 
+![](Register.gif)
+
 ### Login Page
 This page is used to log in the user to the application. The following information is required from the user:
 
@@ -482,16 +484,22 @@ This page  is used to show the personal information of the logged in user. Follo
 - About - About the user
 - Favourite tags - Favourite tags of the user
 
-The access token of the logged in user which is stored in the cookies is used to authorize the logged in user and we get the information regarding that user from the backend.
+![](UserProfile.gif)
 
 ### User's own Posts Page
 This page shows all the posts created by the user. The user has the option to edit or delete these posts as well as view the content of the post by clicking on them.
 
+![](MyPosts.gif)
+
 ### Logout
 The user can logout of the application by clicking the logout button. When the user log outs then the cookie is cleared. 
 
+![](Logout.gif)
+
 ### List of users
 This page displays the list of users showing the username and about of each user. The list does not contain the current user and the current user gets the option to follow/unfollow every user. A few users are displayed in the sidebar. 
+
+![](UserList.gif)
 
 ### Follow User
 The current user can follow any other user from the list of users and gets an alert message when the operation is successful. Once the user follows another user, then the current user can see the posts of that user, if any, immediately on the dashboard under the following tab.
@@ -506,11 +514,17 @@ The current user can unfollow any other user from the list of users and gets an 
 ### Posts of Following Users
 This page shows the list of posts of the users that the logged in user follows. The logged in user can click on the posts and view the content of the posts.
 
+![](FollowingPosts.gif)
+
 ### Posts of Preferred Tags
 This page shows the list of posts of the favourite tags that the logged in user. The user selects these favorite tags during registration. The logged in user can click on the posts and view the content of the posts.
 
+![](RecommendedPosts.gif)
+
 ### Search Posts
 The current user can use the search functionality to search for posts. The results contains all those posts whose title, or summary matches the search word. These results contain the posts of the current user as well all the other users in the system. 
+
+![](Search.gif)
 
 ## Front-end tests
 
