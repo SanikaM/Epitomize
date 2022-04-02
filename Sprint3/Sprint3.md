@@ -453,6 +453,15 @@ This API gets recommended posts for the current user based on the users' preferr
 # Front-end Features and Usage
 
 ### Register Page
+This page is used to register a new user to the application. The following information is required from the user:
+
+- Email Address - Email of the user
+- Username - User name of the user
+- Password - Password of the user
+- About - About the user
+- Profile Picture - Profile picture of the user
+
+The registration information is sent to the backend and a new user is getting created. After this, the user of the application is routed to the Login page. 
 
 ### Login Page
 This page is used to log in the user to the application. The following information is required from the user:
@@ -465,6 +474,14 @@ The user's email and password are verified on the backend and if the user gets v
 ![](Login.gif)
 
 ### User Profile Page
+This page  is used to show the personal information of the logged in user. Following information regarding the registered user is displayed:
+
+- Email Address - Email of the user
+- Username - User name of the user
+- About - About the user
+- Profile Picture - Profile picture of the user
+
+The access token of the logged in user which is stored in the cookies is used to authorize the logged in user and we get the information regarding that user from the backend.
 
 ### User's own Posts Page
 This page shows all the posts created by the user. The user has the option to edit or delete these posts as well as view the content of the post by clicking on them.
