@@ -92,19 +92,22 @@ func GetUser(userId uint) (model.User, int) {
 	return userModel, http.StatusOK
 }
 
-func GetUserFeed(userId uint) ([]model.Post, int) {
-	db := database.GetDB()
+func GetUserFeed(userId uint, test bool) ([]model.Post, int) {
 	Posts := []model.Post{}
-	Followers := []model.Follow{}
+	if test {
+		db := database.GetDB()
+		Followers := []model.Follow{}
 
-	if err := db.Where("current_user_id = ?", userId).Find(&Followers).Error; err == gorm.ErrRecordNotFound {
-		return Posts, http.StatusOK
-	} else if err == nil {
-		for _, obj := range Followers {
-			Posts = append(Posts, GetPosts(obj.FollowingUserId, true)...)
+		if err := db.Where("current_user_id = ?", userId).Find(&Followers).Error; err == gorm.ErrRecordNotFound {
+			return Posts, http.StatusOK
+		} else if err == nil {
+			for _, obj := range Followers {
+				Posts = append(Posts, GetPosts(obj.FollowingUserId, true)...)
+			}
 		}
+		Posts = SortPostsByDate(Posts)
+		return Posts, http.StatusOK
 	}
-	Posts = SortPostsByDate(Posts)
 	return Posts, http.StatusOK
 }
 
