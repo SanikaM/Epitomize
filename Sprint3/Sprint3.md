@@ -460,7 +460,7 @@ This page is used to register a new user to the application. The following infor
 - Password - Password of the user
 - About - About the user
 - Profile Picture - Profile picture of the user
-- Favourite tags - Favourite tags which the user 
+- Favourite tags - Favourite tags which the user selects from a drop down menu.
 
 The registration information is sent to the backend and a new user is getting created. After this, the user of the application is routed to the Login page. 
 
