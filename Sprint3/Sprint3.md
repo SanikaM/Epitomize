@@ -460,6 +460,7 @@ This page is used to register a new user to the application. The following infor
 - Password - Password of the user
 - About - About the user
 - Profile Picture - Profile picture of the user
+- Favourite tags - Favourite tags which the user 
 
 The registration information is sent to the backend and a new user is getting created. After this, the user of the application is routed to the Login page. 
 
@@ -503,8 +504,10 @@ The current user can unfollow any other user from the list of users and gets an 
 ![](Unfollow.gif)
 
 ### Posts of Following Users
+This page shows the list of posts of the users that the logged in user follows. The logged in user can click on the posts and view the content of the posts.
 
 ### Posts of Preferred Tags
+This page shows the list of posts of the favourite tags that the logged in user. The user selects these favorite tags during registration. The logged in user can click on the posts and view the content of the posts.
 
 ### Search Posts
 The current user can use the search functionality to search for posts. The results contains all those posts whose title, or summary matches the search word. These results contain the posts of the current user as well all the other users in the system. 
