@@ -28,6 +28,7 @@ export default function UserProfile() {
     const tokenStr = cookies.get('access_token')
     axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
+        console.log(response.data)
         setData(response.data);
       });
   }, []);
@@ -111,6 +112,23 @@ export default function UserProfile() {
                       name="About"
                       data-testid="About"
                       value={data.About}
+                      variant="outlined"
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item
+                    md={12}
+                    xs={12}>
+                    <TextField
+                      fullWidth
+                      id="Preferred Tags"
+                      label="Preferred Tags"
+                      name="Preferred Tags"
+                      data-testid="Preferred Tags"
+                      value={data.Tags}
                       variant="outlined"
                       InputProps={{
                         readOnly: true,
