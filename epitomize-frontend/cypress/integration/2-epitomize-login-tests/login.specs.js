@@ -5,7 +5,7 @@ describe("Login Tests", () => {
   it("Login Test", () => {
     cy.visit(`${constants.LOGIN}`);
     cy.get("[id=email]").type("test@epitomize.com");
-    cy.get("[id=password]").type("pass123");
+    cy.get("[id=password]").type("test123");
     cy.get("[id=signin]").click();
     cy.wait(2000);
 

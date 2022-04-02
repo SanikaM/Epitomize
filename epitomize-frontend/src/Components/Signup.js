@@ -46,7 +46,6 @@ export default function SignUp() {
       About: formdata.get('About'),
       Tags: tags.toString()
     });
-    // console.log(data);
 
 
     axios
