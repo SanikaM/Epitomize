@@ -254,6 +254,202 @@ POST /search
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
 
+
+#### 7. Register new User API
+This API creates a new User
+
+    POST  /user
+
+#### Example Request:
+
+    {
+        "Username": "user",
+        "Password": "user123",
+        "About": "About user",
+        "Emailid": "user@gmail.com",
+        "Tags": "cricket,football,bitcoin"
+    }
+    
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    {
+        "result": "New user successfully created"
+    }
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
+
+#### Mandatory Fields:
+
+-   Username: Must be unique
+-   Emailid: Must be unique
+-   Password
+-   About
+
+
+
+#### 8. Get User Profile API
+This API gets the profile details of a registered User
+
+    GET  /user
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    {
+        "Username": "user",
+        "About": "About user",
+        "Emailid": "user@gmail.com",
+        "Tags": "cricket,football,bitcoin"
+    }
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
+
+
+
+#### 9. Get User Feed API
+This API gets the current user's feed
+
+    GET  /user/feed
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    [
+        {
+            "PostsUId": 1,
+            "Type": "Blockchain",
+            "Title": "Trade on Margin with 0% Interest",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "TagList": null,
+            "Tags": "Crypto,Bitcoin"
+        },
+        {
+            "PostsUId": 2,
+            "Type": "Cricket",
+            "Title": "Cricket 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "TagList": null,
+            "Tags": "Cricket"
+        },
+        {
+            "PostsUId": 3,
+            "Type": "Football",
+            "Title": "Football 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "TagList": null,
+            "Tags": "Football"
+        }
+    ]
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
+
+
+#### 10. Get User Feed API
+This API gets recommended posts for the current user based on the users' preferred tags
+
+    GET  /user/recommended
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    [
+        {
+            "PostsUId": 1,
+            "Type": "Blockchain",
+            "Title": "Trade on Margin with 0% Interest",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "TagList": null,
+            "Tags": "Crypto,Bitcoin"
+        },
+        {
+            "PostsUId": 2,
+            "Type": "Cricket",
+            "Title": "Cricket 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "TagList": null,
+            "Tags": "Cricket"
+        },
+        {
+            "PostsUId": 3,
+            "Type": "Football",
+            "Title": "Football 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "TagList": null,
+            "Tags": "Football"
+        }
+    ]
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
+
+
 # Front-end Features and Usage
 
 ### Register Page
