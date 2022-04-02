@@ -462,6 +462,8 @@ This page is used to log in the user to the application. The following informati
 
 The user's email and password are verified on the backend and if the user gets verified then the access token is stored in the cookies which are used for authorization for other endpoints.
 
+![](Login.gif)
+
 ### User Profile Page
 
 ### User's own Posts Page
@@ -476,8 +478,12 @@ This page displays the list of users showing the username and about of each user
 ### Follow User
 The current user can follow any other user from the list of users and gets an alert message when the operation is successful. Once the user follows another user, then the current user can see the posts of that user, if any, immediately on the dashboard under the following tab.
 
+![](Follow.gif)
+
 ### Unfollow User
 The current user can unfollow any other user from the list of users and gets an alert message when the operation is successful. Once the user unfollows another user, then the current user can no longer see the posts of that user, if any.
+
+![](Unfollow.gif)
 
 ### Posts of Following Users
 
@@ -504,7 +510,7 @@ The following tests are added in Sprint3:
 
 2. Signup User - In this test we check all the components of the signup functionality are being displayed.
 
-
+![](Jtest.gif)
 
 ### Functional Tests (Using Cypress)
 
