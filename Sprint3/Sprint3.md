@@ -448,7 +448,25 @@ This API gets recommended posts for the current user based on the users' preferr
 -   **200**: Status OK
 -   **400**: Bad Request
 
+## Back-end tests
 
+To run the unit test, following command is to be used -
+
+    go test -v
+
+1. TestLoginPost - In this test, if we can get mock user login credentials used in our mock db and check if the user passed value are same as values in db in this test case.
+
+2. TestFollowPost  - In this test, mock the follow api and add following user in the db.
+
+3. TestUnFollowPost -In this test, mock the unfollow api and delete following user from the db.
+
+4. TestUserList- In this test, we mock and populate all the user names from our mock db.
+
+5. TestUserFeed - In this test, we test the userfeed api and check if required post are retrieve from mock db.
+
+6. TestSearchPost - In this test, we check user has entered correct test in search field and test search api if it populates required results.
+
+![](Backend_Features_TestCases.png)
 
 # Front-end Features and Usage
 
