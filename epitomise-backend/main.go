@@ -54,9 +54,7 @@ func Authentification(w http.ResponseWriter, r *http.Request) uint {
 	return claims.Userid
 }
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
-	userid := Authentification(w, r)
-	fmt.Println(userid)
-	posts := controller.GetPosts(userid, false)
+	posts := controller.GetPosts(1, false)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
@@ -77,11 +75,6 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func TopTagsTest(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(false)
 	if responseType == http.StatusOK {
@@ -167,7 +160,21 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
-
+func SearchUserPostTest(w http.ResponseWriter, r *http.Request) {
+	var search model.Search
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&search)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.SearchPost(search, false)
+		result := model.GetAllSearchPost{
+			Posts: responseType,
+		}
+		json.NewEncoder(w).Encode(result)
+	}
+}
 func SearchUserPost(w http.ResponseWriter, r *http.Request) {
 	code := Authentification(w, r)
 	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
@@ -181,11 +188,24 @@ func SearchUserPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		responseType := controller.SearchPost(search)
+		responseType := controller.SearchPost(search, true)
 		result := model.GetAllSearchPost{
 			Posts: responseType,
 		}
 		json.NewEncoder(w).Encode(result)
+	}
+}
+
+func LoginUserTest(w http.ResponseWriter, r *http.Request) {
+	var login model.Login
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&login)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.Login(login, false)
+		json.NewEncoder(w).Encode(responseType)
 	}
 }
 
@@ -197,9 +217,18 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		responseType := controller.Login(login)
+		responseType := controller.Login(login, true)
 		json.NewEncoder(w).Encode(responseType)
 	}
+}
+
+func GetUserFeedTest(w http.ResponseWriter, r *http.Request) {
+	posts, responseType := controller.GetUserFeed(1, false)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
 }
 
 func GetUserFeed(w http.ResponseWriter, r *http.Request) {
@@ -208,7 +237,7 @@ func GetUserFeed(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(int(userid)), int(userid))
 		return
 	}
-	posts, responseType := controller.GetUserFeed(userid)
+	posts, responseType := controller.GetUserFeed(userid, true)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(posts)
 		return
@@ -229,6 +258,13 @@ func GetUserRecommendations(w http.ResponseWriter, r *http.Request) {
 	}
 	http.Error(w, "Invalid request", http.StatusBadRequest)
 }
+func UserListTest(w http.ResponseWriter, r *http.Request) {
+	responseType := controller.UserList(1, false)
+	result := model.UserListResponses{
+		Users: responseType,
+	}
+	json.NewEncoder(w).Encode(result)
+}
 
 func UserList(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("userid")
@@ -238,7 +274,7 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(int(userid)), int(userid))
 		return
 	}
-	responseType := controller.UserList(userid)
+	responseType := controller.UserList(userid, true)
 	result := model.UserListResponses{
 		Users: responseType,
 	}
@@ -267,11 +303,6 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
 	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
@@ -304,13 +335,8 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
 	var post model.Post
-	err, responseType := controller.EditPost(1, post, code, false)
+	err, responseType := controller.EditPost(1, post, 1, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	} else {
@@ -357,14 +383,16 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, false)
+}
+func FollowUserTest(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.FollowUser(uint(Val), 1, false)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func FollowUser(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
@@ -375,7 +403,14 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
-	responseType := controller.FollowUser(uint(Val), userid)
+	responseType := controller.FollowUser(uint(Val), userid, true)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.UnFollowUser(uint(Val), 1, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUser(w http.ResponseWriter, r *http.Request) {
@@ -387,7 +422,7 @@ func UnFollowUser(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
-	responseType := controller.UnFollowUser(uint(Val), userid)
+	responseType := controller.UnFollowUser(uint(Val), userid, true)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func DeletePost(w http.ResponseWriter, r *http.Request) {
