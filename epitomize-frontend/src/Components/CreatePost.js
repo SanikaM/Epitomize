@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import "./CreatePost.css"
 import axios from "axios";
+import Cookies from 'universal-cookie';
 
 export default function CreatePost() {
 
     const baseURL = "http://localhost:8081/post"
+    const cookies = new Cookies();
 
     const [Title, setTitle] = useState("")
     const [Content, setContent] = useState("")
@@ -16,6 +18,8 @@ export default function CreatePost() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const tokenStr = cookies.get('access_token')
+
         const newPost = {
             Title,
             Content,
@@ -38,11 +42,11 @@ export default function CreatePost() {
             // }
         }
         axios
-        .post(baseURL, newPost)
+        .post(baseURL, newPost, { headers: { "Authorization": `Bearer ${tokenStr}` } })
         .then(response => {
             console.log(response.data);
             alert( "Post successfully created." )
-            window.location = '/';
+            window.location = '/myposts';
 
         }).catch(error => {
             console.log(error)

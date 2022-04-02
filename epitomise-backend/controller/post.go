@@ -68,13 +68,15 @@ func seed(db *gorm.DB) {
 	}
 }
 
-func GetPosts(test bool) []model.Post {
+func GetPosts(userid uint, test bool) []model.Post {
 	if test {
 		db := database.GetDB()
 		// seed(db)
 		// GetPostTags(1)
 		tagArrays := []model.TagResponse{}
-		db.Find(&Posts)
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ?", userid).Find(&Posts)
+
 		fmt.Println("From controller", Posts)
 
 		for i, p := range Posts {
@@ -88,13 +90,16 @@ func GetPosts(test bool) []model.Post {
 	return Posts
 }
 
-func CreatePost(post model.Post, test bool) int {
+func CreatePost(post model.Post, userid uint, test bool) int {
 	if test {
 		db := database.GetDB()
+		fmt.Println(userid)
+		post.IDUser = userid
+		tags := strings.Split(post.Tags, ",")
+		post.TagList = tags
 		if err := db.Create(&post).Error; err != nil {
 			return http.StatusBadRequest
 		}
-		tags := strings.Split(post.Tags, ",")
 
 		if createTag(tags) == http.StatusCreated {
 			fmt.Println("tags created - creating posttags!")
@@ -123,11 +128,12 @@ func GetPost(id uint64, test bool) (model.Post, int) {
 
 }
 
-func EditPost(id uint64, post model.Post, test bool) (error, int) {
+func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 	if test {
 		db := database.GetDB()
 		var postModel model.Post
 		if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+			post.IDUser = userid
 			post.PostsUId = uint(id)
 			if err := db.Save(&post).Error; err != nil {
 				return err, http.StatusBadRequest

@@ -1,56 +1,14 @@
 import * as React from 'react';
-import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
+import Cookies from 'universal-cookie';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -58,6 +16,8 @@ export default function Header() {
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const cookies = new Cookies();
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -70,6 +30,20 @@ export default function Header() {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    window.location = '/userprofile';
+  };
+
+  const myposts = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/myposts';
+  };
+
+  const logout = () => {
+    cookies.remove("access_token", { path: '/' })
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location.reload();
   };
 
   const handleMobileMenuOpen = (event) => {
@@ -93,8 +67,9 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} style={{color: "black", fontFamily: 'Raleway'}}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose} style={{color: "black", fontFamily: 'Raleway'}}>My account</MenuItem>
+      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
+      <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
+      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -132,26 +107,20 @@ export default function Header() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" style={{background: "white"}}>
+      <AppBar position="static" style={{ background: "white" }}>
         <Toolbar>
-          <img src="/favicon.ico" alt="logo" style={{maxWidth: 30, marginRight: '10px'}}/>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
-            style={{color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26}}>
-            Epitomize
-          </Typography>
-          <Search style={{color: "black"}}>
-            <SearchIconWrapper >
-              <SearchIcon  />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
+          <img src="/favicon.ico" alt="logo" style={{ maxWidth: 30, marginRight: '10px' }} />
+          <a href="/" style={{ textDecoration: 'none' }} >
+
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
+              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26 }}>
+              Epitomize
+            </Typography>
+          </a>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
@@ -162,7 +131,8 @@ export default function Header() {
               aria-haspopup="true"
               onClick={handleProfileMenuOpen}
               color="inherit"
-              style={{color: "black"}}
+              id="account"
+              style={{ color: "black" }}
             >
               <AccountCircle />
             </IconButton>

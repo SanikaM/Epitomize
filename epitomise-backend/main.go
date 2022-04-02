@@ -3,11 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"log"
 	"net/http"
 	"strconv"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/pilinux/gorest/controller"
 	"github.com/pilinux/gorest/database"
@@ -15,16 +17,57 @@ import (
 )
 
 var posts model.Post
+var jwtKey = []byte("my_secret_key")
 
+type Claims struct {
+	Username string `json:"username"`
+	Userid   uint
+	jwt.StandardClaims
+}
+
+func Authentification(w http.ResponseWriter, r *http.Request) uint {
+	reqToken := r.Header.Get("Authorization")
+	if len(reqToken) == 0 {
+		w.WriteHeader(http.StatusUnauthorized)
+		return http.StatusUnauthorized
+	}
+	splitToken := strings.Split(reqToken, "Bearer ")
+	reqToken = splitToken[1]
+	tknStr := reqToken
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			w.WriteHeader(http.StatusUnauthorized)
+			return http.StatusUnauthorized
+		}
+		w.WriteHeader(http.StatusBadRequest)
+		return http.StatusBadRequest
+	}
+	if !tkn.Valid {
+		w.WriteHeader(http.StatusUnauthorized)
+		return http.StatusUnauthorized
+	}
+	fmt.Println("userid", claims.Userid)
+	return claims.Userid
+}
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
-	posts := controller.GetPosts(false)
+	posts := controller.GetPosts(1, false)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
 	json.NewEncoder(w).Encode(result)
 }
 func AllPost(w http.ResponseWriter, r *http.Request) {
-	posts := controller.GetPosts(true)
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	posts := controller.GetPosts(userid, true)
 	result := model.GetAllPost{
 		Posts: posts,
 	}
@@ -43,7 +86,24 @@ func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+func AllTags(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	topTag, responseType := controller.GetAllTags(true)
+	if responseType == http.StatusOK {
+		result := make(map[string][]string)
+		result["TagList"] = topTag
+		json.NewEncoder(w).Encode(result)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
 func TopTags(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(true)
 	if responseType == http.StatusOK {
@@ -64,10 +124,172 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, false)
+	responseType := controller.CreatePost(post, 1, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
+
+func CreateNewUser(w http.ResponseWriter, r *http.Request) {
+	var user model.User
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&user)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		errorResponse := controller.CreateUser(user)
+		if errorResponse.HTTPCode == http.StatusOK {
+			json.NewEncoder(w).Encode(errorResponse.Message)
+			return
+		}
+		http.Error(w, errorResponse.Message, errorResponse.HTTPCode)
+	}
+}
+
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	user, responseType := controller.GetUser(userid)
+
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(user)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func SearchUserPostTest(w http.ResponseWriter, r *http.Request) {
+	var search model.Search
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&search)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.SearchPost(search, false)
+		result := model.GetAllSearchPost{
+			Posts: responseType,
+		}
+		json.NewEncoder(w).Encode(result)
+	}
+}
+func SearchUserPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	var search model.Search
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&search)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.SearchPost(search, true)
+		result := model.GetAllSearchPost{
+			Posts: responseType,
+		}
+		json.NewEncoder(w).Encode(result)
+	}
+}
+
+func LoginUserTest(w http.ResponseWriter, r *http.Request) {
+	var login model.Login
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&login)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.Login(login, false)
+		json.NewEncoder(w).Encode(responseType)
+	}
+}
+
+func LoginUser(w http.ResponseWriter, r *http.Request) {
+	var login model.Login
+	if r.Body != nil {
+		err := json.NewDecoder(r.Body).Decode(&login)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		responseType := controller.Login(login, true)
+		json.NewEncoder(w).Encode(responseType)
+	}
+}
+
+func GetUserFeedTest(w http.ResponseWriter, r *http.Request) {
+	posts, responseType := controller.GetUserFeed(1, false)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func GetUserFeed(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	posts, responseType := controller.GetUserFeed(userid, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func GetUserRecommendations(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	posts, responseType := controller.GetUserRecommendations(userid)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+func UserListTest(w http.ResponseWriter, r *http.Request) {
+	responseType := controller.UserList(1, false)
+	result := model.UserListResponses{
+		Users: responseType,
+	}
+	json.NewEncoder(w).Encode(result)
+}
+
+func UserList(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("userid")
+	userid := Authentification(w, r)
+	fmt.Println(userid)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	responseType := controller.UserList(userid, true)
+	result := model.UserListResponses{
+		Users: responseType,
+	}
+
+	json.NewEncoder(w).Encode(result)
+}
+
 func CreateNewPost(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	fmt.Println(userid)
 	var post model.Post
 	if r.Body != nil {
 		err := json.NewDecoder(r.Body).Decode(&post)
@@ -75,10 +297,11 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		responseType := controller.CreatePost(post, true)
+		responseType := controller.CreatePost(post, userid, true)
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
 	post, responseType := controller.GetPost(1, false)
 	if responseType == http.StatusOK {
@@ -90,6 +313,11 @@ func GetPostTest(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	postId, err := strconv.ParseUint(id, 10, 64)
@@ -105,16 +333,23 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
-	err, responseType := controller.EditPost(1, post, false)
+	err, responseType := controller.EditPost(1, post, 1, false)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 	} else {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+
 func EditPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	var post model.Post
 	if r.Body != nil {
 		err := json.NewDecoder(r.Body).Decode(&post)
@@ -129,7 +364,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		err, responseType := controller.EditPost(postId, post, true)
+		err, responseType := controller.EditPost(postId, post, code, true)
 		// result := http.Response{
 		// 	StatusCode: responseType,
 		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
@@ -148,13 +383,54 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
-
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, false)
 }
+func FollowUserTest(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.FollowUser(uint(Val), 1, false)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+func FollowUser(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.FollowUser(uint(Val), userid, true)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.UnFollowUser(uint(Val), 1, false)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+func UnFollowUser(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["userid"]
+	Val, _ := strconv.ParseUint(id, 10, 64)
+	responseType := controller.UnFollowUser(uint(Val), userid, true)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
 func DeletePost(w http.ResponseWriter, r *http.Request) {
-
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	controller.DeletePost(id, true)
@@ -188,11 +464,21 @@ func HandleRequests() {
 	// myRouter.Use(accessControlMiddleware)
 	myRouter.HandleFunc("/", HomePage)
 	myRouter.HandleFunc("/post", AllPost).Methods("GET")
+	myRouter.HandleFunc("/alltags", AllTags).Methods("GET")
 	myRouter.HandleFunc("/topTags", TopTags).Methods("GET")
 	myRouter.HandleFunc("/post/{id}", GetPost).Methods("GET")
 	myRouter.HandleFunc("/post", CreateNewPost).Methods("POST")
 	myRouter.HandleFunc("/post/{id}", EditPost).Methods("PUT")
 	myRouter.HandleFunc("/deleteposts/{id}", DeletePost).Methods("DELETE")
+	myRouter.HandleFunc("/login", LoginUser).Methods("POST")
+	myRouter.HandleFunc("/userlist", UserList).Methods("GET")
+	myRouter.HandleFunc("/user", CreateNewUser).Methods("POST")
+	myRouter.HandleFunc("/user", GetUser).Methods("GET")
+	myRouter.HandleFunc("/follow/{userid}", FollowUser).Methods("GET")
+	myRouter.HandleFunc("/unfollow/{userid}", UnFollowUser).Methods("GET")
+	myRouter.HandleFunc("/user/feed", GetUserFeed).Methods("GET")
+	myRouter.HandleFunc("/user/recommended", GetUserRecommendations).Methods("GET")
+	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
@@ -201,6 +487,5 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-
 	HandleRequests()
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import "./CreatePost.css"
 import axios from "axios";
+import Cookies from 'universal-cookie';
 import {
     useParams
 } from "react-router-dom";
@@ -10,6 +11,7 @@ export default function EditPost() {
 
     const baseURL = "http://localhost:8081/post/"
     let { id } = useParams();
+    const cookies = new Cookies();
 
     const [dataItem, setData] = useState("")
     const [file, setFile] = useState("")
@@ -27,7 +29,8 @@ export default function EditPost() {
 
 
     React.useEffect(() => {
-        axios.get(baseURL + id)
+        const tokenStr = cookies.get('access_token')
+        axios.get(baseURL + id,  { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
                 setValues(response.data)
@@ -44,6 +47,8 @@ export default function EditPost() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const tokenStr = cookies.get('access_token')
+
         const newPost = values
         if (file) {
             const data = new FormData();
@@ -54,7 +59,7 @@ export default function EditPost() {
 
         }
         axios
-            .put(baseURL + id, newPost)
+            .put(baseURL + id, newPost, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(response => {
                 alert("Post successfully edited.")
                 window.location = '/';
