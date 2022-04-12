@@ -3,11 +3,15 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"log"
 	"net/http"
 	"strconv"
+
+	"path/filepath"
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
@@ -73,7 +77,72 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 }
+func display(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(code)
+	user, _ := controller.GetUser(code)
+	var result model.ProfilePicResponse
+	result.Image_path = user.Profilepicture
+	json.NewEncoder(w).Encode(result)
+}
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+	// Maximum upload of 10 MB files
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(code)
+	user, _ := controller.GetUser(code)
+	r.ParseMultipartForm(10 << 20)
 
+	// Get handler for filename, size and headers
+	file, handler, err := r.FormFile("myFile")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		return
+	}
+
+	defer file.Close()
+	// Create file
+	dir, err := filepath.Abs(filepath.Dir(handler.Filename))
+	if err != nil {
+		log.Fatal(err)
+	}
+	os.Mkdir(user.Username, 0700)
+	destination := dir + "/" + user.Username + "/" + handler.Filename
+	dst, err := os.Create(destination)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer dst.Close()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := io.Copy(dst, file); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	controller.UpdateProfilePicture(code, destination)
+	fmt.Fprintf(w, "Successfully Uploaded File\n")
+}
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		uploadFile(w, r)
+	case "GET":
+		display(w, r)
+	}
+}
 func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(false)
@@ -479,6 +548,8 @@ func HandleRequests() {
 	myRouter.HandleFunc("/user/feed", GetUserFeed).Methods("GET")
 	myRouter.HandleFunc("/user/recommended", GetUserRecommendations).Methods("GET")
 	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
+	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("POST")
+	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

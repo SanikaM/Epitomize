@@ -3,6 +3,9 @@ package database
 import (
 	"fmt"
 
+	"os"
+
+	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -13,7 +16,14 @@ var DB *gorm.DB
 // InitDB - function to initialize db
 func InitDB() *gorm.DB {
 	var db = DB
-	db, err := gorm.Open(sqlite.Open("/Users/ankitkulkarni/Desktop/database.db"), &gorm.Config{})
+	godotenv.Load("../../.env")
+	val := os.Getenv("DBPATH")
+	hardcode := "/Users/akashparikh/Desktop/database.db"
+	if val == hardcode {
+		fmt.Println("Tho Problem Kya hai")
+	}
+	fmt.Println(val)
+	db, err := gorm.Open(sqlite.Open(hardcode), &gorm.Config{})
 	if err != nil {
 		panic("Error in Database connection")
 	}

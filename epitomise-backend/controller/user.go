@@ -143,3 +143,10 @@ func GetPostsWithTag(tag string) []model.Post {
 	}
 	return Posts
 }
+func UpdateProfilePicture(userid uint, filePath string) int {
+	var userModel model.User
+	db := database.GetDB()
+	db.Model(userModel).Where(" user_id = ?", userid).Update("profilepicture", filePath)
+	return http.StatusAccepted
+
+}
