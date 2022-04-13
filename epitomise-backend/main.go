@@ -116,7 +116,9 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	os.Mkdir(user.Username, 0700)
+	if _, err := os.Stat(user.Username); os.IsNotExist(err) {
+		os.Mkdir(user.Username, 0700)
+	}
 	destination := dir + "/" + user.Username + "/" + handler.Filename
 	dst, err := os.Create(destination)
 	if err != nil {
@@ -193,7 +195,7 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, 1, false)
+	responseType := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -357,17 +359,55 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(int(userid)), int(userid))
 		return
 	}
-	fmt.Println(userid)
-	fmt.Println(userid)
 	var post model.Post
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&post)
+	user, _ := controller.GetUser(userid)
+	if (user != model.User{}) {
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("myFile")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			fmt.Println("Error Retrieving the File")
+			fmt.Println(err)
 			return
 		}
-		responseType := controller.CreatePost(post, userid, true)
-		json.NewEncoder(w).Encode(http.StatusText(responseType))
+		defer file.Close()
+		dir, err := filepath.Abs(filepath.Dir(handler.Filename))
+		if err != nil {
+			log.Fatal(err)
+		}
+		if _, err := os.Stat(user.Username); os.IsNotExist(err) {
+			os.Mkdir(user.Username, 0700)
+		}
+		destination := dir + "/" + user.Username + "/" + handler.Filename
+		dst, err := os.Create(destination)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer dst.Close()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if _, err := io.Copy(dst, file); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		if r.Body != nil {
+			post.Title = r.FormValue("Title")
+			post.Content = r.FormValue("Content")
+			post.IDUser = userid
+			post.Image = destination
+			if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+				post.Linked_Post = uint(s)
+			}
+			post.Status = r.FormValue("Status")
+			post.Tags = r.FormValue("Tags")
+			post.Type = r.FormValue("Type")
+			post.Summary = r.FormValue("Summary")
+
+			responseType := controller.CreatePost(post, true)
+			json.NewEncoder(w).Encode(http.StatusText(responseType))
+		}
 	}
 }
 
@@ -434,15 +474,6 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		err, responseType := controller.EditPost(postId, post, code, true)
-		// result := http.Response{
-		// 	StatusCode: responseType,
-		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
-		// }
-		// if err != nil {
-		// 	json.NewEncoder(w).Encode(err.Error())
-		// } else {
-		// 	json.NewEncoder(w).Encode(result)
-		// }
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		} else {
