@@ -365,48 +365,63 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 		r.ParseMultipartForm(10 << 20)
 		file, handler, err := r.FormFile("myFile")
 		if err != nil {
-			fmt.Println("Error Retrieving the File")
-			fmt.Println(err)
-			return
-		}
-		defer file.Close()
-		dir, err := filepath.Abs(filepath.Dir(handler.Filename))
-		if err != nil {
-			log.Fatal(err)
-		}
-		if _, err := os.Stat(user.Username); os.IsNotExist(err) {
-			os.Mkdir(user.Username, 0700)
-		}
-		destination := dir + "/" + user.Username + "/" + handler.Filename
-		dst, err := os.Create(destination)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		defer dst.Close()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if _, err := io.Copy(dst, file); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		if r.Body != nil {
-			post.Title = r.FormValue("Title")
-			post.Content = r.FormValue("Content")
-			post.IDUser = userid
-			post.Image = destination
-			if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
-				post.Linked_Post = uint(s)
-			}
-			post.Status = r.FormValue("Status")
-			post.Tags = r.FormValue("Tags")
-			post.Type = r.FormValue("Type")
-			post.Summary = r.FormValue("Summary")
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = userid
+				post.Image = ""
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
 
-			responseType := controller.CreatePost(post, true)
-			json.NewEncoder(w).Encode(http.StatusText(responseType))
+				responseType := controller.CreatePost(post, true)
+				json.NewEncoder(w).Encode(http.StatusText(responseType))
+			}
+		}
+		if err == nil {
+			defer file.Close()
+			dir, err := filepath.Abs(filepath.Dir(handler.Filename))
+			if err != nil {
+				log.Fatal(err)
+			}
+			if _, err := os.Stat(user.Username); os.IsNotExist(err) {
+				os.Mkdir(user.Username, 0700)
+			}
+			destination := dir + "/" + user.Username + "/" + handler.Filename
+			dst, err := os.Create(destination)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = userid
+				post.Image = destination
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+
+				responseType := controller.CreatePost(post, true)
+				json.NewEncoder(w).Encode(http.StatusText(responseType))
+			}
 		}
 	}
 }
@@ -460,24 +475,89 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var post model.Post
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&post)
+	user, _ := controller.GetUser(code)
+	if (user != model.User{}) {
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("myFile")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = code
+				post.Image = ""
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+				params := mux.Vars(r)
+				id := params["id"]
+				postId, err := strconv.ParseUint(id, 10, 64)
+				if err != nil {
+					fmt.Println(err)
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				err, responseType := controller.EditPost(postId, post, code, true)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				} else {
+					json.NewEncoder(w).Encode(http.StatusText(responseType))
+				}
+			}
 		}
-		params := mux.Vars(r)
-		id := params["id"]
-		postId, err := strconv.ParseUint(id, 10, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		err, responseType := controller.EditPost(postId, post, code, true)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusServiceUnavailable)
-		} else {
-			json.NewEncoder(w).Encode(http.StatusText(responseType))
+		if err == nil {
+			defer file.Close()
+			dir, err := filepath.Abs(filepath.Dir(handler.Filename))
+			if err != nil {
+				log.Fatal(err)
+			}
+			if _, err := os.Stat(user.Username); os.IsNotExist(err) {
+				os.Mkdir(user.Username, 0700)
+			}
+			destination := dir + "/" + user.Username + "/" + handler.Filename
+			dst, err := os.Create(destination)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = code
+				post.Image = destination
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+				params := mux.Vars(r)
+				id := params["id"]
+				postId, err := strconv.ParseUint(id, 10, 64)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				err, responseType := controller.EditPost(postId, post, code, true)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				} else {
+					json.NewEncoder(w).Encode(http.StatusText(responseType))
+				}
+			}
 		}
 	}
 }
