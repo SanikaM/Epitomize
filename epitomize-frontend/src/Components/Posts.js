@@ -11,7 +11,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
-
+import jwt_decode from "jwt-decode";
 
 function Posts() {
   const baseURL = "http://localhost:8081/"
@@ -20,6 +20,12 @@ function Posts() {
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    } 
     axios.get(baseURL + 'post', { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
         setData(response.data);
@@ -32,6 +38,12 @@ function Posts() {
 
   function handleClick(value) {
     const tokenStr = cookies.get('access_token')
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    } 
     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then(() =>
         alert("Post successfully deleted."),

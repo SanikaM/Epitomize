@@ -9,7 +9,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-
+import jwt_decode from "jwt-decode";
 
 function AllUsers() {
 
@@ -19,13 +19,18 @@ function AllUsers() {
 
     function randomColor() {
         let hex = Math.floor(Math.random() * 0xFFFFFF);
-        return  "#" + hex.toString(16);
+        return "#" + hex.toString(16);
     }
-    
+
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
-        console.log(tokenStr)
-        axios.get(baseURL + 'userlist', { headers: {"Authorization" : `Bearer ${tokenStr}`} })
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+        axios.get(baseURL + 'userlist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setData(response.data);
@@ -34,17 +39,27 @@ function AllUsers() {
 
     function handleFollow(value) {
         const tokenStr = cookies.get('access_token')
-        console.log(tokenStr)
-        console.log("userid", value)
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
-          .then((response) =>
-            alert( "Successfully followed the user." ),
-            window.location.reload()
-          );
-      }
+            .then((response) =>
+                alert("Successfully followed the user."),
+                window.location.reload()
+            );
+    }
 
-      function handleUnfollow(value) {
+    function handleUnfollow(value) {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
                 alert("Successfully unfollowed the user."),
@@ -57,7 +72,7 @@ function AllUsers() {
         return (
             <Stack spacing={2}>
                 <List sx={{ width: '100%', maxWidth: 500, marginLeft: "45%" }}>
-                <h2>Who to Follow: </h2>
+                    <h2>Who to Follow: </h2>
 
                     {
                         data['Users'].map(item => (
@@ -67,7 +82,7 @@ function AllUsers() {
                                         backgroundColor: randomColor()
                                     }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
                                 </ListItemAvatar>
-                                <ListItemText sx={{textTransform: 'capitalize'}}
+                                <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={item.Username}
                                     secondary={
                                         <React.Fragment>

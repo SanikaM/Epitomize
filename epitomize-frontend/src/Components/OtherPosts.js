@@ -11,8 +11,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography';
-import { CardActionArea, CardActions } from '@mui/material';
+import { CardActionArea, CardActions, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import CardMedia from '@mui/material/CardMedia';
+import jwt_decode from 'jwt-decode';
 
 function OtherPosts() {
 
@@ -23,6 +25,12 @@ function OtherPosts() {
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
 
         axios.get(baseURL + 'user/feed', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
@@ -48,7 +56,7 @@ function OtherPosts() {
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
-        if (followingData  && followingData.length > 0 ) {
+    if (followingData && followingData.length > 0) {
 
         return (
             <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -76,11 +84,22 @@ function OtherPosts() {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
+                                    <CardMedia
+                                        component="img"
+                                        height="150"
+                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
+                                        alt={item.Title}
+                                    />
                                     <CardActions sx={{ fontSize: 11 }}>
                                         <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
                                         <div>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
+                                        </div>
+                                        <div style={{ marginLeft: 'auto' }}>
+                                            <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
+                                            </Button>
                                         </div>
                                     </CardActions>
                                 </Card>
@@ -104,13 +123,23 @@ function OtherPosts() {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
+                                    <CardMedia
+                                        component="img"
+                                        height="150"
+                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
+                                        alt={item.Title}
+                                    />
                                     <CardActions sx={{ fontSize: 11 }}>
                                         <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
                                         <div>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
-
+                                        <div style={{ marginLeft: 'auto' }}>
+                                            <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
+                                            </Button>
+                                        </div>
                                     </CardActions>
                                 </Card>
 

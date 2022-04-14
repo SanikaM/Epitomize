@@ -9,6 +9,8 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Cookies from 'universal-cookie';
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -136,6 +138,14 @@ export default function Header() {
             </Typography>
           </a>
           <Box sx={{ flexGrow: 1 }} />
+          <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+            >
+              <Badge badgeContent={17} color="error">
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"

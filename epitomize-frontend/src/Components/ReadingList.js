@@ -11,7 +11,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
-
+import jwt_decode from "jwt-decode";
 
 function ReadingList() {
     const baseURL = "http://localhost:8081/"
@@ -20,6 +20,12 @@ function ReadingList() {
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + 'myreadinglist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
@@ -30,6 +36,12 @@ function ReadingList() {
 
     function handleClick(value) {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
                 alert("Post successfully deleted."),
@@ -75,10 +87,6 @@ function ReadingList() {
                             </div>
 
                             <div style={{ marginLeft: 'auto' }}>
-                                <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
-                                    <EditIcon sx={{ color: "#b3e6ff" }} />
-                                </Link>
-
                                 <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                                     <DeleteIcon sx={{ color: "#cb1010", marginBottom: "0.6em" }} />
                                 </Button>

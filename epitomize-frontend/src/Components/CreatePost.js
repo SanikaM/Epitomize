@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import "./CreatePost.css"
 import axios from "axios";
 import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 export default function CreatePost() {
 
@@ -18,6 +19,14 @@ export default function CreatePost() {
 
     function handleSubmit(e) {
         const tokenStr = cookies.get('access_token')
+
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+
         const data = new FormData();
         data.append("Title", Title);
         data.append("Content", Content);
@@ -26,21 +35,30 @@ export default function CreatePost() {
         data.append("Type", Type);
         data.append("Status", Status);
         data.append("myFile", myFile);
-        
-        axios
-        .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
-        .then(response => {
-            console.log(response.data);
-            alert( "Post successfully created." )
-            window.location = '/myposts';
 
-        }).catch(error => {
-            console.log(error)
-        });
+
+
+        axios
+            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .then(response => {
+                console.log(response.data);
+                alert("Post successfully created.")
+                window.location = '/myposts';
+
+            }).catch(error => {
+                console.log(error)
+            });
     }
 
     function handleDraft(e) {
+
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         const data = new FormData();
         data.append("Title", Title);
         data.append("Content", Content);
@@ -49,17 +67,17 @@ export default function CreatePost() {
         data.append("Type", Type);
         data.append("Status", 1);
         data.append("myFile", myFile);
-        
-        axios
-        .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
-        .then(response => {
-            console.log(response.data);
-            alert( "Post successfully created." )
-            window.location = '/mydrafts';
 
-        }).catch(error => {
-            console.log(error)
-        });
+        axios
+            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .then(response => {
+                console.log(response.data);
+                alert("Post successfully created.")
+                window.location = '/mydrafts';
+
+            }).catch(error => {
+                console.log(error)
+            });
     }
 
     return (
@@ -78,17 +96,17 @@ export default function CreatePost() {
 
 
                 </div>
-                <br/>
+                <br />
                 <div className="postFromGroup">
                     <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
                     <input type="text" placeholder="Title" className="postInput" autoFocus={true} id="title"
-                    data-testid="title"
+                        data-testid="title"
                         onChange={e => setTitle(e.target.value)} />
 
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Summary" className="postSummary" autoFocus={true} id="summary"
-                    data-testid="summary"
+                        data-testid="summary"
                         onChange={e => setSummary(e.target.value)} />
 
                 </div>
@@ -97,18 +115,18 @@ export default function CreatePost() {
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Tags" className="postTags" autoFocus={true} id="tags"
-                    data-testid="tags"
+                        data-testid="tags"
                         onChange={e => setTags(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Type" className="postTags" autoFocus={true} id="posttype"
-                    data-testid="posttype"
+                        data-testid="posttype"
                         onChange={e => setType(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
 
                     <textarea placeholder="Tell your story.." type="text" className="postInput postText" id="content"
-                    data-testid="content"
+                        data-testid="content"
                         onChange={e => setContent(e.target.value)}></textarea>
                 </div>
 
