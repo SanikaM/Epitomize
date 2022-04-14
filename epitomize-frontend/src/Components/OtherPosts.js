@@ -48,7 +48,7 @@ function OtherPosts() {
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
-        if (followingData && recommendedData && followingData.length > 0 && recommendedData.length > 0) {
+        if (followingData  && followingData.length > 0 ) {
 
         return (
             <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -90,7 +90,7 @@ function OtherPosts() {
                     </TabPanel>
                     <TabPanel value="2">
                         <Stack spacing={2}>
-                            {recommendedData.map(item => (
+                            {recommendedData && recommendedData.map(item => (
                                 <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                                     <CardActionArea>
                                         <CardContent>

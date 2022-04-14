@@ -13,36 +13,22 @@ export default function CreatePost() {
     const [Summary, setSummary] = useState("")
     const [Type, setType] = useState("")
     const [Tags, setTags] = useState("")
-    const [file, setFile] = useState(null)
-    let Status = "Draft"
+    const [myFile, setFile] = useState("")
+    let Status = 0
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    function handleSubmit(e) {
         const tokenStr = cookies.get('access_token')
-
-        const newPost = {
-            Title,
-            Content,
-            Summary,
-            Tags,
-            Type,
-            Status,
-        };
-        if (file) {
-            const data = new FormData();
-            const filename = Date.now() + file.name;
-            data.append("name", filename);
-            data.append("file", file);
-            //newPost.photo=filename;
-            // try {
-            //     //await axios.post("/upload",data).then(res=>console.log('post created'));
-
-            // } catch (err) {
-
-            // }
-        }
+        const data = new FormData();
+        data.append("Title", Title);
+        data.append("Content", Content);
+        data.append("Summary", Summary);
+        data.append("Tags", Tags);
+        data.append("Type", Type);
+        data.append("Status", Status);
+        data.append("myFile", myFile);
+        
         axios
-        .post(baseURL, newPost, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
         .then(response => {
             console.log(response.data);
             alert( "Post successfully created." )
@@ -52,20 +38,47 @@ export default function CreatePost() {
             console.log(error)
         });
     }
+
+    function handleDraft(e) {
+        const tokenStr = cookies.get('access_token')
+        const data = new FormData();
+        data.append("Title", Title);
+        data.append("Content", Content);
+        data.append("Summary", Summary);
+        data.append("Tags", Tags);
+        data.append("Type", Type);
+        data.append("Status", 1);
+        data.append("myFile", myFile);
+        
+        axios
+        .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+        .then(response => {
+            console.log(response.data);
+            alert( "Post successfully created." )
+            window.location = '/mydrafts';
+
+        }).catch(error => {
+            console.log(error)
+        });
+    }
+
     return (
         <div className="createpost">
-            {file && (
-                <img className="postImg" src={URL.createObjectURL(file)} alt="" />
+            {myFile && (
+                <img className="postImg" src={URL.createObjectURL(myFile)} alt="" />
             )}
-            <form className="postForm" onSubmit={handleSubmit}>
+            <form className="postForm" >
                 <div className="postFromGroup">
 
                     <label className="addImgButton" htmlFor="fileInput">
                         Add Image
                     </label>
-                    <button className="postSubmit" type="submit" id="publish">Publish</button>
+                    <button className="postSubmit" type="submit" id="publish" onClick={(e) => handleSubmit()}>Publish</button>
+                    <button className="postSubmit" type="submit" id="draft" onClick={(e) => handleDraft()}>Save as Draft</button>
+
 
                 </div>
+                <br/>
                 <div className="postFromGroup">
                     <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
                     <input type="text" placeholder="Title" className="postInput" autoFocus={true} id="title"

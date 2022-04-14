@@ -21,6 +21,7 @@ function Post() {
 
         axios.get(baseURL + 'post/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
+                console.log(response.data)
                 setData(response.data);
             });
     }, []);
@@ -29,6 +30,8 @@ function Post() {
         <div>
             {data !== undefined ?
             <div sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} >
+            <img src={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')} style={{height: "450px", width: "100%"}}/>
+            <Divider style={{marginTop: "20px",  marginBottom: "20px"}}/>
             <h1 sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left'}} style={{ textTransform: "capitalize"}}>{data.Title}</h1>
             <Divider style={{ marginBottom: "20px"}} />
             <Stack direction="row" spacing={2} style={{ textTransform: "capitalize"}}>

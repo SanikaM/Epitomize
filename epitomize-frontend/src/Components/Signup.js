@@ -130,18 +130,6 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="profilepic"
-                  name="Profilepicture"
-                  required
-                  fullWidth
-                  id="Profilepicture"
-                  label="Profile Picture"
-                  autoFocus
-                />
-              </Grid>
               <Grid item xs={12}>
                 <Autocomplete
                   multiple

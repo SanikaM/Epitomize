@@ -22,8 +22,9 @@ export default function EditPost() {
         Summary: dataItem.Summary,
         Tags: dataItem.Tags,
         Type: dataItem.Type,
+        File: dataItem.Image,
         LinkedPost: 1,
-        Status: "Draft"
+        Status: 0
     }
     const [values, setValues] = useState(initialValues);
 
@@ -33,6 +34,7 @@ export default function EditPost() {
         axios.get(baseURL + id,  { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
+                console.log(response.data)
                 setValues(response.data)
             });
     }, []);
