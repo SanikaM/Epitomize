@@ -39,6 +39,18 @@ export default function Header() {
     window.location = '/myposts';
   };
 
+  const mydrafts = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/mydrafts';
+  };
+
+  const myreadinglist = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/myreadinglist';
+  };
+
   const logout = () => {
     cookies.remove("access_token", { path: '/' })
     setAnchorEl(null);
@@ -69,6 +81,8 @@ export default function Header() {
     >
       <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
       <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
+      <MenuItem onClick={mydrafts} style={{ color: "black", fontFamily: 'Raleway' }}>My Drafts</MenuItem>
+      <MenuItem onClick={myreadinglist} style={{ color: "black", fontFamily: 'Raleway' }}>My Reading List</MenuItem>
       <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
     </Menu>
   );

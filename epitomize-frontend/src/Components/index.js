@@ -19,6 +19,8 @@ import AllUsers from './AllUsers';
 import Users from './Users'
 import SignUp from './Signup';
 import UserProfile from './UserProfile';
+import Drafts from './Drafts';
+import ReadingList from './ReadingList';
 
 const Components = () => {
     return(
@@ -34,6 +36,8 @@ const Components = () => {
             <Route path = "/users" element={<Users />} />
             <Route path = "/signup" element={<SignUp />} />
             <Route path = "/userprofile" element={<UserProfile />} />
+            <Route path = "/mydrafts" element={<Drafts />}  />
+            <Route path = "/myreadinglist" element={<ReadingList />}  />
             </Routes>
         </Router>
     );
