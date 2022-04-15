@@ -29,24 +29,25 @@ function Drafts() {
         axios.get(baseURL + 'draft', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
+                console.log(data)
             });
     }, []);
 
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     function handleClick(value) {
-        const tokenStr = cookies.get('access_token')
-        let decodedToken = jwt_decode(tokenStr);
-        let currentDate = new Date();
-        if (decodedToken.exp * 1000 < currentDate.getTime()) {
-            cookies.remove("access_token", { path: '/' })
-            window.location = "/"
-        }
-        axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-            .then(() =>
-                alert("Post successfully deleted."),
-                window.location.reload()
-            );
+    //     const tokenStr = cookies.get('access_token')
+    //     let decodedToken = jwt_decode(tokenStr);
+    //     let currentDate = new Date();
+    //     if (decodedToken.exp * 1000 < currentDate.getTime()) {
+    //         cookies.remove("access_token", { path: '/' })
+    //         window.location = "/"
+    //     }
+    //     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+    //         .then(() =>
+    //             alert("Draft successfully deleted."),
+    //             window.location.reload()
+    //         );
     }
 
     function handlePublish(value) {
@@ -57,20 +58,15 @@ function Drafts() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.delete(baseURL + "publish/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + "toPost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
                 alert("Draft successfully published."),
-                window.location.reload()
+                window.location = '/myposts'
             );
     }
 
-    if (!data) return (
-        <Stack spacing={2}>
-            <h1>My Drafts</h1>
-            <h4>No drafts</h4>
-        </Stack>
-    )
-    else
+
+    if (data && data['Posts'].length > 0)
         return (
 
             <Stack spacing={2}>
@@ -105,7 +101,7 @@ function Drafts() {
 
                             <div style={{ marginLeft: 'auto' }}>
                                 <Button onClick={() => handlePublish(item.PostsUId)} id="publish">
-                                    <Publish sx={{ color: "#b3e6ff" }} />
+                                    <Publish sx={{ color: "#2ea1da" }} />
                                 </Button>
 
                                 <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
@@ -119,6 +115,13 @@ function Drafts() {
             </Stack>
 
         );
+
+    else return (
+        <Stack spacing={2}>
+            <h1>My Drafts</h1>
+            <h4>No drafts</h4>
+        </Stack>
+    )
 }
 
 export default Drafts
