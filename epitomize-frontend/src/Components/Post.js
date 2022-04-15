@@ -36,7 +36,7 @@ function Post() {
         <div>
             {data !== undefined ?
             <div sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} >
-            <img src={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')} style={{height: "450px", width: "100%"}}/>
+            <img src={require(data.Image)} style={{height: "450px", width: "100%"}}/>
             <Divider style={{marginTop: "20px",  marginBottom: "20px"}}/>
             <h1 sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left'}} style={{ textTransform: "capitalize"}}>{data.Title}</h1>
             <Divider style={{ marginBottom: "20px"}} />
