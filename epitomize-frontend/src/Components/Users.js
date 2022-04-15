@@ -8,7 +8,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Cookies from 'universal-cookie';
-
+import jwt_decode from "jwt-decode";
 
 function Users() {
 
@@ -17,7 +17,12 @@ function Users() {
     const cookies = new Cookies();
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
-        console.log(tokenStr)
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + 'userlist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
@@ -26,6 +31,12 @@ function Users() {
 
     function handleFollow(value) {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
                 alert("Successfully followed the user."),
@@ -35,6 +46,12 @@ function Users() {
 
     function handleUnfollow(value) {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
         axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
                 alert("Successfully unfollowed the user."),
@@ -62,7 +79,7 @@ function Users() {
                                         backgroundColor: randomColor()
                                     }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
                                 </ListItemAvatar>
-                                <ListItemText sx={{textTransform: 'capitalize'}}
+                                <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={item.Username}
                                     secondary={
                                         <React.Fragment>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import "./CreatePost.css"
 import axios from "axios";
 import Cookies from 'universal-cookie';
+import jwt_decode from "jwt-decode";
 
 export default function CreatePost() {
 
@@ -13,69 +14,99 @@ export default function CreatePost() {
     const [Summary, setSummary] = useState("")
     const [Type, setType] = useState("")
     const [Tags, setTags] = useState("")
-    const [file, setFile] = useState(null)
-    let Status = "Draft"
+    const [myFile, setFile] = useState("")
+    let Status = 0
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    function handleSubmit(e) {
         const tokenStr = cookies.get('access_token')
 
-        const newPost = {
-            Title,
-            Content,
-            Summary,
-            Tags,
-            Type,
-            Status,
-        };
-        if (file) {
-            const data = new FormData();
-            const filename = Date.now() + file.name;
-            data.append("name", filename);
-            data.append("file", file);
-            //newPost.photo=filename;
-            // try {
-            //     //await axios.post("/upload",data).then(res=>console.log('post created'));
-
-            // } catch (err) {
-
-            // }
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
         }
-        axios
-        .post(baseURL, newPost, { headers: { "Authorization": `Bearer ${tokenStr}` } })
-        .then(response => {
-            console.log(response.data);
-            alert( "Post successfully created." )
-            window.location = '/myposts';
 
-        }).catch(error => {
-            console.log(error)
-        });
+        const data = new FormData();
+        data.append("Title", Title);
+        data.append("Content", Content);
+        data.append("Summary", Summary);
+        data.append("Tags", Tags);
+        data.append("Type", Type);
+        data.append("Status", Status);
+        data.append("myFile", myFile);
+
+
+
+        axios
+            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .then(response => {
+                console.log(response.data);
+                alert("Post successfully created.")
+                window.location = '/myposts';
+
+            }).catch(error => {
+                console.log(error)
+            });
     }
+
+    function handleDraft(e) {
+
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+        const data = new FormData();
+        data.append("Title", Title);
+        data.append("Content", Content);
+        data.append("Summary", Summary);
+        data.append("Tags", Tags);
+        data.append("Type", Type);
+        data.append("Status", 1);
+        data.append("myFile", myFile);
+
+        axios
+            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .then(response => {
+                console.log(response.data);
+                alert("Post successfully created.")
+                window.location = '/mydrafts';
+
+            }).catch(error => {
+                console.log(error)
+            });
+    }
+
     return (
         <div className="createpost">
-            {file && (
-                <img className="postImg" src={URL.createObjectURL(file)} alt="" />
+            {myFile && (
+                <img className="postImg" src={URL.createObjectURL(myFile)} alt="" />
             )}
-            <form className="postForm" onSubmit={handleSubmit}>
+            <form className="postForm" >
                 <div className="postFromGroup">
 
                     <label className="addImgButton" htmlFor="fileInput">
                         Add Image
                     </label>
-                    <button className="postSubmit" type="submit" id="publish">Publish</button>
+                    <button className="postSubmit" type="submit" id="publish" onClick={(e) => handleSubmit()}>Publish</button>
+                    <button className="postSubmit" type="submit" id="draft" onClick={(e) => handleDraft()}>Save as Draft</button>
+
 
                 </div>
+                <br />
                 <div className="postFromGroup">
                     <input type="file" id="fileInput" style={{ display: "none" }} onChange={(e) => setFile(e.target.files[0])} />
                     <input type="text" placeholder="Title" className="postInput" autoFocus={true} id="title"
-                    data-testid="title"
+                        data-testid="title"
                         onChange={e => setTitle(e.target.value)} />
 
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Summary" className="postSummary" autoFocus={true} id="summary"
-                    data-testid="summary"
+                        data-testid="summary"
                         onChange={e => setSummary(e.target.value)} />
 
                 </div>
@@ -84,18 +115,18 @@ export default function CreatePost() {
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Tags" className="postTags" autoFocus={true} id="tags"
-                    data-testid="tags"
+                        data-testid="tags"
                         onChange={e => setTags(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
                     <input type="text" placeholder="Type" className="postTags" autoFocus={true} id="posttype"
-                    data-testid="posttype"
+                        data-testid="posttype"
                         onChange={e => setType(e.target.value)} />
                 </div>
                 <div className="postFromGroup">
 
                     <textarea placeholder="Tell your story.." type="text" className="postInput postText" id="content"
-                    data-testid="content"
+                        data-testid="content"
                         onChange={e => setContent(e.target.value)}></textarea>
                 </div>
 

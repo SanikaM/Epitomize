@@ -90,11 +90,9 @@ func GetPosts(userid uint, test bool) []model.Post {
 	return Posts
 }
 
-func CreatePost(post model.Post, userid uint, test bool) int {
+func CreatePost(post model.Post, test bool) int {
 	if test {
 		db := database.GetDB()
-		fmt.Println(userid)
-		post.IDUser = userid
 		tags := strings.Split(post.Tags, ",")
 		post.TagList = tags
 		if err := db.Create(&post).Error; err != nil {

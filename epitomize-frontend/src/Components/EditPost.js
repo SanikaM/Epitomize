@@ -5,7 +5,7 @@ import Cookies from 'universal-cookie';
 import {
     useParams
 } from "react-router-dom";
-
+import jwt_decode from "jwt-decode";
 
 export default function EditPost() {
 
@@ -22,17 +22,25 @@ export default function EditPost() {
         Summary: dataItem.Summary,
         Tags: dataItem.Tags,
         Type: dataItem.Type,
+        File: dataItem.Image,
         LinkedPost: 1,
-        Status: "Draft"
+        Status: 0
     }
     const [values, setValues] = useState(initialValues);
 
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    } 
         axios.get(baseURL + id,  { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
+                console.log(response.data)
                 setValues(response.data)
             });
     }, []);

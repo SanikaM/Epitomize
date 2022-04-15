@@ -17,6 +17,7 @@ type Post struct {
 	Status      string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	Image       string
 	TagList     pq.StringArray `gorm:"type:text[]"`
 	Tags        string
 	IDUser      uint `json:"-"`

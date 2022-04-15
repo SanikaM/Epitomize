@@ -7,6 +7,7 @@ import Cookies from 'universal-cookie';
 import {
     useParams
   } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 function Post() {
     const baseURL = "http://localhost:8081/";
@@ -18,9 +19,15 @@ function Post() {
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
-
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+          cookies.remove("access_token", { path: '/' })
+          window.location = "/"
+        } 
         axios.get(baseURL + 'post/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
+                console.log(response.data)
                 setData(response.data);
             });
     }, []);
@@ -29,6 +36,8 @@ function Post() {
         <div>
             {data !== undefined ?
             <div sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} >
+            <img src={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')} style={{height: "450px", width: "100%"}}/>
+            <Divider style={{marginTop: "20px",  marginBottom: "20px"}}/>
             <h1 sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left'}} style={{ textTransform: "capitalize"}}>{data.Title}</h1>
             <Divider style={{ marginBottom: "20px"}} />
             <Stack direction="row" spacing={2} style={{ textTransform: "capitalize"}}>

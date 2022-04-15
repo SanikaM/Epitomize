@@ -8,6 +8,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import jwt_decode from "jwt-decode";
 
 const useStyles = makeStyles({
     root: {
@@ -40,6 +41,12 @@ function Search() {
         }
         else {
             const tokenStr = cookies.get('access_token')
+            let decodedToken = jwt_decode(tokenStr);
+            let currentDate = new Date();
+            if (decodedToken.exp * 1000 < currentDate.getTime()) {
+                cookies.remove("access_token", { path: '/' })
+                window.location = "/"
+            }
             let body = {
                 "Text": event.target.value
             }
