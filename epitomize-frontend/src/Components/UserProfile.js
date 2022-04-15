@@ -43,7 +43,6 @@ export default function UserProfile() {
 
     axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
-        console.log(response.data)
         setData(response.data);
         setPreview(
           response.data.Profilepicture

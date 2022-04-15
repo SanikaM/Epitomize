@@ -11,10 +11,17 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 import Cookies from 'universal-cookie';
 import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+
+const images = require.context('./images', true);
 
 export default function Header() {
+  const baseURL = "http://localhost:8081/"
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [data, setData] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -63,6 +70,22 @@ export default function Header() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  React.useEffect(() => {
+    const tokenStr = cookies.get('access_token')
+
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
+    axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then((response) => {
+        setData(response.data);
+      });
+  }, []);
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -139,13 +162,13 @@ export default function Header() {
           </a>
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-            >
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+            size="large"
+            aria-label="show 17 new notifications"
+          >
+            <Badge badgeContent={17} color="error">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -158,7 +181,19 @@ export default function Header() {
               id="account"
               style={{ color: "black" }}
             >
-              <AccountCircle />
+              {data && data.Profilepicture ?
+                <Box>
+                  <img className="preview" src={require("./images/" + data.Profilepicture)} style={{
+                    borderRadius: "50%",
+                    width: 40,
+                    height: 40
+                  }} />
+
+                </Box>
+                :
+                <AccountCircle />
+              }
+
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
