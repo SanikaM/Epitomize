@@ -72,7 +72,7 @@ export default function CreatePost() {
             .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
             .then(response => {
                 console.log(response.data);
-                alert("Post successfully created.")
+                alert("Draft created.")
                 window.location = '/mydrafts';
 
             }).catch(error => {
