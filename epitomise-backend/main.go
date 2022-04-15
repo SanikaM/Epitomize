@@ -11,8 +11,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"path/filepath"
-
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
 	"github.com/pilinux/gorest/controller"
@@ -77,6 +75,19 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 }
+func AllDraft(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	posts := controller.GetDrafts(userid, true)
+	result := model.GetAllPost{
+		Posts: posts,
+	}
+	json.NewEncoder(w).Encode(result)
+}
 func display(w http.ResponseWriter, r *http.Request) {
 	code := Authentification(w, r)
 	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
@@ -111,13 +122,13 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer file.Close()
+	fmt.Println("Hello")
+	fmt.Println(handler.Filename)
+	fmt.Println(user.Username)
 	// Create file
-	dir, err := filepath.Abs(filepath.Dir(handler.Filename))
-	if err != nil {
-		log.Fatal(err)
-	}
-	if _, err := os.Stat(user.Username); os.IsNotExist(err) {
-		os.Mkdir(user.Username, 0700)
+	dir := "../epitomize-frontend/src/images"
+	if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+		os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
 	}
 	destination := dir + "/" + user.Username + "/" + handler.Filename
 	dst, err := os.Create(destination)
@@ -134,7 +145,8 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	controller.UpdateProfilePicture(code, destination)
+	filedst := user.Username + "/" + handler.Filename
+	controller.UpdateProfilePicture(code, filedst)
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
@@ -383,13 +395,9 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if err == nil {
-			defer file.Close()
-			dir, err := filepath.Abs(filepath.Dir(handler.Filename))
-			if err != nil {
-				log.Fatal(err)
-			}
-			if _, err := os.Stat(user.Username); os.IsNotExist(err) {
-				os.Mkdir(user.Username, 0700)
+			dir := "../epitomize-frontend/src/images"
+			if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+				os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
 			}
 			destination := dir + "/" + user.Username + "/" + handler.Filename
 			dst, err := os.Create(destination)
@@ -406,11 +414,12 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+			filedst := user.Username + "/" + handler.Filename
 			if r.Body != nil {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
 				post.IDUser = userid
-				post.Image = destination
+				post.Image = filedst
 				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
 					post.Linked_Post = uint(s)
 				}
@@ -457,6 +466,27 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+func GetDraft(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	post, responseType := controller.GetDraft(postId, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
 
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
@@ -467,7 +497,29 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+func ConvertToPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var post model.Post
+	_, responseType := controller.ConvertDraft(postId, post, code, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
 
+}
 func EditPost(w http.ResponseWriter, r *http.Request) {
 	code := Authentification(w, r)
 	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
@@ -509,13 +561,9 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if err == nil {
-			defer file.Close()
-			dir, err := filepath.Abs(filepath.Dir(handler.Filename))
-			if err != nil {
-				log.Fatal(err)
-			}
-			if _, err := os.Stat(user.Username); os.IsNotExist(err) {
-				os.Mkdir(user.Username, 0700)
+			dir := "../epitomize-frontend/src/images"
+			if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+				os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
 			}
 			destination := dir + "/" + user.Username + "/" + handler.Filename
 			dst, err := os.Create(destination)
@@ -532,11 +580,12 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
+			filedst := user.Username + "/" + handler.Filename
 			if r.Body != nil {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
 				post.IDUser = code
-				post.Image = destination
+				post.Image = filedst
 				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
 					post.Linked_Post = uint(s)
 				}
@@ -565,7 +614,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
-	controller.DeletePost(id, false)
+	controller.DeletePost(id, 1, false)
 }
 func FollowUserTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -584,6 +633,9 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), userid, true)
+	if responseType == 200 {
+
+	}
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
@@ -613,7 +665,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	}
 	params := mux.Vars(r)
 	id := params["id"]
-	controller.DeletePost(id, true)
+	controller.DeletePost(id, code, true)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -661,6 +713,9 @@ func HandleRequests() {
 	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
 	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("POST")
 	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("GET")
+	myRouter.HandleFunc("/draft", AllDraft).Methods("GET")
+	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
+	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

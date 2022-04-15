@@ -7,7 +7,7 @@ import (
 	"github.com/pilinux/gorest/database/model"
 )
 
-func DeletePost(id string, userid uint, test bool) string {
+func Notify(id string, userid uint, test bool) string {
 	if test {
 		db := database.GetDB()
 		IdNum, _ := strconv.ParseUint(id, 10, 32)
