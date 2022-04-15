@@ -145,7 +145,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	filedst := "../images/" + user.Username + "/" + handler.Filename
+	filedst := user.Username + "/" + handler.Filename
 	controller.UpdateProfilePicture(code, filedst)
 	fmt.Fprintf(w, "Successfully Uploaded File\n")
 }
@@ -414,7 +414,7 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			filedst := "../images/" + user.Username + "/" + handler.Filename
+			filedst := user.Username + "/" + handler.Filename
 			if r.Body != nil {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
@@ -580,7 +580,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			filedst := "../images/" + user.Username + "/" + handler.Filename
+			filedst := user.Username + "/" + handler.Filename
 			if r.Body != nil {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
@@ -633,6 +633,9 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), userid, true)
+	if responseType == 200 {
+
+	}
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
