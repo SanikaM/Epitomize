@@ -664,16 +664,6 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	id := params["id"]
 	controller.DeletePost(id, code, true)
 }
-func DeleteDraft(w http.ResponseWriter, r *http.Request) {
-	code := Authentification(w, r)
-	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
-		http.Error(w, http.StatusText(int(code)), int(code))
-		return
-	}
-	params := mux.Vars(r)
-	id := params["id"]
-	controller.DeleteDraft(id, code, true)
-}
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "HomePage")
@@ -721,7 +711,6 @@ func HandleRequests() {
 	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("POST")
 	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("GET")
 	myRouter.HandleFunc("/draft", AllDraft).Methods("GET")
-	myRouter.HandleFunc("/deletedraft/{id}", DeleteDraft).Methods("DELETE")
 	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
