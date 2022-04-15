@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/pilinux/gorest/database"
@@ -75,7 +76,29 @@ func GetPosts(userid uint, test bool) []model.Post {
 		// GetPostTags(1)
 		tagArrays := []model.TagResponse{}
 		fmt.Println("From controller", Posts)
-		db.Where("id_user = ?", userid).Find(&Posts)
+		db.Where("id_user = ? AND status = ?", userid, 0).Find(&Posts)
+
+		fmt.Println("From controller", Posts)
+
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			tagTemp.Type = GetPostTags(p.PostsUId)
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+
+		}
+	}
+	return Posts
+}
+
+func GetDrafts(userid uint, test bool) []model.Post {
+	if test {
+		db := database.GetDB()
+		// seed(db)
+		// GetPostTags(1)
+		tagArrays := []model.TagResponse{}
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ? AND status = ?", userid, 1).Find(&Posts)
 
 		fmt.Println("From controller", Posts)
 
@@ -113,7 +136,23 @@ func GetPost(id uint64, test bool) (model.Post, int) {
 	var postModel model.Post
 	if test {
 		db := database.GetDB()
-		if err := db.First(&postModel, "posts_uid = ?", id).Error; err != nil {
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return postModel, http.StatusNotFound
+			} else {
+				return postModel, http.StatusBadRequest
+			}
+		}
+		return postModel, http.StatusOK
+	}
+	return postModel, http.StatusOK
+
+}
+func GetDraft(id uint64, test bool) (model.Post, int) {
+	var postModel model.Post
+	if test {
+		db := database.GetDB()
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 1).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				return postModel, http.StatusNotFound
 			} else {
@@ -130,9 +169,27 @@ func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 	if test {
 		db := database.GetDB()
 		var postModel model.Post
-		if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err == nil {
 			post.IDUser = userid
 			post.PostsUId = uint(id)
+			if err := db.Save(&post).Error; err != nil {
+				return err, http.StatusBadRequest
+			}
+			return nil, http.StatusOK
+		}
+		return nil, http.StatusNotFound
+	}
+	return nil, http.StatusOK
+}
+
+func ConvertDraft(id uint64, post model.Post, userid uint, test bool) (error, int) {
+	if test {
+		db := database.GetDB()
+		var postModel model.Post
+		if err := db.First(&postModel, "id_user = ? posts_uid = ? and status = ?", userid, id, 1).Error; err == nil {
+			post.IDUser = userid
+			post.PostsUId = uint(id)
+			post.Status = strconv.Itoa(0)
 			if err := db.Save(&post).Error; err != nil {
 				return err, http.StatusBadRequest
 			}
