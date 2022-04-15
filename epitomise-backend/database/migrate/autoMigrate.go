@@ -43,6 +43,7 @@ func main() {
 	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
 	// Automatically migrate all the tables
 	migrateTables()
+	addTagstoTables()
 
 	// Manually set foreign keys for MySQL and PostgreSQL
 	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
@@ -73,4 +74,62 @@ func migrateTables() {
 		fmt.Println("New tables are  migrated successfully!")
 	}
 
+}
+func addTagstoTables() {
+	seedTag(db)
+}
+func seedTag(db *gorm.DB) {
+	tags := []model.Tag{
+		{
+
+			Type: "Frontend",
+		},
+		{
+
+			Type: "Backend",
+		},
+		{
+
+			Type: "Database",
+		},
+		{
+
+			Type: "United States",
+		},
+		{
+
+			Type: "Finance",
+		},
+		{
+
+			Type: "BlockChain",
+		},
+		{
+
+			Type: "Crypto",
+		},
+		{
+
+			Type: "Amazon Web Service",
+		},
+		{
+
+			Type: "S3",
+		},
+		{
+
+			Type: "EC2",
+		},
+		{
+
+			Type: "Golang",
+		},
+		{
+
+			Type: "Distributed Systems",
+		},
+	}
+	for _, t := range tags {
+		db.Create(&t)
+	}
 }
