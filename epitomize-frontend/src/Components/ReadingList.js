@@ -73,12 +73,14 @@ function ReadingList() {
                                 </Typography>
                             </CardContent>
                         </CardActionArea>
-                        <CardMedia
-                            component="img"
-                            height="150"
-                            image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
-                            alt={item.Title}
-                        />
+                        {item.Image &&
+                            <CardMedia
+                                component="img"
+                                height="150"
+                                image={require("../images/" + item.Image)}
+                                alt={item.Title}
+                            />
+                        }
                         <CardActions sx={{ fontSize: 11 }}>
                             <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                             <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
