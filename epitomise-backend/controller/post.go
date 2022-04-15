@@ -186,14 +186,11 @@ func ConvertDraft(id uint64, post model.Post, userid uint, test bool) (error, in
 	if test {
 		db := database.GetDB()
 		var postModel model.Post
-		if err := db.First(&postModel, "id_user = ? posts_uid = ? and status = ?", userid, id, 1).Error; err == nil {
+		if err := db.First(&postModel, "id_user = ? and posts_uid = ? and status = ?", userid, id, 1).Error; err == nil {
 			post.IDUser = userid
 			post.PostsUId = uint(id)
 			post.Status = strconv.Itoa(0)
-			if err := db.Save(&post).Error; err != nil {
-				return err, http.StatusBadRequest
-			}
-			return nil, http.StatusOK
+			db.Model(&postModel).Where("posts_uid = ?", id).Update("status", 0)
 		}
 		return nil, http.StatusNotFound
 	}
