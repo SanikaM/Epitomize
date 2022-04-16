@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func addToReadingList(userId uint, postId uint) int {
+func AddToReadingList(userId uint, postId uint) int {
 	db := database.GetDB()
 	var readingList model.Readinglist
 
