@@ -523,6 +523,28 @@ func ReadNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.ReadAllNotification(uint(notifyId))
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	err, responseType := controller.EditPost(1, post, 1, false)
@@ -754,6 +776,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
+	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
