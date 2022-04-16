@@ -8,6 +8,8 @@ import (
 	"github.com/pilinux/gorest/database/model"
 )
 
+var Notications []model.Notification
+
 func Notify(mtype string, currentuserid uint, notifyuserid uint, read uint, test bool) string {
 	if test {
 		if mtype == "follow" {
@@ -24,9 +26,9 @@ func Notify(mtype string, currentuserid uint, notifyuserid uint, read uint, test
 	}
 	return "Successfully Deleted"
 }
-func GetNotifications(userid uint) model.Notification {
-	notifications := model.Notification{}
+func GetNotifications(userid uint) []model.Notification {
 	db := database.GetDB()
-	db.Where("userid = ?", userid).Find(&notifications)
-	return notifications
+	db.Where("userid = ?", userid).Find(&Notications)
+
+	return Notications
 }

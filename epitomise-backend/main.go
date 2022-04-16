@@ -82,7 +82,11 @@ func AllNotifications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(userid)
-	result := controller.GetNotifications(userid)
+	notify := controller.GetNotifications(userid)
+	result := model.NotifyResponse{
+		Allnotifications: notify,
+	}
+
 	json.NewEncoder(w).Encode(result)
 }
 func AllDraft(w http.ResponseWriter, r *http.Request) {
@@ -543,6 +547,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		file, handler, err := r.FormFile("myFile")
 		if err != nil {
 			if r.Body != nil {
+				fmt.Println("Kya karu job chod du")
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
 				post.IDUser = code
