@@ -1,14 +1,18 @@
 import * as React from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
 import ListItemText from '@mui/material/ListItemText';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ListItemIcon from '@mui/material/ListItemIcon';
-
+import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import DraftsIcon from '@mui/icons-material/Drafts';
+import Typography from '@mui/material/Typography';
+import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import IconButton from '@mui/material/IconButton';
 
 export default function Notifications() {
     const baseURL = "http://localhost:8081/"
@@ -27,6 +31,7 @@ export default function Notifications() {
         }
         axios.get(baseURL + 'notification', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
+                console.log(response.data)
                 setData(response.data);
             });
     }, []);
@@ -39,44 +44,85 @@ export default function Notifications() {
             });
     }
 
+    function handleAllRead() {
+        const tokenStr = cookies.get('access_token')
+        axios.get(baseURL + 'allnotification', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then((response) => {
+                window.location.reload()
+            });
+    }
 
-    return (
-        <div>
+    function handleDeleteNotification(nid) {
+        const tokenStr = cookies.get('access_token')
+        axios.delete(baseURL + 'notification/' + nid, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then((response) => {
+                window.location.reload()
+            });
+    }
+
+    if (data && data['Allnotifications'].length > 0)
+        return (
+            <div>
+                <Grid container spacing={2}>
+                    <Grid item xs={9}>
+                        <h1>Notifications</h1>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Typography variant="subtitle1" sx={{ marginTop: '30px', marginLeft: "50px" }} onClick={() => handleAllRead()}>
+                            Mark All Read <DraftsIcon style={{ verticalAlign: "middle" }} />
+                        </Typography>
+                    </Grid>
+                </Grid>
+
+                <List sx={{ width: '100%', }}>
+                    {data && data['Allnotifications'].map(item => (
+                        <>
+                            <React.Fragment key={item.NId}>
+                                {item.Read ?
+
+                                    <ListItem sx={{ bgcolor: 'background.paper' }} key={item.NId}
+                                        secondaryAction={
+                                            <IconButton edge="end" aria-label="delete">
+                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)}/>
+                                            </IconButton>
+                                        }>
+                                        <ListItemIcon>
+                                            <NotificationsIcon />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary={item.Message}
+                                            secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
+
+                                    </ListItem>
+                                    :
+                                    <ListItem sx={{ bgcolor: '#88b4e5' }} key={item.NId}
+                                        secondaryAction={
+                                            <IconButton edge="end" aria-label="delete">
+                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} />
+                                            </IconButton>
+                                        }>
+                                        <ListItemIcon>
+                                            <NotificationsIcon />
+                                        </ListItemIcon>
+                                        <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} 
+                                            primary={item.Message}
+                                            secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
+
+                                    </ListItem>
+                                }
+                            </React.Fragment>
+                        </>
+                    ))
+
+                    }
+                </List>
+            </div>
+        );
+
+    else return (
+        <Stack spacing={2}>
             <h1>Notifications</h1>
-            <List sx={{ width: '100%', }}>
-                {data && data['Allnotifications'].map(item => (
-                    <>
-                        {/* <Divider /> */}
-                        <React.Fragment key={item.NId}>
-                            {item.Read ?
-
-                                <ListItem sx={{ bgcolor: 'background.paper', border: "0.5px solid bloack" }} onClick={() => handleNotificationRead(item.NId, item.Path)} key={item.NId}>
-                                    <ListItemIcon>
-                                        <NotificationsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={item.Message}
-                                        secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
-                                    
-                                </ListItem>
-                                :
-                                <ListItem sx={{ bgcolor: '#88b4e5', border: "0.5px solid bloack" }} onClick={() => handleNotificationRead(item.NId, item.Path)} key={item.NId}>
-                                    <ListItemIcon>
-                                        <NotificationsIcon />
-                                    </ListItemIcon>
-                                    <ListItemText
-                                        primary={item.Message}
-                                        secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
-
-                                </ListItem>
-                            }
-                        </React.Fragment>
-                    </>
-                ))
-
-                }
-                {/* <Divider /> */}
-            </List>
-        </div>
-    );
+            <h4>No notifications</h4>
+        </Stack>
+    )
 }

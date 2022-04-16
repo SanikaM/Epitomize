@@ -60,6 +60,7 @@ function Posts() {
   }
 
   function handleLikeClick(value) {
+    const tokenStr = cookies.get('access_token')
 
     if(likeFlag == true) {
     axios.post(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })

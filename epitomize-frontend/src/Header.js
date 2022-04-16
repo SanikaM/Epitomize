@@ -15,6 +15,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import BookIcon from '@mui/icons-material/Book';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 export default function Header() {
   const baseURL = "http://localhost:8081/"
@@ -64,6 +65,12 @@ export default function Header() {
     setAnchorEl(null);
     handleMobileMenuClose();
     window.location = '/myreadinglist';
+  };
+
+  const create = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/create';
   };
 
   const logout = () => {
@@ -166,25 +173,31 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
+            aria-label="notifications"
           >
             <NotificationsIcon onClick={notifications} />
           </IconButton>
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
+            aria-label="posts"
+          >
+            <DriveFileRenameOutlineIcon onClick={create} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="posts"
           >
             <BookIcon onClick={myposts} />
           </IconButton>
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
+            aria-label="drafts"
           >
             <SaveAsIcon onClick={mydrafts} />
           </IconButton>
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
+            aria-label="reading list"
           >
             <AutoStoriesIcon onClick={myreadinglist} />
           </IconButton>
