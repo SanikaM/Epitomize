@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
@@ -12,11 +13,14 @@ import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
 function Posts() {
   const baseURL = "http://localhost:8081/"
   const cookies = new Cookies();
   const [data, setData] = React.useState(null);
+  const [numLikes, setNumLikes] = React.useState(null);
+  const likeFlag = false;
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')
@@ -31,11 +35,14 @@ function Posts() {
         console.log(response.data)
         setData(response.data);
       });
+
+  
   }, []);
 
   if (!data) return null;
 
   const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
+
 
   function handleClick(value) {
     const tokenStr = cookies.get('access_token')
@@ -50,6 +57,27 @@ function Posts() {
         alert("Post successfully deleted."),
         window.location.reload()
       );
+  }
+
+  function handleLikeClick(value) {
+
+    if(likeFlag == true) {
+    axios.post(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then(() =>
+        alert("this item is liked"),
+        
+      );
+    }
+    else
+    {
+      axios.delete(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then(() =>
+        alert("this item is unliked"),
+       
+      );
+    }
+
+        likeFlag = !likeFlag;
   }
 
   return (
@@ -89,11 +117,27 @@ function Posts() {
               {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
             </div>
 
+            
             <div style={{ marginLeft: 'auto' }}>
+
+            {likeFlag == 'true' && <label style={{color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18}}> 10 &nbsp;</label>
+            }
+             {likeFlag == 'true' && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+             <ThumbUpOutlinedIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
+            </Button>}
+
+            {likeFlag == 'false' && <label style={{color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18}}> 10 &nbsp;</label>
+            }
+             {likeFlag == 'false' && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+             <ThumbUpIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
+            </Button>}
+            
               <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
                 <EditIcon sx={{ color: "#b3e6ff" }} />
               </Link>
-
+              
+             
+              
               <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                 <DeleteIcon sx={{ color: "#cb1010", marginBottom: "0.6em" }} />
               </Button>
