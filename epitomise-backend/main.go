@@ -75,6 +75,20 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 }
+func AllNotifications(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	notify := controller.GetNotifications(userid)
+	result := model.NotifyResponse{
+		Allnotifications: notify,
+	}
+
+	json.NewEncoder(w).Encode(result)
+}
 func AllDraft(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
 	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
@@ -487,6 +501,49 @@ func GetDraft(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+func ReadNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.ReadNotification(uint(notifyId), code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.ReadAllNotification(uint(notifyId))
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
 
 func EditPostTest(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
@@ -536,7 +593,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
 				post.IDUser = code
-				post.Image = ""
+				post.Image = r.FormValue("myFile")
 				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
 					post.Linked_Post = uint(s)
 				}
@@ -633,10 +690,11 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), userid, true)
-	if responseType == 200 {
-
+	fmt.Println(responseType)
+	if responseType == 201 {
+		controller.Notify("follow", userid, uint(Val), 0, true)
+		json.NewEncoder(w).Encode(http.StatusText(200))
 	}
-	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -716,6 +774,10 @@ func HandleRequests() {
 	myRouter.HandleFunc("/draft", AllDraft).Methods("GET")
 	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
+	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
+	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
+	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
