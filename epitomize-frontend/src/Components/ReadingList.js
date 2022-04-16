@@ -58,7 +58,10 @@ function ReadingList() {
         return (
 
             <Stack spacing={2}>
+                <h1>My Reading List</h1>
+
                 {data['Posts'].map(item => (
+
                     <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                         <CardActionArea>
                             <CardContent>
