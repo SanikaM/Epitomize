@@ -1,20 +1,32 @@
 package controller
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
 )
 
-func Notify(id string, userid uint, test bool) string {
+func Notify(mtype string, currentuserid uint, notifyuserid uint, read uint, test bool) string {
 	if test {
-		db := database.GetDB()
-		IdNum, _ := strconv.ParseUint(id, 10, 32)
-		db.Delete(&model.Post{}, IdNum)
-		db.Where("post_id = ?", IdNum).Delete(&model.PostTag{})
+		if mtype == "follow" {
+			fmt.Println("hello")
+			db := database.GetDB()
+			notification := model.Notification{}
+			notification.Userid = notifyuserid
+			notification.Message = "Followed by " + strconv.FormatUint(uint64(currentuserid), 10)
+			db.Create(&notification)
+
+		}
 		var result string = "succcess"
 		return result
 	}
 	return "Successfully Deleted"
+}
+func GetNotifications(userid uint) model.Notification {
+	notifications := model.Notification{}
+	db := database.GetDB()
+	db.Where("userid = ?", userid).Find(&notifications)
+	return notifications
 }

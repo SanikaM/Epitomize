@@ -75,6 +75,16 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 }
+func AllNotifications(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	result := controller.GetNotifications(userid)
+	json.NewEncoder(w).Encode(result)
+}
 func AllDraft(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
 	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
@@ -633,10 +643,11 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), userid, true)
-	if responseType == 200 {
-
+	fmt.Println(responseType)
+	if responseType == 201 {
+		controller.Notify("follow", userid, uint(Val), 0, true)
+		json.NewEncoder(w).Encode(http.StatusText(200))
 	}
-	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -716,6 +727,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/draft", AllDraft).Methods("GET")
 	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
+	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
