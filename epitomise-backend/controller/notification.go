@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/pilinux/gorest/database"
@@ -31,4 +32,10 @@ func GetNotifications(userid uint) []model.Notification {
 	db.Where("userid = ?", userid).Find(&Notications)
 
 	return Notications
+}
+
+func ReadNotification(notify uint, userid uint) int {
+	db := database.GetDB()
+	db.Model(&model.Notification{}).Where("userid = ? and n_id   = ?", userid, notify).Update("read", 1)
+	return http.StatusOK
 }
