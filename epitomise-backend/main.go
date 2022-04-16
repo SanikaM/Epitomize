@@ -529,6 +529,20 @@ func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(int(code)), int(code))
 		return
 	}
+	responseType := controller.ReadAllNotification(code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func DeleteNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
 	params := mux.Vars(r)
 	id := params["id"]
 	notifyId, err := strconv.ParseUint(id, 10, 64)
@@ -536,7 +550,7 @@ func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	responseType := controller.ReadAllNotification(uint(notifyId))
+	responseType := controller.DeleteNotification(uint(notifyId), code)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(responseType)
 		return
@@ -777,7 +791,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
 	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
-
+	myRouter.HandleFunc("/notification/{id}", DeleteNotification).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 
