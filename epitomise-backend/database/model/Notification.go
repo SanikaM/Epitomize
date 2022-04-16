@@ -8,8 +8,7 @@ import (
 type Notification struct {
 	NId       uint `gorm:"primaryKey;auto_increment;not_null"`
 	Userid    uint
-	Message   string
-	Path      string
+	Message   string `gorm:"unique"`
 	CreatedAt time.Time
 	Read      uint
 }

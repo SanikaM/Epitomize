@@ -36,18 +36,18 @@ function Drafts() {
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     function handleClick(value) {
-        //     const tokenStr = cookies.get('access_token')
-        //     let decodedToken = jwt_decode(tokenStr);
-        //     let currentDate = new Date();
-        //     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        //         cookies.remove("access_token", { path: '/' })
-        //         window.location = "/"
-        //     }
-        //     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-        //         .then(() =>
-        //             alert("Draft successfully deleted."),
-        //             window.location.reload()
-        //         );
+    //     const tokenStr = cookies.get('access_token')
+    //     let decodedToken = jwt_decode(tokenStr);
+    //     let currentDate = new Date();
+    //     if (decodedToken.exp * 1000 < currentDate.getTime()) {
+    //         cookies.remove("access_token", { path: '/' })
+    //         window.location = "/"
+    //     }
+    //     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+    //         .then(() =>
+    //             alert("Draft successfully deleted."),
+    //             window.location.reload()
+    //         );
     }
 
     function handlePublish(value) {
@@ -70,8 +70,6 @@ function Drafts() {
         return (
 
             <Stack spacing={2}>
-                <h1>My Drafts</h1>
-
                 {data['Posts'].map(item => (
                     <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                         <CardActionArea>

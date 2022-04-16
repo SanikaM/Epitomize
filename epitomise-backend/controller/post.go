@@ -172,8 +172,6 @@ func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err == nil {
 			post.IDUser = userid
 			post.PostsUId = uint(id)
-			createDate := postModel.CreatedAt
-			post.CreatedAt = createDate
 			if err := db.Save(&post).Error; err != nil {
 				return err, http.StatusBadRequest
 			}

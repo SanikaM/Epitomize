@@ -82,9 +82,6 @@ export default function EditPost() {
             data.append("myFile", dataItem.Image);
         }
 
-        console.log(data.get("myFile"))
-        console.log(dataItem.Image)
-
         axios
             .put(baseURL + id, data, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(response => {
