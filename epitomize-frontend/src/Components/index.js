@@ -21,6 +21,7 @@ import SignUp from './Signup';
 import UserProfile from './UserProfile';
 import Drafts from './Drafts';
 import ReadingList from './ReadingList';
+import Notifications from './Notifications';
 
 const Components = () => {
     return(
@@ -38,6 +39,7 @@ const Components = () => {
             <Route path = "/userprofile" element={<UserProfile />} />
             <Route path = "/mydrafts" element={<Drafts />}  />
             <Route path = "/myreadinglist" element={<ReadingList />}  />
+            <Route path = "/notifications" element={<Notifications />} />
             </Routes>
         </Router>
     );

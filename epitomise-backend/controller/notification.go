@@ -48,3 +48,8 @@ func ReadAllNotification(userid uint) int {
 	db.Model(&model.Notification{}).Where("userid = ?", userid).Update("read", 1)
 	return http.StatusOK
 }
+func DeleteNotification(notify uint, userid uint) int {
+	db := database.GetDB()
+	db.Where("userid = ? and n_id = ?", userid, notify).Delete(&model.Notification{})
+	return http.StatusOK
+}
