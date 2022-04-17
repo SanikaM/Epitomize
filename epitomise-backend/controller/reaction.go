@@ -63,3 +63,22 @@ func RemoveReactionFromPost(userId uint, postId uint) int {
 		}
 	}
 }
+
+func GetReactionsUserList(postId uint) ([]model.User, int) {
+	Users := []model.User{}
+	db := database.GetDB()
+	Profiles := []model.User{}
+	if err := db.Where("post_id = ?", postId).Find(&Users).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return Users, http.StatusOK
+		} else {
+			return Users, http.StatusBadRequest
+		}
+	} else {
+		for _, user := range Users {
+			profile, _ := GetUserProfile(user.UserId)
+			Profiles = append(Profiles, profile)
+		}
+		return Profiles, http.StatusOK
+	}
+}
