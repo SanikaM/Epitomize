@@ -321,7 +321,7 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, false)
+	responseType, _ := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -527,9 +527,13 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				post.Tags = r.FormValue("Tags")
 				post.Type = r.FormValue("Type")
 				post.Summary = r.FormValue("Summary")
-
-				responseType := controller.CreatePost(post, true)
-				json.NewEncoder(w).Encode(http.StatusText(responseType))
+				responseType, pid := controller.CreatePost(post, true)
+				fmt.Println(responseType)
+				if responseType == http.StatusCreated {
+					fmt.Println("hello")
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
 			}
 		}
 		if err == nil {
@@ -566,8 +570,11 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				post.Type = r.FormValue("Type")
 				post.Summary = r.FormValue("Summary")
 
-				responseType := controller.CreatePost(post, true)
-				json.NewEncoder(w).Encode(http.StatusText(responseType))
+				responseType, pid := controller.CreatePost(post, true)
+				if responseType == http.StatusCreated {
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
 			}
 		}
 	}
@@ -620,6 +627,63 @@ func GetDraft(w http.ResponseWriter, r *http.Request) {
 	post, responseType := controller.GetDraft(postId, true)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func ReadNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.ReadNotification(uint(notifyId), code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	responseType := controller.ReadAllNotification(code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func DeleteNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.DeleteNotification(uint(notifyId), code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
 		return
 	} else {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -863,6 +927,9 @@ func HandleRequests() {
 	myRouter.HandleFunc("/react/{id}", AddReactionToPost).Methods("POST")
 	myRouter.HandleFunc("/react/{id}", GetReactionsUserList).Methods("GET")
 	myRouter.HandleFunc("/react/{id}", RemoveReactionFromPost).Methods("DELETE")
+	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
+	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
+	myRouter.HandleFunc("/notification/{id}", DeleteNotification).Methods("DELETE")
 
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }

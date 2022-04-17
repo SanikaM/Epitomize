@@ -5,5 +5,8 @@ export const constants = {
     EDIT_POST: "/edit/1",
     SINGLE_POST: "/post/1",
     REGISTER: "/signup",
-    USER_PROFILE: "/userprofile"
+    USER_PROFILE: "/userprofile",
+    DRAFTS: "/mydrafts",
+    READING_LIST: "/myreadinglist",
+    NOTIFICATION: "/notifications"
 };

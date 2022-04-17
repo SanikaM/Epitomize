@@ -15,6 +15,10 @@ import { CardActionArea, CardActions, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from 'jwt-decode';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+
+var likeFlag = true;
 
 function OtherPosts() {
 
@@ -55,6 +59,32 @@ function OtherPosts() {
 
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
+    function handleLikeClick(value) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+          cookies.remove("access_token", { path: '/' })
+          window.location = "/"
+        }
+       /* if(likeFlag == true) {
+        axios.post(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+          .then(() =>
+            alert("this item is liked"),
+          );
+        }
+        else
+        {
+          axios.delete(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+          .then(() =>
+            alert("this item is unliked"),
+           
+          );
+        } */
+    
+          //  this.data.likeFlag = !this.data.likeFlag;
+      }
+
     // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
     if (followingData && followingData.length > 0) {
 
@@ -82,6 +112,11 @@ function OtherPosts() {
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                                                 {item.Summary}
                                             </Typography>
+
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                               Author - {item.userId}
+                                            </Typography>
+
                                         </CardContent>
                                     </CardActionArea>
                                     <CardMedia
@@ -97,6 +132,19 @@ function OtherPosts() {
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
+
+                                            {likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
+                                            }
+                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                            <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em"}} />
+                                            </Button>}
+
+                                            {!likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
+                                            }
+                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                            <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
                                                 <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
                                             </Button>
@@ -136,6 +184,19 @@ function OtherPosts() {
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
+
+                                         {likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
+                                            }
+                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                            <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em"}} />
+                                            </Button>}
+
+                                            {!likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
+                                            }
+                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                            <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
                                                 <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
                                             </Button>

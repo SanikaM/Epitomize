@@ -9,12 +9,13 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Cookies from 'universal-cookie';
-import Badge from '@mui/material/Badge';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-
-const images = require.context('./images', true);
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import BookIcon from '@mui/icons-material/Book';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 export default function Header() {
   const baseURL = "http://localhost:8081/"
@@ -54,10 +55,22 @@ export default function Header() {
     window.location = '/mydrafts';
   };
 
+  const notifications = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/notifications';
+  };
+
   const myreadinglist = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
     window.location = '/myreadinglist';
+  };
+
+  const create = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/create';
   };
 
   const logout = () => {
@@ -105,9 +118,6 @@ export default function Header() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
-      <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
-      <MenuItem onClick={mydrafts} style={{ color: "black", fontFamily: 'Raleway' }}>My Drafts</MenuItem>
-      <MenuItem onClick={myreadinglist} style={{ color: "black", fontFamily: 'Raleway' }}>My Reading List</MenuItem>
       <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
     </Menu>
   );
@@ -163,11 +173,33 @@ export default function Header() {
           <Box sx={{ flexGrow: 1 }} />
           <IconButton
             size="large"
-            aria-label="show 17 new notifications"
+            aria-label="notifications"
           >
-            <Badge badgeContent={17} color="error">
-              <NotificationsIcon />
-            </Badge>
+            <NotificationsIcon onClick={notifications} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="posts"
+          >
+            <DriveFileRenameOutlineIcon onClick={create} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="posts"
+          >
+            <BookIcon onClick={myposts} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="drafts"
+          >
+            <SaveAsIcon onClick={mydrafts} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="reading list"
+          >
+            <AutoStoriesIcon onClick={myreadinglist} />
           </IconButton>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton

@@ -113,7 +113,7 @@ func GetDrafts(userid uint, test bool) []model.Post {
 	return Posts
 }
 
-func CreatePost(post model.Post, test bool) int {
+func CreatePost(post model.Post, test bool) (int, uint) {
 	if test {
 		db := database.GetDB()
 		tags := strings.Split(post.Tags, ",")
@@ -121,17 +121,17 @@ func CreatePost(post model.Post, test bool) int {
 		user, _ := GetUserProfile(post.IDUser)
 		post.Username = user.Username
 		if err := db.Create(&post).Error; err != nil {
-			return http.StatusBadRequest
+			return http.StatusBadRequest, 0
 		}
 
 		if createTag(tags) == http.StatusCreated {
 			fmt.Println("tags created - creating posttags!")
 			createPostTag(post.PostsUId, tags)
-			return http.StatusCreated
+			return http.StatusCreated, post.PostsUId
 		}
-		return http.StatusCreated
+		return http.StatusCreated, post.PostsUId
 	}
-	return http.StatusCreated
+	return http.StatusCreated, 0
 }
 
 func GetPost(id uint64, test bool) (model.Post, int) {

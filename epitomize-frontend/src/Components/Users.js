@@ -2,12 +2,13 @@ import Button from '@mui/material/Button';
 import * as React from 'react';
 import Chip from '@mui/material/Chip';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import { BrowserRouter, Link } from 'react-router-dom';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
-import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 
 function Users() {
@@ -74,11 +75,20 @@ function Users() {
                     {
                         data['Users'].slice(0, 3).map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
+                                <BrowserRouter>
+                                <Link to={"/otheruser/" + item.UserId} key={item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
+                                
                                 <ListItemAvatar>
+                             
+                                
                                     <Avatar style={{
                                         backgroundColor: randomColor()
                                     }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
+                                    
+                                 
                                 </ListItemAvatar>
+                                </Link>
+                                </BrowserRouter>
                                 <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={item.Username}
                                     secondary={
@@ -88,10 +98,10 @@ function Users() {
                                     }
                                 />
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id="unfollow" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id={item.UserId + "unfollow"}  edge="end" sx={{ marginTop: "5%" }} />
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id="follow" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id={item.UserId + "follow"} edge="end" sx={{ marginTop: "5%" }} />
                                 )
                                 }
                             </ListItem>
