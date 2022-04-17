@@ -36,19 +36,19 @@ function Drafts() {
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     function handleClick(value) {
-        //     const tokenStr = cookies.get('access_token')
-        //     let decodedToken = jwt_decode(tokenStr);
-        //     let currentDate = new Date();
-        //     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        //         cookies.remove("access_token", { path: '/' })
-        //         window.location = "/"
-        //     }
-        //     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-        //         .then(() =>
-        //             alert("Draft successfully deleted."),
-        //             window.location.reload()
-        //         );
-    }
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+          cookies.remove("access_token", { path: '/' })
+          window.location = "/"
+        }
+        axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+          .then(() =>
+            alert("Post successfully deleted."),
+            window.location.reload()
+          );
+      }
 
     function handlePublish(value) {
         const tokenStr = cookies.get('access_token')
