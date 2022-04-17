@@ -37,7 +37,7 @@ function SignIn({ auth }) {
             window.location = '/';
 
         }).catch(error => {
-            alert(error)
+            console.log(error)
         });
     
     

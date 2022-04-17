@@ -3,9 +3,9 @@
 import React from 'react';
 
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route
+    BrowserRouter as Router,
+    Routes,
+    Route
 } from "react-router-dom";
 
 
@@ -26,24 +26,24 @@ import OtherUserProfile from './OtherUserProfile';
 import TagsPosts from './TagsPosts';
 
 const Components = () => {
-    return(
+    return (
         <Router>
             <Routes>
-            <Route path = "/create" element={<CreatePost />} />
-            <Route path = "/myposts" element={<Posts />}  />
-            <Route path = "/alluser" element={<AllUsers />} />
-            <Route path = "/edit/:id" element={<EditPosts />} />
-            <Route path = "/post/:id" element={<Post />} />
-            <Route path = "/signin" element={<SignIn />} />
-            <Route path = "/" element={<OtherPosts />} />
-            <Route path = "/users" element={<Users />} />
-            <Route path = "/signup" element={<SignUp />} />
-            <Route path = "/userprofile" element={<UserProfile />} />
-            <Route path = "/mydrafts" element={<Drafts />}  />
-            <Route path = "/myreadinglist" element={<ReadingList />}  />
-            <Route path = "/notifications" element={<Notifications />} />
-            <Route path = "/otheruser" element ={<OtherUserProfile/>} />
-            <Route path = "/tagsposts" element ={<TagsPosts/>} />
+                <Route path="/create" element={<CreatePost />} />
+                <Route path="/myposts" element={<Posts />} />
+                <Route path="/alluser" element={<AllUsers />} />
+                <Route path="/edit/:id" element={<EditPosts />} />
+                <Route path="/post/:id" element={<Post />} />
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/" element={<OtherPosts />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/userprofile" element={<UserProfile />} />
+                <Route path="/mydrafts" element={<Drafts />} />
+                <Route path="/myreadinglist" element={<ReadingList />} />
+                <Route path="/notifications" element={<Notifications />} />
+                <Route path="/otheruser" element={<OtherUserProfile />} />
+                <Route path="/tagsposts" element={<TagsPosts />} />
             </Routes>
         </Router>
     );

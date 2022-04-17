@@ -83,7 +83,7 @@ export default function Notifications() {
                                     <ListItem sx={{ bgcolor: 'background.paper' }} key={item.NId}
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete">
-                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)}  id="delete"/>
+                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} id="delete" />
                                             </IconButton>
                                         }>
                                         <ListItemIcon>

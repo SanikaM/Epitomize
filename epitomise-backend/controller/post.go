@@ -118,6 +118,8 @@ func CreatePost(post model.Post, test bool) (int, uint) {
 		db := database.GetDB()
 		tags := strings.Split(post.Tags, ",")
 		post.TagList = tags
+		user, _ := GetUserProfile(post.IDUser)
+		post.Username = user.Username
 		if err := db.Create(&post).Error; err != nil {
 			return http.StatusBadRequest, 0
 		}
@@ -148,6 +150,7 @@ func GetPost(id uint64, test bool) (model.Post, int) {
 	return postModel, http.StatusOK
 
 }
+
 func GetDraft(id uint64, test bool) (model.Post, int) {
 	var postModel model.Post
 	if test {
@@ -172,8 +175,6 @@ func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err == nil {
 			post.IDUser = userid
 			post.PostsUId = uint(id)
-			createDate := postModel.CreatedAt
-			post.CreatedAt = createDate
 			if err := db.Save(&post).Error; err != nil {
 				return err, http.StatusBadRequest
 			}

@@ -13,6 +13,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
+
 	"github.com/pilinux/gorest/controller"
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -25,6 +26,109 @@ type Claims struct {
 	Username string `json:"username"`
 	Userid   uint
 	jwt.StandardClaims
+}
+
+func GetReactionsUserList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	users, responseType := controller.GetReactionsUserList(uint(postId))
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(users)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func AddReactionToPost(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.AddReaction(userId, uint(postId))
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func RemoveReactionFromPost(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.RemoveReactionFromPost(userId, uint(postId))
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func GetReadingList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	posts, responseType := controller.GetReadingList(userid)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func AddToReadingList(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.AddToReadingList(userId, postId)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func RemoveFromReadingList(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.RemoveFromReadingList(userId, postId)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
 func Authentification(w http.ResponseWriter, r *http.Request) uint {
@@ -82,11 +186,7 @@ func AllNotifications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(userid)
-	notify := controller.GetNotifications(userid)
-	result := model.NotifyResponse{
-		Allnotifications: notify,
-	}
-
+	result := controller.GetNotifications(userid)
 	json.NewEncoder(w).Encode(result)
 }
 func AllDraft(w http.ResponseWriter, r *http.Request) {
@@ -257,6 +357,30 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+
+func GetUserProfile(w http.ResponseWriter, r *http.Request) {
+	loggedInUserid := Authentification(w, r)
+	if loggedInUserid == http.StatusUnauthorized || loggedInUserid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(loggedInUserid)), int(loggedInUserid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	userId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	user, responseType := controller.GetUserProfile(uint(userId))
+
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(user)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func SearchUserPostTest(w http.ResponseWriter, r *http.Request) {
 	var search model.Search
 	if r.Body != nil {
@@ -614,7 +738,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 				post.Title = r.FormValue("Title")
 				post.Content = r.FormValue("Content")
 				post.IDUser = code
-				post.Image = r.FormValue("myFile")
+				post.Image = ""
 				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
 					post.Linked_Post = uint(s)
 				}
@@ -796,9 +920,17 @@ func HandleRequests() {
 	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
+	myRouter.HandleFunc("/readinglist/{id}", AddToReadingList).Methods("POST")
+	myRouter.HandleFunc("/readinglist", GetReadingList).Methods("GET")
+	myRouter.HandleFunc("/readinglist/{id}", RemoveFromReadingList).Methods("DELETE")
+	myRouter.HandleFunc("/user/profile/{id}", GetUserProfile).Methods("GET")
+	myRouter.HandleFunc("/react/{id}", AddReactionToPost).Methods("POST")
+	myRouter.HandleFunc("/react/{id}", GetReactionsUserList).Methods("GET")
+	myRouter.HandleFunc("/react/{id}", RemoveReactionFromPost).Methods("DELETE")
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
 	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
 	myRouter.HandleFunc("/notification/{id}", DeleteNotification).Methods("DELETE")
+
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

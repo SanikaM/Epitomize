@@ -40,15 +40,15 @@ function Drafts() {
         let decodedToken = jwt_decode(tokenStr);
         let currentDate = new Date();
         if (decodedToken.exp * 1000 < currentDate.getTime()) {
-          cookies.remove("access_token", { path: '/' })
-          window.location = "/"
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
         }
         axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-          .then(() =>
-            alert("Post successfully deleted."),
-            window.location.reload()
-          );
-      }
+            .then(() =>
+                alert("Post successfully deleted."),
+                window.location.reload()
+            );
+    }
 
     function handlePublish(value) {
         const tokenStr = cookies.get('access_token')
