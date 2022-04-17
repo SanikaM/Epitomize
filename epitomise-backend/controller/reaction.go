@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/pilinux/gorest/database"
@@ -28,7 +29,7 @@ func addNewReaction(userId uint, postId uint) int {
 	var reaction model.Reaction
 	reaction.UserId = userId
 	reaction.PostId = postId
-	if err := db.Create(&reaction).Error; err != nil {
+	if err := db.Create(&reaction).Error; err == nil {
 		//Increment reaction count in posts table
 		updatePostReactionCount(postId, 1)
 		return http.StatusOK
@@ -41,6 +42,7 @@ func updatePostReactionCount(postId uint, count int) {
 	post, _ := GetPost(uint64(postId), true)
 	db := database.GetDB()
 	post.ReactionCount += count
+	fmt.Println(post.ReactionCount)
 	db.Save(&post)
 }
 
@@ -65,18 +67,18 @@ func RemoveReactionFromPost(userId uint, postId uint) int {
 }
 
 func GetReactionsUserList(postId uint) ([]model.User, int) {
-	Users := []model.User{}
+	reactions := []model.Reaction{}
 	db := database.GetDB()
 	Profiles := []model.User{}
-	if err := db.Where("post_id = ?", postId).Find(&Users).Error; err != nil {
+	if err := db.Where("post_id = ?", postId).Find(&reactions).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return Users, http.StatusOK
+			return Profiles, http.StatusOK
 		} else {
-			return Users, http.StatusBadRequest
+			return Profiles, http.StatusBadRequest
 		}
 	} else {
-		for _, user := range Users {
-			profile, _ := GetUserProfile(user.UserId)
+		for _, reaction := range reactions {
+			profile, _ := GetUserProfile(reaction.UserId)
 			Profiles = append(Profiles, profile)
 		}
 		return Profiles, http.StatusOK

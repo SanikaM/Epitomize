@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/pilinux/gorest/database"
@@ -13,12 +14,16 @@ func AddToReadingList(userId uint, postId int64) int {
 	var readingList model.Readinglist
 
 	if err := db.First(&readingList, "user_id = ?", userId).Error; err != nil {
+		fmt.Println(err)
 		if err == gorm.ErrRecordNotFound {
+			fmt.Println("xx")
 			return createReadingList(userId, postId)
 		} else {
+			fmt.Println("yy")
 			return http.StatusBadRequest
 		}
 	} else {
+		fmt.Println("zz")
 		return addToExistingReadingList(readingList, postId)
 	}
 }
@@ -27,27 +32,28 @@ func createReadingList(userId uint, postId int64) int {
 	db := database.GetDB()
 	var readingList model.Readinglist
 	readingList.UserId = userId
-	readingList.Posts[0] = postId
+	readingList.Posts = append(readingList.Posts, postId)
+	fmt.Println(readingList)
 	if err := db.Create(&readingList).Error; err != nil {
-		return http.StatusOK
-	} else {
 		return http.StatusBadRequest
+	} else {
+		return http.StatusOK
 	}
 }
 
 func addToExistingReadingList(readingList model.Readinglist, postId int64) int {
 	db := database.GetDB()
-	readingList.Posts = append(readingList.Posts, postId)
 	//Checking if post is already in list
 	for _, id := range readingList.Posts {
 		if id == postId {
 			return http.StatusOK
 		}
 	}
+	readingList.Posts = append(readingList.Posts, postId)
 	if err := db.Save(&readingList).Error; err != nil {
-		return http.StatusOK
-	} else {
 		return http.StatusBadRequest
+	} else {
+		return http.StatusOK
 	}
 }
 
@@ -88,9 +94,9 @@ func RemoveFromReadingList(userId uint, postId int64) int {
 			}
 		}
 		if err := db.Save(&readingList).Error; err != nil {
-			return http.StatusOK
-		} else {
 			return http.StatusBadRequest
+		} else {
+			return http.StatusOK
 		}
 	}
 }
