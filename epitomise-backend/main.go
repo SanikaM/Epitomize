@@ -44,15 +44,18 @@ func GetReadingList(w http.ResponseWriter, r *http.Request) {
 
 func AddToReadingList(w http.ResponseWriter, r *http.Request) {
 	userId := Authentification(w, r)
-	var postId uint
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&postId)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
 	}
-	responseType := controller.AddToReadingList(userId, postId)
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.AddToReadingList(userId, uint(postId))
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -757,7 +760,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
-	myRouter.HandleFunc("/readinglist", AddToReadingList).Methods("POST")
+	myRouter.HandleFunc("/readinglist/{id}", AddToReadingList).Methods("POST")
 	myRouter.HandleFunc("/readinglist", GetReadingList).Methods("GET")
 	// myRouter.HandleFunc("/readinglist", AllNotifications).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
