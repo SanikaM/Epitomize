@@ -15,15 +15,12 @@ import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
-var likeFlag = true;
-
 function Posts() {
   const baseURL = "http://localhost:8081/"
   const cookies = new Cookies();
   const [data, setData] = React.useState(null);
-  const [likeData, setLikeData] = React.useState(null);
   const [numLikes, setNumLikes] = React.useState(null);
-
+  const likeFlag = false;
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')
@@ -64,10 +61,6 @@ function Posts() {
 
   function handleLikeClick(value) {
     const tokenStr = cookies.get('access_token')
-<<<<<<< Updated upstream
-
-    if(likeFlag == true) {
-=======
     let decodedToken = jwt_decode(tokenStr);
     let currentDate = new Date();
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
@@ -75,7 +68,6 @@ function Posts() {
       window.location = "/"
     }
    /* if(likeFlag == true) {
->>>>>>> Stashed changes
     axios.post(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then(() =>
         alert("this item is liked"),
@@ -92,6 +84,7 @@ function Posts() {
 
       //  this.data.likeFlag = !this.data.likeFlag;
   }
+
 
   return (
 
@@ -132,18 +125,19 @@ function Posts() {
 
             
             <div style={{ marginLeft: 'auto' }}>
-            {likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
-              }
-              {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-              <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em"}} />
-              </Button>}
 
-              {!likeFlag && <label style={{color: "#2E86C1", fontSize: 18}}> 10 &nbsp;</label>
-              }
-              {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-              <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
-              </Button>}
+            {likeFlag && <label style={{color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18}}> 10 &nbsp;</label>
+            }
+             {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+             <ThumbUpOutlinedIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
+            </Button>}
 
+            {!likeFlag && <label style={{color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18}}> 10 &nbsp;</label>
+            }
+             {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+             <ThumbUpIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
+            </Button>}
+            
               <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
                 <EditIcon sx={{ color: "#b3e6ff" }} />
               </Link>
