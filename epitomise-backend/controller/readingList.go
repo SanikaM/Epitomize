@@ -16,10 +16,10 @@ func AddToReadingList(userId uint, postId uint) int {
 		if err == gorm.ErrRecordNotFound {
 			return createReadingList(userId, postId)
 		} else {
-			return addToExistingReadingList(readingList, postId)
+			return http.StatusBadRequest
 		}
 	} else {
-		return http.StatusBadRequest
+		return addToExistingReadingList(readingList, postId)
 	}
 }
 
@@ -48,5 +48,25 @@ func addToExistingReadingList(readingList model.Readinglist, postId uint) int {
 		return http.StatusOK
 	} else {
 		return http.StatusBadRequest
+	}
+}
+
+func GetReadingList(userId uint) ([]model.Post, int) {
+	Posts := []model.Post{}
+	db := database.GetDB()
+	var readingList model.Readinglist
+
+	if err := db.First(&readingList, "user_id = ?", userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return Posts, http.StatusOK
+		} else {
+			return Posts, http.StatusBadRequest
+		}
+	} else {
+		for _, postId := range readingList.Posts {
+			post, _ := GetPost(uint64(postId), true)
+			Posts = append(Posts, post)
+		}
+		return Posts, http.StatusOK
 	}
 }

@@ -28,6 +28,20 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+func GetReadingList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	posts, responseType := controller.GetReadingList(userid)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(posts)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
 func AddToReadingList(w http.ResponseWriter, r *http.Request) {
 	userId := Authentification(w, r)
 	var postId uint
@@ -744,7 +758,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
 	myRouter.HandleFunc("/readinglist", AddToReadingList).Methods("POST")
-	// myRouter.HandleFunc("/readinglist", AllNotifications).Methods("GET")
+	myRouter.HandleFunc("/readinglist", GetReadingList).Methods("GET")
 	// myRouter.HandleFunc("/readinglist", AllNotifications).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
