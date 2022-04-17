@@ -83,7 +83,7 @@ export default function Notifications() {
                                     <ListItem sx={{ bgcolor: 'background.paper' }} key={item.NId}
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete">
-                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)}/>
+                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)}  id="delete"/>
                                             </IconButton>
                                         }>
                                         <ListItemIcon>
@@ -97,14 +97,14 @@ export default function Notifications() {
                                     :
                                     <ListItem sx={{ bgcolor: '#88b4e5' }} key={item.NId}
                                         secondaryAction={
-                                            <IconButton edge="end" aria-label="delete">
-                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} />
+                                            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteNotification(item.NId)} id="delete" >
+                                                <DeleteSweepIcon />
                                             </IconButton>
                                         }>
                                         <ListItemIcon>
                                             <NotificationsIcon />
                                         </ListItemIcon>
-                                        <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} 
+                                        <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} id="read"
                                             primary={item.Message}
                                             secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
 

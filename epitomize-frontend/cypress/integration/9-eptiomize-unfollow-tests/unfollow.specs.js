@@ -4,7 +4,7 @@ describe("Unfollow Tests", () => {
 
   it("Unollow Test", () => {
     cy.visit(`${constants.LOGIN}`);
-    cy.get("[id=unfollow]").click();
+    cy.get("[id=2unfollow]").click();
   });
 
 });

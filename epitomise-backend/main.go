@@ -404,7 +404,9 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				post.Type = r.FormValue("Type")
 				post.Summary = r.FormValue("Summary")
 				responseType, pid := controller.CreatePost(post, true)
+				fmt.Println(responseType)
 				if responseType == http.StatusCreated {
+					fmt.Println("hello")
 					res := controller.NotifyonNewPost(userid, pid)
 					json.NewEncoder(w).Encode(http.StatusText(res))
 				}
