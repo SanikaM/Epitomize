@@ -22,6 +22,7 @@ import UserProfile from './UserProfile';
 import Drafts from './Drafts';
 import ReadingList from './ReadingList';
 import Notifications from './Notifications';
+import OtherUserProfile from './OtherUserProfile';
 
 const Components = () => {
     return(
@@ -40,6 +41,7 @@ const Components = () => {
             <Route path = "/mydrafts" element={<Drafts />}  />
             <Route path = "/myreadinglist" element={<ReadingList />}  />
             <Route path = "/notifications" element={<Notifications />} />
+            <Route path = "/otheruser" element ={<OtherUserProfile/>} />
             </Routes>
         </Router>
     );

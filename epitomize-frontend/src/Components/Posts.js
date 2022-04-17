@@ -15,6 +15,7 @@ import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 
+
 function Posts() {
   const baseURL = "http://localhost:8081/"
   const cookies = new Cookies();

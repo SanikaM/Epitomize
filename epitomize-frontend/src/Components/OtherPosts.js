@@ -112,6 +112,11 @@ function OtherPosts() {
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                                                 {item.Summary}
                                             </Typography>
+
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                               Author - {item.userId}
+                                            </Typography>
+
                                         </CardContent>
                                     </CardActionArea>
                                     <CardMedia
