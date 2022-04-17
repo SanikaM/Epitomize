@@ -221,7 +221,7 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, false)
+	responseType, _ := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -403,9 +403,11 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				post.Tags = r.FormValue("Tags")
 				post.Type = r.FormValue("Type")
 				post.Summary = r.FormValue("Summary")
-
-				responseType := controller.CreatePost(post, true)
-				json.NewEncoder(w).Encode(http.StatusText(responseType))
+				responseType, pid := controller.CreatePost(post, true)
+				if responseType == http.StatusCreated {
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
 			}
 		}
 		if err == nil {
@@ -442,8 +444,11 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 				post.Type = r.FormValue("Type")
 				post.Summary = r.FormValue("Summary")
 
-				responseType := controller.CreatePost(post, true)
-				json.NewEncoder(w).Encode(http.StatusText(responseType))
+				responseType, pid := controller.CreatePost(post, true)
+				if responseType == http.StatusCreated {
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
 			}
 		}
 	}
