@@ -44,7 +44,7 @@ func addToExistingReadingList(readingList model.Readinglist, postId uint) int {
 			return http.StatusOK
 		}
 	}
-	if err := db.Create(&readingList).Error; err != nil {
+	if err := db.Save(&readingList).Error; err != nil {
 		return http.StatusOK
 	} else {
 		return http.StatusBadRequest
