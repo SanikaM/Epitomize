@@ -22,4 +22,5 @@ type Post struct {
 	Tags          string
 	IDUser        uint `json:"-"`
 	ReactionCount int
+	Username      string
 }

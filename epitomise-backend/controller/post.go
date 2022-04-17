@@ -118,6 +118,8 @@ func CreatePost(post model.Post, test bool) int {
 		db := database.GetDB()
 		tags := strings.Split(post.Tags, ",")
 		post.TagList = tags
+		user, _ := GetUserProfile(post.IDUser)
+		post.Username = user.Username
 		if err := db.Create(&post).Error; err != nil {
 			return http.StatusBadRequest
 		}
