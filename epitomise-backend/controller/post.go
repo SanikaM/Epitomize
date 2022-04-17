@@ -148,6 +148,7 @@ func GetPost(id uint64, test bool) (model.Post, int) {
 	return postModel, http.StatusOK
 
 }
+
 func GetDraft(id uint64, test bool) (model.Post, int) {
 	var postModel model.Post
 	if test {

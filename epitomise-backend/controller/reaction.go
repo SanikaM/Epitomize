@@ -30,8 +30,16 @@ func addNewReaction(userId uint, postId uint) int {
 	reaction.PostId = postId
 	if err := db.Create(&reaction).Error; err != nil {
 		//Increment reaction count in posts table
+		incrementPostReactionCount(postId)
 		return http.StatusOK
 	} else {
 		return http.StatusBadRequest
 	}
+}
+
+func incrementPostReactionCount(postId uint) {
+	post, _ := GetPost(uint64(postId), true)
+	db := database.GetDB()
+	post.ReactionCount += 1
+	db.Save(&post)
 }
