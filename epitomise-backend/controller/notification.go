@@ -53,3 +53,22 @@ func DeleteNotification(notify uint, userid uint) int {
 	db.Where("userid = ? and n_id = ?", userid, notify).Delete(&model.Notification{})
 	return http.StatusOK
 }
+func NotifyonNewPost(userid uint, postid uint) int {
+	db := database.GetDB()
+	var Follower []model.Follow
+	db.Where("current_user_id = ?", userid).Find(&Follower)
+	curruser := model.User{}
+	db.Where("user_id   = ?", userid).Find(&curruser)
+	for _, f := range Follower {
+		fmt.Println(f.FollowingUserId)
+		user := model.User{}
+		db.Where("user_id   = ?", f.FollowingUserId).Find(&user)
+		notification := model.Notification{}
+		notification.Userid = user.UserId
+		notification.Message = "User " + curruser.Username + " posted a new post"
+		notification.Path = "/post/" + strconv.FormatUint(uint64(postid), 10)
+		notification.Read = 0
+		db.Create(&notification)
+	}
+	return http.StatusOK
+}
