@@ -59,6 +59,23 @@ func AddToReadingList(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
+func RemoveFromReadingList(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.RemoveFromReadingList(userId, uint(postId))
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
 func Authentification(w http.ResponseWriter, r *http.Request) uint {
 	reqToken := r.Header.Get("Authorization")
 	if len(reqToken) == 0 {
@@ -762,7 +779,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
 	myRouter.HandleFunc("/readinglist/{id}", AddToReadingList).Methods("POST")
 	myRouter.HandleFunc("/readinglist", GetReadingList).Methods("GET")
-	// myRouter.HandleFunc("/readinglist", AllNotifications).Methods("DELETE")
+	myRouter.HandleFunc("/readinglist/{id}", RemoveFromReadingList).Methods("DELETE")
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

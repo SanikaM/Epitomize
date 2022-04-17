@@ -70,3 +70,27 @@ func GetReadingList(userId uint) ([]model.Post, int) {
 		return Posts, http.StatusOK
 	}
 }
+
+func RemoveFromReadingList(userId uint, postId uint) int {
+	db := database.GetDB()
+	var readingList model.Readinglist
+
+	if err := db.First(&readingList, "user_id = ?", userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return http.StatusOK
+		} else {
+			return http.StatusBadRequest
+		}
+	} else {
+		for index, post := range readingList.Posts {
+			if postId == post {
+				readingList.Posts = append(readingList.Posts[:index], readingList.Posts[index+1:]...)
+			}
+		}
+		if err := db.Save(&readingList).Error; err != nil {
+			return http.StatusOK
+		} else {
+			return http.StatusBadRequest
+		}
+	}
+}
