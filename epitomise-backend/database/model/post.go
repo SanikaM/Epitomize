@@ -21,5 +21,5 @@ type Post struct {
 	TagList       pq.StringArray `gorm:"type:text[]"`
 	Tags          string
 	IDUser        uint `json:"-"`
-	ReactionCount uint
+	ReactionCount int
 }
