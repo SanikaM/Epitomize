@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func AddToReadingList(userId uint, postId uint) int {
+func AddToReadingList(userId uint, postId int64) int {
 	db := database.GetDB()
 	var readingList model.Readinglist
 
@@ -23,7 +23,7 @@ func AddToReadingList(userId uint, postId uint) int {
 	}
 }
 
-func createReadingList(userId uint, postId uint) int {
+func createReadingList(userId uint, postId int64) int {
 	db := database.GetDB()
 	var readingList model.Readinglist
 	readingList.UserId = userId
@@ -35,7 +35,7 @@ func createReadingList(userId uint, postId uint) int {
 	}
 }
 
-func addToExistingReadingList(readingList model.Readinglist, postId uint) int {
+func addToExistingReadingList(readingList model.Readinglist, postId int64) int {
 	db := database.GetDB()
 	readingList.Posts = append(readingList.Posts, postId)
 	//Checking if post is already in list
@@ -71,7 +71,7 @@ func GetReadingList(userId uint) ([]model.Post, int) {
 	}
 }
 
-func RemoveFromReadingList(userId uint, postId uint) int {
+func RemoveFromReadingList(userId uint, postId int64) int {
 	db := database.GetDB()
 	var readingList model.Readinglist
 

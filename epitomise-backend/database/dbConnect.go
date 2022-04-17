@@ -18,7 +18,7 @@ func InitDB() *gorm.DB {
 	var db = DB
 	godotenv.Load("../../.env")
 	val := os.Getenv("DBPATH")
-	hardcode := "/Users/akashparikh/Desktop/database.db"
+	hardcode := "/Users/ankitkulkarni/Desktop/database.db"
 	if val == hardcode {
 		fmt.Println("Tho Problem Kya hai")
 	}
