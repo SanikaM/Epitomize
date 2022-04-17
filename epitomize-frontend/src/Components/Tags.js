@@ -6,6 +6,7 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 
+
 function Tags() {
 
     const baseURL = "http://localhost:8081/"
@@ -26,6 +27,13 @@ function Tags() {
             });
     }, []);
 
+    
+
+   const chipFilter = (item) => {
+    alert("Clicked!!"+item);
+    window.location = "/tagsposts"
+  };
+
     if (data && data['TagList'] !== null) {
 
         return (
@@ -33,9 +41,12 @@ function Tags() {
                 <h2>Recommended Topics: </h2>
                 <Stack direction="row" spacing={1}>
                     {
+                                          
                         data['TagList'].map(item => (
-                            <Chip label={item} size="medium" variant="filled" key={item} />
+                            <Chip label={item} size="medium" variant="filled" key={item} clickable={true}
+                            onClick={() => chipFilter(item)}/>
                         ))
+                        
                     }
                 </Stack>
             </div>
