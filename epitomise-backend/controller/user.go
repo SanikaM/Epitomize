@@ -150,3 +150,19 @@ func UpdateProfilePicture(userid uint, filePath string) int {
 	return http.StatusAccepted
 
 }
+
+func GetUserProfile(userId uint) (model.User, int) {
+	var userModel model.User
+	db := database.GetDB()
+	if err := db.First(&userModel, "user_id = ?", userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return userModel, http.StatusNotFound
+		} else {
+			return userModel, http.StatusBadRequest
+		}
+	}
+	userModel.Password = ""
+	userModel.Emailid = ""
+	userModel.Tags = ""
+	return userModel, http.StatusOK
+}
