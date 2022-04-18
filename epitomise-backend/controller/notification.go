@@ -22,8 +22,7 @@ func Notify(mtype string, currentuserid uint, notifyuserid uint, read uint, test
 			notification.Userid = notifyuserid
 			notification.Message = "User " + user.Username + " followed you"
 			notification.Path = "/userprofile/" + strconv.FormatUint(uint64(currentuserid), 10)
-			db.Create(&notification)
-
+			ValidateInsertion(notification)
 		}
 		var result string = "succcess"
 		return result
@@ -67,7 +66,7 @@ func NotifyonNewPost(userid uint, postid uint) int {
 		notification.Message = "User " + curruser.Username + " posted a new post"
 		notification.Path = "/post/" + strconv.FormatUint(uint64(postid), 10)
 		notification.Read = 0
-		db.Create(&notification)
+		ValidateInsertion(notification)
 	}
 	return http.StatusOK
 }
@@ -83,6 +82,18 @@ func NotifyonPostLike(userid uint, postid uint) int {
 	notification.Message = "User " + curruser.Username + " like your post " + currpost.Title
 	notification.Path = "/post/" + strconv.FormatUint(uint64(postid), 10)
 	notification.Read = 0
-	db.Create(&notification)
-	return http.StatusOK
+	result := ValidateInsertion(notification)
+	return result
+}
+func ValidateInsertion(notification model.Notification) int {
+	val := model.Notification{}
+	db := database.GetDB()
+	db.Where("message =  ? and userid = ?", notification.Message, notification.Userid).Find(&val)
+	if (val == model.Notification{}) {
+		fmt.Println(val)
+		db.Create(&notification)
+		return http.StatusOK
+	}
+	return http.StatusFound
+
 }

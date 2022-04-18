@@ -961,7 +961,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/readinglist/{id}", RemoveFromReadingList).Methods("DELETE")
 	myRouter.HandleFunc("/user/profile/{id}", GetUserProfile).Methods("GET")
 	myRouter.HandleFunc("/react/{id}", AddReactionToPost).Methods("GET")
-	myRouter.HandleFunc("/react/{id}", GetReactionsUserList).Methods("GET")
+	myRouter.HandleFunc("/allreact/{id}", GetReactionsUserList).Methods("GET")
 	myRouter.HandleFunc("/react/{id}", RemoveReactionFromPost).Methods("DELETE")
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
 	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
