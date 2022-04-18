@@ -450,7 +450,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(responseType)
 		}
 		if responseType.Result != "Successfully logged in." {
-			json.NewEncoder(w).Encode(http.StatusUnauthorized)
+			w.WriteHeader(http.StatusUnauthorized)
 		}
 
 	}
