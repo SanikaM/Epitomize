@@ -41,7 +41,7 @@ export default function EditPost() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.get(baseURL + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + "post/" + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
                 setValues(response.data)

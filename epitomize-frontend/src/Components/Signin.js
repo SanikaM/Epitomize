@@ -31,10 +31,10 @@ function SignIn({ auth }) {
       Password: formdata.get('password'),
     });
     axios
-        .post(baseURL, data)
+        .post(baseURL + 'login', data)
         .then(response => {
           console.log(response.status)
-            console.log(response.data);
+            console.log(response);
             cookies.set('access_token', response.data['Access_Token'], { path: '/' });
             window.location = '/';
 
