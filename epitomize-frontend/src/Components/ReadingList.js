@@ -11,9 +11,10 @@ import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 function ReadingList() {
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 
@@ -25,7 +26,7 @@ function ReadingList() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.get(baseURL + 'myreadinglist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + 'readinglist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
             });
@@ -41,27 +42,20 @@ function ReadingList() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.delete(baseURL + "readinglist/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("Post successfully deleted."),
+                alert("Post successfully deleted from reading list."),
                 window.location.reload()
             );
     }
 
-    if (!data) return (
-        <Stack spacing={2}>
-            <h1>My Reading List</h1>
-            <h4>No posts in the reading list</h4>
-        </Stack>
-    )
-    else
+    if (data && data['ReadingList'].length > 0) {
+
         return (
 
             <Stack spacing={2}>
-                <h1>My Reading List</h1>
-
-                {data['Posts'].map(item => (
-
+                <h1>Reading List</h1>
+                {data['ReadingList'].map(item => (
                     <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                         <CardActionArea>
                             <CardContent>
@@ -102,6 +96,14 @@ function ReadingList() {
             </Stack>
 
         );
+
+    }
+    else return (
+        <Stack spacing={2}>
+            <h1>Reading List</h1>
+            <h4>No posts in your reading list</h4>
+        </Stack>
+    )
 }
 
 export default ReadingList

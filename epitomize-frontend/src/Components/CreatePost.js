@@ -3,10 +3,11 @@ import "./CreatePost.css"
 import axios from "axios";
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 export default function CreatePost() {
 
-    const baseURL = "http://localhost:8081/post"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
 
     const [Title, setTitle] = useState("")

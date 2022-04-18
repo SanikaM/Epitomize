@@ -10,10 +10,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'universal-cookie';
 import axios from "axios";
+import configData from "../config.json";
 
 const theme = createTheme();
 const cookies = new Cookies();
-const baseURL = "http://localhost:8081/login"
+const baseURL = configData.BACKEND_URL
 
 // const changeRouteHome = () => {
 //   window.location = '/';
@@ -30,14 +31,17 @@ function SignIn({ auth }) {
       Password: formdata.get('password'),
     });
     axios
-        .post(baseURL, data)
+        .post(baseURL + "login", data)
         .then(response => {
-            console.log(response.data);
+          console.log(response.status)
+            console.log(response);
             cookies.set('access_token', response.data['Access_Token'], { path: '/' });
             window.location = '/';
 
         }).catch(error => {
-            alert(error)
+          console.log("error", error.status)
+            console.log(error)
+            alert("Please check your login credentials. ")
         });
     
     

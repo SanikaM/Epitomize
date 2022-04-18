@@ -6,10 +6,11 @@ import {
     useParams
 } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 export default function EditPost() {
 
-    const baseURL = "http://localhost:8081/post/"
+    const baseURL = configData.BACKEND_URL
     let { id } = useParams();
     const cookies = new Cookies();
 
@@ -40,7 +41,7 @@ export default function EditPost() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.get(baseURL + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + "post/" + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 setData(response.data);
                 setValues(response.data)
@@ -81,9 +82,6 @@ export default function EditPost() {
         else {
             data.append("myFile", dataItem.Image);
         }
-
-        console.log(data.get("myFile"))
-        console.log(dataItem.Image)
 
         axios
             .put(baseURL + id, data, { headers: { "Authorization": `Bearer ${tokenStr}` } })

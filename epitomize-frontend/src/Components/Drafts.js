@@ -12,9 +12,10 @@ import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import Publish from '@mui/icons-material/Publish';
 import jwt_decode from 'jwt-decode';
+import configData from "../config.json";
 
 function Drafts() {
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 
@@ -36,18 +37,18 @@ function Drafts() {
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     function handleClick(value) {
-        //     const tokenStr = cookies.get('access_token')
-        //     let decodedToken = jwt_decode(tokenStr);
-        //     let currentDate = new Date();
-        //     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        //         cookies.remove("access_token", { path: '/' })
-        //         window.location = "/"
-        //     }
-        //     axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-        //         .then(() =>
-        //             alert("Draft successfully deleted."),
-        //             window.location.reload()
-        //         );
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+        axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then(() =>
+                alert("Draft successfully deleted."),
+                window.location.reload()
+            );
     }
 
     function handlePublish(value) {

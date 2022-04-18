@@ -56,13 +56,12 @@ func DeleteNotification(notify uint, userid uint) int {
 func NotifyonNewPost(userid uint, postid uint) int {
 	db := database.GetDB()
 	var Follower []model.Follow
-	db.Where("current_user_id = ?", userid).Find(&Follower)
+	db.Where("following_user_id = ?", userid).Find(&Follower)
 	curruser := model.User{}
 	db.Where("user_id   = ?", userid).Find(&curruser)
 	for _, f := range Follower {
-		fmt.Println(f.FollowingUserId)
 		user := model.User{}
-		db.Where("user_id   = ?", f.FollowingUserId).Find(&user)
+		db.Where("user_id   = ?", f.CurrentUserId).Find(&user)
 		notification := model.Notification{}
 		notification.Userid = user.UserId
 		notification.Message = "User " + curruser.Username + " posted a new post"
@@ -70,5 +69,20 @@ func NotifyonNewPost(userid uint, postid uint) int {
 		notification.Read = 0
 		db.Create(&notification)
 	}
+	return http.StatusOK
+}
+
+func NotifyonPostLike(userid uint, postid uint) int {
+	db := database.GetDB()
+	currpost := model.Post{}
+	db.Where("posts_uid  = ?", postid).Find(&currpost)
+	curruser := model.User{}
+	db.Where("user_id   = ?", userid).Find(&curruser)
+	notification := model.Notification{}
+	notification.Userid = currpost.IDUser
+	notification.Message = "User " + curruser.Username + " like your post " + currpost.Title
+	notification.Path = "/post/" + strconv.FormatUint(uint64(postid), 10)
+	notification.Read = 0
+	db.Create(&notification)
 	return http.StatusOK
 }

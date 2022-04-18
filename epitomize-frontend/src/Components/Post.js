@@ -8,9 +8,11 @@ import {
     useParams
 } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import Typography from '@mui/material/Typography';
+import configData from "../config.json";
 
 function Post() {
-    const baseURL = "http://localhost:8081/";
+    const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState();
     const cookies = new Cookies();
 
@@ -47,6 +49,10 @@ function Post() {
                         <Chip label={new Date(data.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} color="success" variant="outlined" />
                     </Stack>
                     <Divider style={{ marginTop: "20px", marginBottom: "20px" }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                        Author - {data.userId}
+                     </Typography>
+                     <Divider style={{ marginTop: "20px", marginBottom: "20px" }} />
                     <div sx={{ textAlign: "justify" }}>
                         {data.Content}
                     </div>

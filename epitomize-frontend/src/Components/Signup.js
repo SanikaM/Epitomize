@@ -11,9 +11,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
+import configData from "../config.json";
 
 
-const baseURL = "http://localhost:8081/"
+const baseURL = configData.BACKEND_URL
 
 const theme = createTheme();
 

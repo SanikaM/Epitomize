@@ -23,7 +23,7 @@ const initialState = { alt: "", src: "" };
 
 const images = require.context('../images', true);
 
-export default function UserProfile() {
+export default function OtherUserProfile() {
 
   const cookies = new Cookies();
   const baseURL = configData.BACKEND_URL

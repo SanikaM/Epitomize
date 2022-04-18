@@ -15,13 +15,26 @@ import { CardActionArea, CardActions, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from 'jwt-decode';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import configData from "../config.json";
+
+var likeFlag = true;
 
 function OtherPosts() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [followingData, setFollowingData] = React.useState(null);
     const [recommendedData, setRecommendedData] = React.useState(null);
+
+    const [value, setValue] = React.useState('1');
+
+    const handleChange = (event, newValue) => {
+        setValue(newValue);
+    };
+
+    const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
@@ -47,13 +60,51 @@ function OtherPosts() {
 
     }, []);
 
-    const [value, setValue] = React.useState('1');
+    function handleReadingList(postid) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+        axios.get(baseURL + "readinglist/" + postid, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then((response) => {
+                alert("Added to reading list")
+                window.location = "/myreadinglist"
+            })
+            .catch((error) => {
+                // error response
+                console.log(error)
+            });
+    }
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
+    function handleLikeClick(value) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+       
+         axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+           .then(() =>
+             alert("this item is liked"),
+           );
+          
+         /*
+         else
+         {
+           axios.delete(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+           .then(() =>
+             alert("this item is unliked"),
+            
+           );
+         } */
 
-    const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
+        //  this.data.likeFlag = !this.data.likeFlag;
+    }
 
     // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
     if (followingData && followingData.length > 0) {
@@ -82,6 +133,11 @@ function OtherPosts() {
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                                                 {item.Summary}
                                             </Typography>
+
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                                Author - {item.Username}
+                                            </Typography>
+
                                         </CardContent>
                                     </CardActionArea>
                                     <CardMedia
@@ -97,8 +153,21 @@ function OtherPosts() {
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
+
+                                            {likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            }
+                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
+                                            {!likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            }
+                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
-                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>
                                     </CardActions>
@@ -121,6 +190,9 @@ function OtherPosts() {
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                                                 {item.Summary}
                                             </Typography>
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                                Author - {item.Username}
+                                            </Typography>
                                         </CardContent>
                                     </CardActionArea>
                                     <CardMedia
@@ -136,8 +208,21 @@ function OtherPosts() {
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
+
+                                            {likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            }
+                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
+                                            {!likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            }
+                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>}
+
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
-                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }}>Add to Reading List</Typography>
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>
                                     </CardActions>

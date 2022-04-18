@@ -7,13 +7,16 @@ import Cookies from 'universal-cookie';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
+import { Link } from 'react-router-dom';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
+
 
 function AllUsers() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState(null);
     const cookies = new Cookies();
 
@@ -77,11 +80,20 @@ function AllUsers() {
                     {
                         data['Users'].map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
+                               
+                                            
                                 <ListItemAvatar>
+                                <Link to={"/otheruser/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
+                                         
                                     <Avatar style={{
                                         backgroundColor: randomColor()
-                                    }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
+                                    }}>
+                                           {item.Username.charAt(0).toUpperCase()}
+                                        
+                                    </Avatar>
+                                    </Link>
                                 </ListItemAvatar>
+                                
                                 <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={item.Username}
                                     secondary={
@@ -90,6 +102,7 @@ function AllUsers() {
                                         </React.Fragment>
                                     }
                                 />
+                               
                                 {item.Follow ? (
                                     <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
 

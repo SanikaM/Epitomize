@@ -5,10 +5,12 @@ import Stack from '@mui/material/Stack';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
+
 
 function Tags() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 
@@ -26,6 +28,13 @@ function Tags() {
             });
     }, []);
 
+    
+
+   const chipFilter = (item) => {
+    alert("Clicked!!"+item);
+    window.location = "/tagsposts/" + item 
+  };
+
     if (data && data['TagList'] !== null) {
 
         return (
@@ -33,9 +42,12 @@ function Tags() {
                 <h2>Recommended Topics: </h2>
                 <Stack direction="row" spacing={1}>
                     {
+                                          
                         data['TagList'].map(item => (
-                            <Chip label={item} size="medium" variant="filled" key={item} />
+                            <Chip label={item} size="medium" variant="filled" key={item} clickable={true}
+                            onClick={() => chipFilter(item)}/>
                         ))
+                        
                     }
                 </Stack>
             </div>

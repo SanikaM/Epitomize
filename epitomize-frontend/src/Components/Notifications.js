@@ -13,9 +13,10 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import Typography from '@mui/material/Typography';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import IconButton from '@mui/material/IconButton';
+import configData from "../config.json";
 
 export default function Notifications() {
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -60,7 +61,7 @@ export default function Notifications() {
             });
     }
 
-    if (data && data['Allnotifications'].length > 0)
+    if (data && data['AllNotifications'].length > 0)
         return (
             <div>
                 <Grid container spacing={2}>
@@ -75,7 +76,7 @@ export default function Notifications() {
                 </Grid>
 
                 <List sx={{ width: '100%', }}>
-                    {data && data['Allnotifications'].map(item => (
+                    {data && data['AllNotifications'].map(item => (
                         <>
                             <React.Fragment key={item.NId}>
                                 {item.Read ?
@@ -83,7 +84,7 @@ export default function Notifications() {
                                     <ListItem sx={{ bgcolor: 'background.paper' }} key={item.NId}
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete">
-                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)}/>
+                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} id="delete" />
                                             </IconButton>
                                         }>
                                         <ListItemIcon>
@@ -97,14 +98,14 @@ export default function Notifications() {
                                     :
                                     <ListItem sx={{ bgcolor: '#88b4e5' }} key={item.NId}
                                         secondaryAction={
-                                            <IconButton edge="end" aria-label="delete">
-                                                <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} />
+                                            <IconButton edge="end" aria-label="delete" onClick={() => handleDeleteNotification(item.NId)} id="delete" >
+                                                <DeleteSweepIcon />
                                             </IconButton>
                                         }>
                                         <ListItemIcon>
                                             <NotificationsIcon />
                                         </ListItemIcon>
-                                        <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} 
+                                        <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} id="read"
                                             primary={item.Message}
                                             secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
 
