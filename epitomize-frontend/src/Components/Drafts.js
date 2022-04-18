@@ -12,9 +12,10 @@ import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import Publish from '@mui/icons-material/Publish';
 import jwt_decode from 'jwt-decode';
+import configData from "../config.json";
 
 function Drafts() {
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 

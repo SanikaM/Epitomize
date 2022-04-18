@@ -6,10 +6,11 @@ import {
     useParams
 } from "react-router-dom";
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 export default function EditPost() {
 
-    const baseURL = "http://localhost:8081/post/"
+    const baseURL = configData.BACKEND_URL
     let { id } = useParams();
     const cookies = new Cookies();
 

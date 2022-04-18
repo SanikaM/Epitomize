@@ -7,17 +7,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import Typography from '@mui/material/Typography';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Button, CardActionArea, CardActions, Container } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-
+import configData from "../config.json";
 
 function Posts() {
-  const baseURL = "http://localhost:8081/"
+  const baseURL = configData.BACKEND_URL
   const cookies = new Cookies();
   const [data, setData] = React.useState(null);
   const [numLikes, setNumLikes] = React.useState(null);

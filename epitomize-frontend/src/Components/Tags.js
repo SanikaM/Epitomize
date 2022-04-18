@@ -5,11 +5,12 @@ import Stack from '@mui/material/Stack';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 
 function Tags() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
 

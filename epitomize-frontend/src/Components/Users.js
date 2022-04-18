@@ -10,10 +10,11 @@ import { BrowserRouter, Link } from 'react-router-dom';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 function Users() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState(null);
     const cookies = new Cookies();
     React.useEffect(() => {

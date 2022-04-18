@@ -16,6 +16,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import EditIcon from '@mui/icons-material/Edit';
+import configData from "../config.json";
 
 const theme = createTheme();
 const initialState = { alt: "", src: "" };
@@ -25,7 +26,7 @@ const images = require.context('../images', true);
 export default function OtherUserProfile() {
 
   const cookies = new Cookies();
-  const baseURL = "http://localhost:8081/"
+  const baseURL = configData.BACKEND_URL
   const [uploadFile, setUploadFile] = React.useState();
 
   const [data, setData] = React.useState(null);

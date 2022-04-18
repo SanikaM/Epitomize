@@ -17,12 +17,13 @@ import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from 'jwt-decode';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import configData from "../config.json";
 
 var likeFlag = true;
 
 function OtherPosts() {
 
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [followingData, setFollowingData] = React.useState(null);
     const [recommendedData, setRecommendedData] = React.useState(null);

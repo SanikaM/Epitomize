@@ -12,10 +12,11 @@ import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import configData from "../config.json";
 
 
 function TagsPosts() {
-  const baseURL = "http://localhost:8081/"
+  const baseURL = configData.BACKEND_URL
   const cookies = new Cookies();
   const [data, setData] = React.useState(null);
   const [numLikes, setNumLikes] = React.useState(null);

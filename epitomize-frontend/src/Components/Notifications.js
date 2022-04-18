@@ -13,9 +13,10 @@ import DraftsIcon from '@mui/icons-material/Drafts';
 import Typography from '@mui/material/Typography';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import IconButton from '@mui/material/IconButton';
+import configData from "../config.json";
 
 export default function Notifications() {
-    const baseURL = "http://localhost:8081/"
+    const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
     const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };

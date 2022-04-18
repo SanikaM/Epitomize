@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 const useStyles = makeStyles({
     root: {
@@ -29,7 +30,7 @@ const handleRouteChange = (post_id) => {
     window.location = "/post/" + post_id;
 }
 
-const baseURL = "http://0.0.0.0:8081/";
+const baseURL = configData.BACKEND_URL
 const cookies = new Cookies();
 
 function Search() {

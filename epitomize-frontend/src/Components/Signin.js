@@ -10,10 +10,11 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'universal-cookie';
 import axios from "axios";
+import configData from "../config.json";
 
 const theme = createTheme();
 const cookies = new Cookies();
-const baseURL = "http://localhost:8081/login"
+const baseURL = configData.BACKEND_URL
 
 // const changeRouteHome = () => {
 //   window.location = '/';

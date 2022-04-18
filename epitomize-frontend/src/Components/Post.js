@@ -9,9 +9,10 @@ import {
 } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Typography from '@mui/material/Typography';
+import configData from "../config.json";
 
 function Post() {
-    const baseURL = "http://localhost:8081/";
+    const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState();
     const cookies = new Cookies();
 

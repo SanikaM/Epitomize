@@ -16,9 +16,10 @@ import jwt_decode from "jwt-decode";
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import BookIcon from '@mui/icons-material/Book';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import configData from "./config.json";
 
 export default function Header() {
-  const baseURL = "http://localhost:8081/"
+  const baseURL = configData.BACKEND_URL
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
