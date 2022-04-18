@@ -34,10 +34,11 @@ function SignIn({ auth }) {
         .then(response => {
             console.log(response.data);
             cookies.set('access_token', response.data['Access_Token'], { path: '/' });
-            window.location = '/';
+            // window.location = '/';
 
         }).catch(error => {
             console.log(error)
+            alert(error)
         });
     
     
