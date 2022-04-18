@@ -189,6 +189,19 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	}
 	json.NewEncoder(w).Encode(result)
 }
+
+func GetPostsWithTag(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	tag := params["tag"]
+	posts := controller.GetPostsWithTag(tag)
+	json.NewEncoder(w).Encode(posts)
+}
+
 func AllNotifications(w http.ResponseWriter, r *http.Request) {
 	userid := Authentification(w, r)
 	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
@@ -950,6 +963,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
 	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
 	myRouter.HandleFunc("/notification/{id}", DeleteNotification).Methods("DELETE")
+	myRouter.HandleFunc("/post/tag/{tag}", GetPostsWithTag).Methods("GET")
 
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
