@@ -31,15 +31,15 @@ func addNewReaction(userId uint, postId uint) int {
 	reaction.PostId = postId
 	if err := db.Create(&reaction).Error; err == nil {
 		//Increment reaction count in posts table
-		updatePostReactionCount(postId, 1)
+		updatePostReactionCount(userId, postId, 1)
 		return http.StatusOK
 	} else {
 		return http.StatusBadRequest
 	}
 }
 
-func updatePostReactionCount(postId uint, count int) {
-	post, _ := GetPost(uint64(postId), true)
+func updatePostReactionCount(userId uint, postId uint, count int) {
+	post, _ := GetPost(userId, uint64(postId), true)
 	db := database.GetDB()
 	post.ReactionCount += count
 	fmt.Println(post.ReactionCount)
@@ -60,7 +60,7 @@ func RemoveReactionFromPost(userId uint, postId uint) int {
 		if err := db.Delete(reaction).Error; err != nil {
 			return http.StatusBadRequest
 		} else {
-			updatePostReactionCount(postId, -1)
+			updatePostReactionCount(userId, postId, -1)
 			return http.StatusOK
 		}
 	}

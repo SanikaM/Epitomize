@@ -617,7 +617,7 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
-	post, responseType := controller.GetPost(1, false)
+	post, responseType := controller.GetPost(1, 1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return
@@ -639,7 +639,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	post, responseType := controller.GetPost(postId, true)
+	post, responseType := controller.GetPost(code, postId, true)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return

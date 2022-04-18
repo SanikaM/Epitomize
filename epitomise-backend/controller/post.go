@@ -85,10 +85,25 @@ func GetPosts(userid uint, test bool) []model.Post {
 			tagTemp.Type = GetPostTags(p.PostsUId)
 			tagArrays = append(tagArrays, tagTemp)
 			Posts[i].TagList = tagArrays[i].Type
-
+			Posts[i].CurrentUserReact = checkUserReaction(userid, p.PostsUId)
 		}
 	}
 	return Posts
+}
+
+func checkUserReaction(userId uint, postId uint) bool {
+	db := database.GetDB()
+	var reaction model.Reaction
+
+	if err := db.First(&reaction, "user_id = ? and post_id = ?", userId, postId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false
+		} else {
+			return false
+		}
+	} else {
+		return true
+	}
 }
 
 func GetDrafts(userid uint, test bool) []model.Post {
@@ -134,17 +149,18 @@ func CreatePost(post model.Post, test bool) (int, uint) {
 	return http.StatusCreated, 0
 }
 
-func GetPost(id uint64, test bool) (model.Post, int) {
+func GetPost(UserId uint, PostId uint64, test bool) (model.Post, int) {
 	var postModel model.Post
 	if test {
 		db := database.GetDB()
-		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err != nil {
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", PostId, 0).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				return postModel, http.StatusNotFound
 			} else {
 				return postModel, http.StatusBadRequest
 			}
 		}
+		postModel.CurrentUserReact = checkUserReaction(UserId, uint(PostId))
 		return postModel, http.StatusOK
 	}
 	return postModel, http.StatusOK
