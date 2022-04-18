@@ -32,13 +32,15 @@ function SignIn({ auth }) {
     axios
         .post(baseURL, data)
         .then(response => {
+          console.log(response.status)
             console.log(response.data);
             cookies.set('access_token', response.data['Access_Token'], { path: '/' });
-            // window.location = '/';
+            window.location = '/';
 
         }).catch(error => {
+          console.log("error", error.status)
             console.log(error)
-            alert(error)
+            alert("Please check your login credentials. ")
         });
     
     

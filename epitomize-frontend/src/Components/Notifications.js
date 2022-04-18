@@ -60,7 +60,7 @@ export default function Notifications() {
             });
     }
 
-    if (data && data['Allnotifications'].length > 0)
+    if (data && data['AllNotifications'].length > 0)
         return (
             <div>
                 <Grid container spacing={2}>
@@ -75,7 +75,7 @@ export default function Notifications() {
                 </Grid>
 
                 <List sx={{ width: '100%', }}>
-                    {data && data['Allnotifications'].map(item => (
+                    {data && data['AllNotifications'].map(item => (
                         <>
                             <React.Fragment key={item.NId}>
                                 {item.Read ?
