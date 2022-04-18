@@ -199,7 +199,10 @@ func GetPostsWithTag(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	tag := params["tag"]
 	posts := controller.GetPostsWithTag(tag)
-	json.NewEncoder(w).Encode(posts)
+	result := model.TagPostResponse{
+		TagPosts: posts,
+	}
+	json.NewEncoder(w).Encode(result)
 }
 
 func AllNotifications(w http.ResponseWriter, r *http.Request) {
