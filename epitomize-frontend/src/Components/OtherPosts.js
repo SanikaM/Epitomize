@@ -135,7 +135,7 @@ function OtherPosts() {
                                             </Typography>
 
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
-                                                Author - {item.userId}
+                                                Author - {item.Username}
                                             </Typography>
 
                                         </CardContent>
@@ -189,6 +189,9 @@ function OtherPosts() {
                                             </Link>
                                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
                                                 {item.Summary}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                                Author - {item.Username}
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
