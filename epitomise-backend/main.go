@@ -192,7 +192,10 @@ func AllNotifications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println(userid)
-	result := controller.GetNotifications(userid)
+	notify := controller.GetNotifications(userid)
+	result := model.NotifyResponse{
+		AllNotifications: notify,
+	}
 	json.NewEncoder(w).Encode(result)
 }
 func AllDraft(w http.ResponseWriter, r *http.Request) {
