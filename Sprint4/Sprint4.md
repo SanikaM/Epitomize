@@ -156,27 +156,139 @@ GET  /draft
 -   **503**: Service Unavailable
 
 
-#### 6. Upload Image API
+#### 5. Convert Draft to Post API
 
-This API is used for upload images for user profile picture.
+This API is used to change post status from draft to post.
 
 ```
-POST  /uploadImage
+POST  /toPost/{post_id}
 ```
 ##### Header:
 
     Authorization: Access token
-#####  Example Request Body:
-
-```
-myfile = abc.png
-```
 
 ##### Example Responses:
 
 ```
 {
-    "message": "Successfully Uploaded File"
+"message" : "Draft convereted to Post"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 6. Get All Notifications API
+
+This API is used to get all the notifications related to the user.
+
+```
+GET  /notification
+```
+##### Header:
+
+    Authorization: Access token
+
+
+##### Example Responses:
+
+```
+{
+"AllNotifications": [
+	{
+		"NId": 8,
+		"Userid": 1,
+		"Message": "User {username} like your post {posttitle}",
+		"Path": "/post/1",
+		"CreatedAt": "2022-04-18T16:06:25.470515-04:00",
+	"Read": 0
+	}
+  ]
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 7. Delete Notifications API
+
+This API is used to delete a specific notification.
+
+```
+DELETE  /notification/{notificationid}
+```
+##### Header:
+
+    Authorization: Access token
+
+
+##### Example Responses:
+
+```
+{
+"message" : "Notification Successfuly deleted"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 8. Read a Single Notifications API
+
+This API is used to change read status of given notification.
+
+```
+GET  /notification/{notificationid}
+```
+##### Header:
+
+    Authorization: Access token
+
+
+##### Example Responses:
+
+```
+{
+"message" : "Notification Successfuly read"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+#### 9. Read a All Notifications API
+
+This API is used to change read status of given notification.
+
+```
+GET  /allnotification
+```
+##### Header:
+
+    Authorization: Access token
+
+
+##### Example Responses:
+
+```
+{
+"message" : "All Notification Successfuly read"
 }
 ```
 
