@@ -87,12 +87,13 @@ function OtherPosts() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        /* if(likeFlag == true) {
-         axios.post(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
+       
+         axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
            .then(() =>
              alert("this item is liked"),
            );
-         }
+          
+         /*
          else
          {
            axios.delete(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })

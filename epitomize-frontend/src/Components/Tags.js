@@ -32,7 +32,7 @@ function Tags() {
 
    const chipFilter = (item) => {
     alert("Clicked!!"+item);
-    window.location = "/tagsposts"
+    window.location = "/tagsposts/" + item 
   };
 
     if (data && data['TagList'] !== null) {

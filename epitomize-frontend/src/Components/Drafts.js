@@ -46,7 +46,7 @@ function Drafts() {
         }
         axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("Post successfully deleted."),
+                alert("Draft successfully deleted."),
                 window.location.reload()
             );
     }

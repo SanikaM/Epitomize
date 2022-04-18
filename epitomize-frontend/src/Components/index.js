@@ -42,8 +42,8 @@ const Components = () => {
                 <Route path="/mydrafts" element={<Drafts />} />
                 <Route path="/myreadinglist" element={<ReadingList />} />
                 <Route path="/notifications" element={<Notifications />} />
-                <Route path="/otheruser" element={<OtherUserProfile />} />
-                <Route path="/tagsposts" element={<TagsPosts />} />
+                <Route path="/otheruser/:id" element={<OtherUserProfile />} />
+                <Route path="/tagsposts/:tag" element={<TagsPosts />} />
             </Routes>
         </Router>
     );
