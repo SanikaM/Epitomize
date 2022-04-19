@@ -3,7 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Divider from '@mui/material/Divider';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
@@ -23,8 +23,7 @@ function TagsPosts() {
   const baseURL = configData.BACKEND_URL
   const cookies = new Cookies();
   const [data, setData] = React.useState(null);
-  const [numLikes, setNumLikes] = React.useState(null);
-  const likeFlag = false;
+
   let { tag } = useParams();
   const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -63,6 +62,52 @@ function TagsPosts() {
 
   }, []);
 
+  function handleLikeClick(value) {
+    const tokenStr = cookies.get('access_token')
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
+    axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then(() =>
+        setSeverity("success"),
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
+        }),
+        setResponse("Post liked"),
+        window.location.reload()
+      );
+  }
+
+  function handleUnLikeClick(value) {
+    const tokenStr = cookies.get('access_token')
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
+    axios.delete(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then(() =>
+        setSeverity("success"),
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
+        }),
+        setResponse("Post unliked"),
+        window.location.reload()
+      );
+  }
+
   if (!data) return null;
 
   const DATE_OPTIONS = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -93,26 +138,6 @@ function TagsPosts() {
       });
   }
 
-  function handleClick(value) {
-    const tokenStr = cookies.get('access_token')
-    let decodedToken = jwt_decode(tokenStr);
-    let currentDate = new Date();
-    if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      cookies.remove("access_token", { path: '/' })
-      window.location = "/"
-    }
-
-  }
-
-  function handleLikeClick(value) {
-    const tokenStr = cookies.get('access_token')
-    let decodedToken = jwt_decode(tokenStr);
-    let currentDate = new Date();
-    if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      cookies.remove("access_token", { path: '/' })
-      window.location = "/"
-    }
-  }
 
   if (data && data['TagPosts'].length > 0)
     return (
@@ -154,17 +179,17 @@ function TagsPosts() {
 
               <div style={{ marginLeft: 'auto', fontFamily: "Playfair Display" }}>
 
-                {likeFlag && <label style={{ color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18 }}> 10 &nbsp;</label>
-                }
-                {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                  <ThumbUpOutlinedIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
-                </Button>}
+                <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
-                {!likeFlag && <label style={{ color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18 }}> 10 &nbsp;</label>
+                {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="unlikeId">
+                  <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                </Button>
+                  :
+                  <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                    <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                  </Button>
+
                 }
-                {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                  <ThumbUpIcon sx={{ color: "#b3e6ff", marginBottom: "0.6em" }} />
-                </Button>}
                 <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
                   <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                 </Button>

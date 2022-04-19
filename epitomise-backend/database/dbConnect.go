@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
@@ -15,13 +16,13 @@ var DB *gorm.DB
 func InitDB() *gorm.DB {
 	var db = DB
 	godotenv.Load(".env")
-	// val := os.Getenv("DBPATH")
-	hardcode := "/Users/akashparikh/Desktop/database.db"
+	val := os.Getenv("DBPATH")
+	// hardcode := "/Users/akashparikh/Desktop/database.db"
 	// if val == hardcode {
 	// 	fmt.Println("Tho Problem Kya hai")
 	// }
 	// fmt.Println(val)
-	db, err := gorm.Open(sqlite.Open(hardcode), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(val), &gorm.Config{})
 	if err != nil {
 		panic("Error in Database connection")
 	}
