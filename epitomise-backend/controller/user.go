@@ -163,8 +163,7 @@ func GetUserProfile(userId uint) (model.User, int) {
 			return userModel, http.StatusBadRequest
 		}
 	}
+	fmt.Println(userModel)
 	userModel.Password = ""
-	userModel.Emailid = ""
-	userModel.Tags = ""
 	return userModel, http.StatusOK
 }
