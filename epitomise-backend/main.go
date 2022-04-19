@@ -446,19 +446,6 @@ func SearchUserPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LoginUserTest(w http.ResponseWriter, r *http.Request) {
-	var login model.Login
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&login)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		responseType := controller.Login(login, false)
-		json.NewEncoder(w).Encode(responseType)
-	}
-}
-
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -751,7 +738,7 @@ func ConvertToPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	_, responseType := controller.ConvertDraft(postId, post, code, true)
 	if responseType == http.StatusOK {
-		json.NewEncoder(w).Encode(post)
+		json.NewEncoder(w).Encode(responseType)
 		return
 	} else {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)

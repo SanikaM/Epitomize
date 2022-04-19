@@ -68,7 +68,27 @@ func seed(db *gorm.DB) {
 		db.Create(&p)
 	}
 }
+func GetReactionPosts(followinguserid uint, curruserid uint, test bool) []model.Post {
+	if test {
+		db := database.GetDB()
+		// seed(db)
+		// GetPostTags(1)
+		tagArrays := []model.TagResponse{}
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ? AND status = ?", followinguserid, 0).Find(&Posts)
 
+		fmt.Println("From controller", Posts)
+
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			tagTemp.Type = GetPostTags(p.PostsUId)
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+			Posts[i].CurrentUserReact = checkUserReaction(curruserid, p.PostsUId)
+		}
+	}
+	return Posts
+}
 func GetPosts(userid uint, test bool) []model.Post {
 	if test {
 		db := database.GetDB()
@@ -93,12 +113,15 @@ func GetPosts(userid uint, test bool) []model.Post {
 
 func checkUserReaction(userId uint, postId uint) bool {
 	db := database.GetDB()
+	fmt.Println("Yaha hai hai id")
+	fmt.Println(userId)
 	var reaction model.Reaction
 
 	if err := db.First(&reaction, "user_id = ? and post_id = ?", userId, postId).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return false
 		} else {
+			fmt.Println("Hellow")
 			return false
 		}
 	} else {
@@ -211,7 +234,7 @@ func ConvertDraft(id uint64, post model.Post, userid uint, test bool) (error, in
 			post.Status = strconv.Itoa(0)
 			db.Model(&postModel).Where("posts_uid = ?", id).Update("status", 0)
 		}
-		return nil, http.StatusNotFound
+		return nil, http.StatusOK
 	}
 	return nil, http.StatusOK
 }

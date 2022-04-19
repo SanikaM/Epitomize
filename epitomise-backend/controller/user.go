@@ -101,8 +101,10 @@ func GetUserFeed(userId uint, test bool) ([]model.Post, int) {
 		if err := db.Where("current_user_id = ?", userId).Find(&Followers).Error; err == gorm.ErrRecordNotFound {
 			return Posts, http.StatusOK
 		} else if err == nil {
+			fmt.Println(Followers)
 			for _, obj := range Followers {
-				Posts = append(Posts, GetPosts(obj.FollowingUserId, true)...)
+				Posts = append(Posts, GetReactionPosts(obj.FollowingUserId, userId, true)...)
+				fmt.Println(Posts)
 			}
 		}
 		Posts = SortPostsByDate(Posts)
