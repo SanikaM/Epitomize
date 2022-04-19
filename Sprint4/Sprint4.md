@@ -301,7 +301,8 @@ GET  /allnotification
 
 
 
-# Front-end Features and Usage
+# Frontend:
+
 ## User
 ### Login Page
 
