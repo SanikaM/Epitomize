@@ -386,5 +386,13 @@ This page gives the information regarding the logged in user such as - Username,
 
 This page gives the information regarding the any other user which the logged in user clicks on in the home page. The information displayed is - Username, Email id, About, Preferred tags. Here the user can also see the profile picture of the other user.
 
+## Notifications 
+
+This page can be accessed by clicking on the notifications icon on the header tab. This page displays a list of notifications that the user can view, mark them as read and also delete the notifications. 
+
+The type of notifications included are -
+* Information about new followers about the logged in user.
+* If someone has liked a post published by the logged in user.
+* If a user who is followed by the logged un user creates a new post, the logged in user is notified.
 
  
