@@ -83,7 +83,7 @@ function AllUsers() {
                                
                                             
                                 <ListItemAvatar>
-                                <Link to={"/otheruser/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
+                                <Link to={"/user/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
                                          
                                     <Avatar style={{
                                         backgroundColor: randomColor()

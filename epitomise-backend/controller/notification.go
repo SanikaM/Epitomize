@@ -21,7 +21,7 @@ func Notify(mtype string, currentuserid uint, notifyuserid uint, read uint, test
 			notification := model.Notification{}
 			notification.Userid = notifyuserid
 			notification.Message = "User " + user.Username + " followed you"
-			notification.Path = "/userprofile/" + strconv.FormatUint(uint64(currentuserid), 10)
+			notification.Path = "/user/" + strconv.FormatUint(uint64(currentuserid), 10)
 			ValidateInsertion(notification)
 		}
 		var result string = "succcess"

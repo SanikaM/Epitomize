@@ -77,7 +77,7 @@ function Users() {
                         data['Users'].slice(0, 3).map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
                                 <BrowserRouter>
-                                <Link to={"/otheruser/" + item.UserId} key={item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
+                                <Link to={"/user/" + item.UserId} key={item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
                                 
                                 <ListItemAvatar>
                              
