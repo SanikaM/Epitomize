@@ -156,9 +156,9 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" style={{fontFamily: "Playfair Display"}}/>
+                            <Tab label="Following" value="1" style={{ fontFamily: "Playfair Display" }} />
                             <Divider orientation="vertical" flexItem style={{ height: "25px", marginTop: "10px" }} />
-                            <Tab label="Recommended" value="2" style={{fontFamily: "Playfair Display"}}/>
+                            <Tab label="Recommended" value="2" style={{ fontFamily: "Playfair Display" }} />
                         </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -168,35 +168,37 @@ function OtherPosts() {
                                     <CardActionArea>
                                         <CardContent>
                                             <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
-                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display"  }} gutterBottom variant="h5" component="div">
+                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display" }} gutterBottom variant="h5" component="div">
                                                     {item.Title}
                                                 </Typography>
                                             </Link>
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display"  }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                                 {item.Summary}
                                             </Typography>
 
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display"  }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                                 Author - {item.Username}
                                             </Typography>
 
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardMedia
-                                        component="img"
-                                        height="150"
-                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
-                                        alt={item.Title}
-                                    />
+                                    {item.Image &&
+                                        <CardMedia
+                                            component="img"
+                                            height="150"
+                                            image={require("../images/" + item.Image)}
+                                            alt={item.Title}
+                                        />
+                                    }
                                     <CardActions sx={{ fontSize: 11 }}>
-                                        <div style={{fontFamily: "Playfair Display"}} >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+                                        <div style={{ fontFamily: "Playfair Display" }} >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-                                        <div style={{fontFamily: "Playfair Display"}}>
+                                        <div style={{ fontFamily: "Playfair Display" }}>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
 
-                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
                                             {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="unlikeId">
                                                 <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
@@ -209,7 +211,7 @@ function OtherPosts() {
                                             }
 
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
-                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display"  }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>
                                     </CardActions>
@@ -237,12 +239,14 @@ function OtherPosts() {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardMedia
-                                        component="img"
-                                        height="150"
-                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
-                                        alt={item.Title}
-                                    />
+                                    {item.Image &&
+                                        <CardMedia
+                                            component="img"
+                                            height="150"
+                                            image={require("../images/" + item.Image)}
+                                            alt={item.Title}
+                                        />
+                                    }
                                     <CardActions sx={{ fontSize: 11 }}>
                                         <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
@@ -251,7 +255,7 @@ function OtherPosts() {
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
 
-                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
                                             {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="lunikeId">
                                                 <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
@@ -291,15 +295,15 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" style={{fontFamily: "Playfair Display"}}/>
-                            <Tab label="Recommended" value="2" style={{fontFamily: "Playfair Display"}}/>
+                            <Tab label="Following" value="1" style={{ fontFamily: "Playfair Display" }} />
+                            <Tab label="Recommended" value="2" style={{ fontFamily: "Playfair Display" }} />
                         </TabList>
                     </Box>
-                    <TabPanel value="1" style={{fontFamily: "Playfair Display"}}>
+                    <TabPanel value="1" style={{ fontFamily: "Playfair Display" }}>
                         Follow people to see their posts...
 
                     </TabPanel>
-                    <TabPanel vaue="2" style={{fontFamily: "Playfair Display"}}>
+                    <TabPanel vaue="2" style={{ fontFamily: "Playfair Display" }}>
                         Recommended tags posts will be available soon..
                     </TabPanel>
                 </TabContext>

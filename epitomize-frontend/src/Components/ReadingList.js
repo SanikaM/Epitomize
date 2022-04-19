@@ -11,7 +11,9 @@ import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import configData from "../config.json";
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 
@@ -77,6 +79,52 @@ function ReadingList() {
             );
     }
 
+    function handleLikeClick(value) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+
+        axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then(() =>
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post liked"),
+                window.location.reload()
+            );
+    }
+
+    function handleUnLikeClick(value) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+
+        axios.delete(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then(() =>
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post unliked"),
+                window.location.reload()
+            );
+    }
+
     if (data && data['ReadingList'].length > 0) {
 
         return (
@@ -95,6 +143,9 @@ function ReadingList() {
                                 <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                     {item.Summary}
                                 </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
+                                    Author - {item.Username}
+                                </Typography>
                             </CardContent>
                         </CardActionArea>
                         {item.Image &&
@@ -106,13 +157,25 @@ function ReadingList() {
                             />
                         }
                         <CardActions sx={{ fontSize: 11 }}>
-                            <div style={{fontFamily: "Playfair Display"}}>{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+                            <div style={{ fontFamily: "Playfair Display" }}>{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                             <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-                            <div style={{fontFamily: "Playfair Display"}}>
+                            <div style={{ fontFamily: "Playfair Display" }}>
                                 {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                             </div>
 
                             <div style={{ marginLeft: 'auto' }}>
+                                <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
+
+                                {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="unlikeId">
+                                    <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                </Button>
+                                    :
+                                    <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                        <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                    </Button>
+
+                                }
+
                                 <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                                     <DeleteIcon sx={{ color: "#cb1010", marginBottom: "0.6em" }} />
                                 </Button>

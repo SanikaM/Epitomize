@@ -50,6 +50,7 @@ function Users() {
         }
         axios.get(baseURL + 'userlist', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
+                console.log(response.data)
                 setData(response.data);
             });
     }, []);
@@ -99,7 +100,7 @@ function Users() {
     }
 
     function handleClick(value) {
-        window.location = "/otheruser/"+ value
+        window.location = "/user/" + value
     }
 
     function randomColor() {
@@ -117,33 +118,33 @@ function Users() {
                         data['Users'].slice(0, 3).map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
                                 <BrowserRouter>
-                                
-                                <ListItemAvatar>
-                                    <Button onClick = {() => handleClick(item.UserId)} >
-                                <Link to={"/otheruser/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
-                                
-                                    <Avatar style={{
-                                        backgroundColor: randomColor()
-                                    }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
-                                    
-                                    </Link>
-                                    </Button>
-                                </ListItemAvatar>
-                          
+
+                                    <ListItemAvatar>
+                                        <Button onClick={() => handleClick(item.UserId)} >
+                                            <Link to={"/user/" + item.UserId} style={{ textDecoration: 'none', color: "black" }}>
+
+                                                <Avatar style={{
+                                                    backgroundColor: randomColor()
+                                                }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
+
+                                            </Link>
+                                        </Button>
+                                    </ListItemAvatar>
+
                                 </BrowserRouter>
                                 <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={<Typography sx={{ fontFamily: "Playfair Display" }}>{item.Username}</Typography>}
                                     secondary={
                                         <React.Fragment>
-                                           {<Typography sx={{ fontFamily: "Playfair Display" }}>{item.About}</Typography>}
+                                            {<Typography sx={{ fontFamily: "Playfair Display" }}>{item.About}</Typography>}
                                         </React.Fragment>
                                     }
                                 />
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id={item.UserId + "unfollow"} edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id={item.UserId + "unfollow"} edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id={item.UserId + "follow"} edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id={item.UserId + "follow"} edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
                                 )
                                 }
                             </ListItem>
@@ -151,7 +152,7 @@ function Users() {
                     }
                 </List>
 
-                <Button href="/alluser" sx={{ ':hover': { background: '#b3e6ff' }, textTransform: 'none', marginLeft: "10px", fontFamily: "Playfair Display"  }}>
+                <Button href="/alluser" sx={{ ':hover': { background: '#b3e6ff' }, textTransform: 'none', marginLeft: "10px", fontFamily: "Playfair Display" }}>
                     See More Suggestions..
                 </Button>
                 <Snackbar
@@ -169,7 +170,7 @@ function Users() {
         return (
             <div>
                 <h2 className="font-link">Who to Follow: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display"  }}>
+                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display" }}>
                     No active users
                 </Button>
             </div>

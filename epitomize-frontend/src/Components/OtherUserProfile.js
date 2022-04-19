@@ -10,6 +10,7 @@ import {
   Grid,
   TextField
 } from '@mui/material';
+import Chip from '@mui/material/Chip';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -18,6 +19,9 @@ import jwt_decode from "jwt-decode";
 import configData from "../config.json";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import {
+  useParams
+} from "react-router-dom";
 
 const theme = createTheme();
 const initialState = { alt: "", src: "" };
@@ -26,7 +30,7 @@ export default function OtherUserProfile() {
 
   const cookies = new Cookies();
   const baseURL = configData.BACKEND_URL
-  const [uploadFile, setUploadFile] = React.useState();
+  let { id } = useParams();
 
   const [data, setData] = React.useState(null);
   const [{ alt, src }, setPreview] = useState(initialState);
@@ -59,7 +63,7 @@ export default function OtherUserProfile() {
       window.location = "/"
     }
 
-    axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+    axios.get(baseURL + 'user/profile/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
         setData(response.data);
         setPreview(
@@ -74,51 +78,55 @@ export default function OtherUserProfile() {
       });
   }, []);
 
-  const fileHandler = event => {
-    setUploadFile(event.target.files)
-    const { files } = event.target;
-    setPreview(
-      files.length
-        ? {
-          src: URL.createObjectURL(files[0]),
-          alt: files[0].name
-        }
-        : initialState
-    );
-    const dataImg = new FormData();
-    dataImg.append("myFile", files[0]);
+  function handleFollow(value) {
     const tokenStr = cookies.get('access_token')
-
     let decodedToken = jwt_decode(tokenStr);
     let currentDate = new Date();
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
       cookies.remove("access_token", { path: '/' })
       window.location = "/"
     }
-
-    axios
-      .post(baseURL + 'uploadImage', dataImg, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
-      .then(response => {
-        setSeverity("success")
+    axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then((response) =>
+        setSeverity("success"),
         setState({
           open: true, ...{
             vertical: 'top',
             horizontal: 'center',
           }
-        });
-        setResponse("Image successfully updated.")
+        }),
+        setResponse("Successfully followed the user."),
         window.location.reload()
+      );
+  }
 
-      }).catch(error => {
-        console.log(error)
-      });
-  };
+  function handleUnfollow(value) {
+    const tokenStr = cookies.get('access_token')
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+    axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then((response) =>
+        setSeverity("success"),
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
+        }),
+        setResponse("Successfully unfollowed the user."),
+        window.location.reload()
+      );
+  }
 
   if (!data) return null;
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs" sx={{ marginLeft: "50%" }}>
+      <Container component="main" maxWidth="xs" sx={{ marginLeft: "35%" }}>
         <CssBaseline />
         <Box
           sx={{
@@ -143,8 +151,6 @@ export default function OtherUserProfile() {
               height: 65
             }}>{data.Username.charAt(0).toUpperCase()}</Avatar>
           }
-
-
 
           <Typography component="h1" variant="h5">
             Profile
@@ -230,6 +236,17 @@ export default function OtherUserProfile() {
                         readOnly: true,
                       }}
                     />
+                  </Grid>
+                  <Grid item
+                    md={12}
+                    xs={12}>
+                    {data.Follow ? (
+                      <Chip label="Unfollow" onClick={() => handleUnfollow(data.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
+
+                    ) : (
+                      <Chip label="Follow" onClick={() => handleFollow(data.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
+                    )
+                    }
                   </Grid>
                 </Grid>
               </CardContent>

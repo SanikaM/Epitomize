@@ -118,13 +118,11 @@ function Posts() {
 
 
             <div style={{ marginLeft: 'auto' }}>
-              <label style={{ color: "#b3e6ff", marginBottom: "4em", fontSize: 24 }}> {item.ReactionCount} </label>
+              <Button style={{ color: "#b3e6ff", marginBottom: "1em", fontSize: 18 }}> {item.ReactionCount} </Button>
 
               <Link to={"/edit/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }} >
                 <EditIcon sx={{ color: "#b3e6ff" }} />
               </Link>
-
-
 
               <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
                 <DeleteIcon sx={{ color: "#cb1010", marginBottom: "0.6em" }} />

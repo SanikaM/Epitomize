@@ -167,7 +167,7 @@ export default function Header() {
               noWrap
               component="div"
               sx={{ display: { xs: 'none', sm: 'block' } }}
-              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26, fontFamily: "Playfair Display"  }}>
+              style={{ color: "black", fontWeight: 'bold', fontSize: 26, fontFamily: "Playfair Display"  }}>
               Epitomize
             </Typography>
           </a>
@@ -177,6 +177,7 @@ export default function Header() {
             aria-label="notifications"
           >
             <NotificationsIcon onClick={notifications} />
+            
           </IconButton>
           <IconButton
             size="large"
