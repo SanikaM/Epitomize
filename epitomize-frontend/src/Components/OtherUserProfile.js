@@ -144,10 +144,7 @@ export default function OtherUserProfile() {
             }}>{data.Username.charAt(0).toUpperCase()}</Avatar>
           }
 
-          <label htmlFor="fileUpload" style={{
-            marginLeft: "4em"
-          }}><EditIcon /> </label>
-          <input type="file" id="fileUpload" onChange={fileHandler} style={{ display: 'none' }} />
+
 
           <Typography component="h1" variant="h5">
             Profile

@@ -43,7 +43,7 @@ const Components = () => {
                 <Route path="/mydrafts" element={<Drafts />} />
                 <Route path="/myreadinglist" element={<ReadingList />} />
                 <Route path="/notifications" element={<Notifications />} />
-                <Route path="/user/:id" element={<OtherUserProfile />} />
+                <Route path="/otheruser/:id" element={<OtherUserProfile />} />
                 <Route path="/tagsposts/:tag" element={<TagsPosts />} />
                 <Route path="/draft/:id" element={<Draft />} />
             </Routes>
