@@ -15,13 +15,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import EditIcon from '@mui/icons-material/Edit';
 import configData from "../config.json";
 
 const theme = createTheme();
 const initialState = { alt: "", src: "" };
-
-const images = require.context('../images', true);
 
 export default function OtherUserProfile() {
 
@@ -79,15 +76,6 @@ export default function OtherUserProfile() {
       window.location = "/"
     }
 
-    axios
-      .post(baseURL + 'uploadImage', dataImg, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
-      .then(response => {
-        alert("Image successfully updated.")
-        window.location.reload()
-
-      }).catch(error => {
-        console.log(error)
-      });
   };
 
   if (!data) return null;
@@ -120,10 +108,7 @@ export default function OtherUserProfile() {
             }}>{data.Username.charAt(0).toUpperCase()}</Avatar>
           }
 
-          <label htmlFor="fileUpload" style={{
-            marginLeft: "4em"
-          }}><EditIcon /> </label>
-          <input type="file" id="fileUpload" onChange={fileHandler} style={{ display: 'none' }} />
+
             
           <Typography component="h1" variant="h5">
             Profile

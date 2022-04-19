@@ -61,6 +61,9 @@ function Users() {
             );
     }
 
+    function handleClick(value) {
+        window.location = "/otheruser/"+ value
+    }
 
     function randomColor() {
         let hex = Math.floor(Math.random() * 0xFFFFFF);
@@ -77,18 +80,19 @@ function Users() {
                         data['Users'].slice(0, 3).map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
                                 <BrowserRouter>
-                                <Link to={"/user/" + item.UserId} key={item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
                                 
                                 <ListItemAvatar>
-                             
+                                    <Button onClick = {() => handleClick(item.UserId)} >
+                                <Link to={"/otheruser/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
                                 
                                     <Avatar style={{
                                         backgroundColor: randomColor()
                                     }}>{item.Username.charAt(0).toUpperCase()}</Avatar>
                                     
-                                 
+                                    </Link>
+                                    </Button>
                                 </ListItemAvatar>
-                                </Link>
+                          
                                 </BrowserRouter>
                                 <ListItemText sx={{ textTransform: 'capitalize' }}
                                     primary={item.Username}
