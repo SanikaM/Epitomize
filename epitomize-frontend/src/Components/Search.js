@@ -67,7 +67,7 @@ function Search() {
 
     return (
         <div maxWidth="auto">
-            <h2>Search: </h2>
+            <h2 className="font-link">Search: </h2>
             <Box
                 display="flex"
             >
@@ -88,16 +88,16 @@ function Search() {
                     <Card sx={{ maxWidth: "auto", marginTop: "5px" }} key={item.PostsUId}>
                         <CardActionArea>
                             <CardContent>
-                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontSize: "16px" }} gutterBottom variant="h6" component="div" onClick={() => handleRouteChange(item.PostsUId)}>
+                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontSize: "16px", fontFamily: "Playfair Display" }} gutterBottom variant="h6" component="div" onClick={() => handleRouteChange(item.PostsUId)}>
                                     {item.Title}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontSize: "14px" }} >
+                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontSize: "14px", fontFamily: "Playfair Display" }} >
                                     {item.Summary}
                                 </Typography>
                                 <Typography sx={{ marginTop: "5px" }}>
                                     {
                                         item.TagList.map(tag => (
-                                            <Chip label={tag} size="small" variant="outlined" key={tag} color="info" sx={{ marginRight: "5px" }} />
+                                            <Chip style={{fontFamily: "Playfair Display"}} label={tag} size="small" variant="outlined" key={tag} color="info" sx={{ marginRight: "5px" }} />
                                         ))
                                     }
 

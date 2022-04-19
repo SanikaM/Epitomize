@@ -16,6 +16,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const theme = createTheme();
 const initialState = { alt: "", src: "" };
@@ -28,6 +30,24 @@ export default function OtherUserProfile() {
 
   const [data, setData] = React.useState(null);
   const [{ alt, src }, setPreview] = useState(initialState);
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+  const [severity, setSeverity] = React.useState();
+  const [apiResponse, setResponse] = React.useState();
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+
+  const { vertical, horizontal, open } = state;
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')
@@ -76,6 +96,22 @@ export default function OtherUserProfile() {
       window.location = "/"
     }
 
+    axios
+      .post(baseURL + 'uploadImage', dataImg, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+      .then(response => {
+        setSeverity("success")
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
+        });
+        setResponse("Image successfully updated.")
+        window.location.reload()
+
+      }).catch(error => {
+        console.log(error)
+      });
   };
 
   if (!data) return null;
@@ -108,8 +144,11 @@ export default function OtherUserProfile() {
             }}>{data.Username.charAt(0).toUpperCase()}</Avatar>
           }
 
+          <label htmlFor="fileUpload" style={{
+            marginLeft: "4em"
+          }}><EditIcon /> </label>
+          <input type="file" id="fileUpload" onChange={fileHandler} style={{ display: 'none' }} />
 
-            
           <Typography component="h1" variant="h5">
             Profile
           </Typography>
@@ -195,22 +234,6 @@ export default function OtherUserProfile() {
                       }}
                     />
                   </Grid>
-
-                  {/* <Grid item
-                    md={12}
-                    xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Profilepicture"
-                      name="Profilepicture"
-                      value={data.Profilepicture}
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </Grid> */}
-
                 </Grid>
               </CardContent>
 
@@ -218,6 +241,14 @@ export default function OtherUserProfile() {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+      >
+        <Alert severity={severity}>{apiResponse}</Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }

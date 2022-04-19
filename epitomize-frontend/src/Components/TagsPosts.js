@@ -8,14 +8,14 @@ import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  useParams
+} from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from "jwt-decode";
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import configData from "../config.json";
-import {
-  useParams
-} from "react-router-dom";
 
 function TagsPosts() {
   const baseURL = configData.BACKEND_URL
@@ -88,20 +88,20 @@ function TagsPosts() {
     return (
 
       <Stack spacing={2}>
-
+        <h1 className="font-link">{tag} </h1>
         {data['TagPosts'].map(item => (
           <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
             <CardActionArea>
               <CardContent>
                 <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
-                  <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
+                  <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display" }} gutterBottom variant="h5" component="div">
                     {item.Title}
                   </Typography>
                 </Link>
-                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                   {item.Summary}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                   Author - {item.userId}
                 </Typography>
               </CardContent>
@@ -115,14 +115,14 @@ function TagsPosts() {
               />
             }
             <CardActions sx={{ fontSize: 11 }}>
-              <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+              <div style={{fontFamily: "Playfair Display"}}>{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
               <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-              <div>
+              <div style={{fontFamily: "Playfair Display"}}>
                 {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
               </div>
 
 
-              <div style={{ marginLeft: 'auto' }}>
+              <div style={{ marginLeft: 'auto', fontFamily: "Playfair Display" }}>
 
                 {likeFlag && <label style={{ color: "#b3e6ff", marginBottom: "0.6em", fontSize: 18 }}> 10 &nbsp;</label>
                 }
@@ -147,7 +147,8 @@ function TagsPosts() {
     );
   else return (
     <Stack spacing={2}>
-      <h4>No posts for this tag</h4>
+      <h1 className="font-link">{tag} </h1>
+      <h4 className="font-link">No posts for this tag</h4>
     </Stack>
   )
 }

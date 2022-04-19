@@ -31,7 +31,6 @@ function Tags() {
     
 
    const chipFilter = (item) => {
-    alert("Clicked!!"+item);
     window.location = "/tagsposts/" + item 
   };
 
@@ -39,12 +38,12 @@ function Tags() {
 
         return (
             <div>
-                <h2>Recommended Topics: </h2>
+                <h2 className="font-link">Recommended Topics: </h2>
                 <Stack direction="row" spacing={1}>
                     {
                                           
                         data['TagList'].map(item => (
-                            <Chip label={item} size="medium" variant="filled" key={item} clickable={true}
+                            <Chip label={item} size="medium" variant="filled" key={item} clickable={true} style={{fontFamily: "Playfair Display"}}
                             onClick={() => chipFilter(item)}/>
                         ))
                         
@@ -56,8 +55,8 @@ function Tags() {
     else {
         return (
             <div>
-                <h2>Recommended Topics: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20 }}>
+                <h2 className="font-link">Recommended Topics: </h2>
+                <Button sx={{ textTransform: 'none', color: "black", fontSize: 20, fontFamily: "Playfair Display" }}>
                     No tags
                 </Button>
             </div>

@@ -12,6 +12,9 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import jwt_decode from "jwt-decode";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 
 
 function AllUsers() {
@@ -24,6 +27,25 @@ function AllUsers() {
         let hex = Math.floor(Math.random() * 0xFFFFFF);
         return "#" + hex.toString(16);
     }
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
@@ -50,7 +72,14 @@ function AllUsers() {
         }
         axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
-                alert("Successfully followed the user."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Successfully followed the user."),
                 window.location.reload()
             );
     }
@@ -65,7 +94,14 @@ function AllUsers() {
         }
         axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
-                alert("Successfully unfollowed the user."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Successfully unfollowed the user."),
                 window.location.reload()
             );
     }
@@ -75,53 +111,60 @@ function AllUsers() {
         return (
             <Stack spacing={2}>
                 <List sx={{ width: '100%', maxWidth: 500, marginLeft: "45%" }}>
-                    <h2>Who to Follow: </h2>
+                    <h2 className="font-link">Who to Follow: </h2>
 
                     {
                         data['Users'].map(item => (
                             <ListItem alignItems="flex-start" key={item.UserId}>
-                               
-                                            
+
                                 <ListItemAvatar>
-                                <Link to={"/otheruser/" + item.UserId}  style={{ textDecoration: 'none', color: "black" }}>
-                                         
-                                    <Avatar style={{
-                                        backgroundColor: randomColor()
-                                    }}>
-                                           {item.Username.charAt(0).toUpperCase()}
-                                        
-                                    </Avatar>
+                                    <Link to={"/user/" + item.UserId} style={{ textDecoration: 'none', color: "black" }}>
+
+                                        <Avatar style={{
+                                            backgroundColor: randomColor()
+                                        }}>
+                                            {item.Username.charAt(0).toUpperCase()}
+
+                                        </Avatar>
                                     </Link>
                                 </ListItemAvatar>
-                                
-                                <ListItemText sx={{ textTransform: 'capitalize' }}
-                                    primary={item.Username}
+
+                                <ListItemText sx={{ textTransform: 'capitalize', fontFamily: "Playfair Display" }}
+                                    primary={<Typography sx={{ fontFamily: "Playfair Display" }}>{item.Username}</Typography>}
                                     secondary={
                                         <React.Fragment>
-                                            {item.About}
+                                            <Typography sx={{ fontFamily: "Playfair Display" }}>{item.About}</Typography>
                                         </React.Fragment>
                                     }
                                 />
-                               
+
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}}/>
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
                                 )
                                 }
                             </ListItem>
                         ))
                     }
                 </List>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>{apiResponse}</Alert>
+                </Snackbar>
             </Stack>
         )
     }
     else {
         return (
             <div>
-                <h2>Who to Follow: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20 }}>
+                <h2 className="font-link">Who to Follow: </h2>
+                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display" }}>
                     No active users
                 </Button>
             </div>

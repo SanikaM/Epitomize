@@ -18,6 +18,8 @@ import jwt_decode from 'jwt-decode';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import configData from "../config.json";
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function OtherPosts() {
 
@@ -26,6 +28,25 @@ function OtherPosts() {
     const [followingData, setFollowingData] = React.useState(null);
     const [recommendedData, setRecommendedData] = React.useState(null);
     const [value, setValue] = React.useState('1');
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -51,7 +72,6 @@ function OtherPosts() {
         axios.get(baseURL + 'user/recommended', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
-
                 setRecommendedData(response.data);
             });
 
@@ -67,7 +87,14 @@ function OtherPosts() {
         }
         axios.get(baseURL + "readinglist/" + postid, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
-                alert("Added to reading list")
+                setSeverity("success")
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                });
+                setResponse("Added to reading list")
                 window.location = "/myreadinglist"
             })
             .catch((error) => {
@@ -87,8 +114,15 @@ function OtherPosts() {
 
         axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("this item is liked"),
-                // window.location.reload()
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post liked"),
+                window.location.reload()
             );
     }
 
@@ -103,8 +137,15 @@ function OtherPosts() {
 
         axios.delete(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("this item is unliked"),
-                // window.location.reload()
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post unliked"),
+                window.location.reload()
             );
     }
 
@@ -115,9 +156,9 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" />
+                            <Tab label="Following" value="1" style={{fontFamily: "Playfair Display"}}/>
                             <Divider orientation="vertical" flexItem style={{ height: "25px", marginTop: "10px" }} />
-                            <Tab label="Recommended" value="2" />
+                            <Tab label="Recommended" value="2" style={{fontFamily: "Playfair Display"}}/>
                         </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -127,15 +168,15 @@ function OtherPosts() {
                                     <CardActionArea>
                                         <CardContent>
                                             <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
-                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
+                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display"  }} gutterBottom variant="h5" component="div">
                                                     {item.Title}
                                                 </Typography>
                                             </Link>
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display"  }} >
                                                 {item.Summary}
                                             </Typography>
 
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display"  }} >
                                                 Author - {item.Username}
                                             </Typography>
 
@@ -148,9 +189,9 @@ function OtherPosts() {
                                         alt={item.Title}
                                     />
                                     <CardActions sx={{ fontSize: 11 }}>
-                                        <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+                                        <div style={{fontFamily: "Playfair Display"}} >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-                                        <div>
+                                        <div style={{fontFamily: "Playfair Display"}}>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
@@ -168,7 +209,7 @@ function OtherPosts() {
                                             }
 
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
-                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display"  }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>
                                     </CardActions>
@@ -232,7 +273,16 @@ function OtherPosts() {
                         </Stack>
                     </TabPanel>
                 </TabContext>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>{apiResponse}</Alert>
+                </Snackbar>
             </Box>
+
         );
     }
     else {
@@ -241,15 +291,15 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" />
-                            <Tab label="Recommended" value="2" />
+                            <Tab label="Following" value="1" style={{fontFamily: "Playfair Display"}}/>
+                            <Tab label="Recommended" value="2" style={{fontFamily: "Playfair Display"}}/>
                         </TabList>
                     </Box>
-                    <TabPanel value="1">
+                    <TabPanel value="1" style={{fontFamily: "Playfair Display"}}>
                         Follow people to see their posts...
 
                     </TabPanel>
-                    <TabPanel vaue="2">
+                    <TabPanel vaue="2" style={{fontFamily: "Playfair Display"}}>
                         Recommended tags posts will be available soon..
                     </TabPanel>
                 </TabContext>

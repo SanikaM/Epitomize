@@ -11,7 +11,7 @@ import jwt_decode from "jwt-decode";
 import Typography from '@mui/material/Typography';
 import configData from "../config.json";
 
-function Post() {
+function Draft() {
     const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState();
     const cookies = new Cookies();
@@ -27,7 +27,7 @@ function Post() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.get(baseURL + 'post/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + 'draft/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setData(response.data);
@@ -64,4 +64,4 @@ function Post() {
     )
 }
 
-export default Post
+export default Draft

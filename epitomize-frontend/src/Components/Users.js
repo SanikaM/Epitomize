@@ -11,12 +11,35 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import jwt_decode from "jwt-decode";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+import Typography from '@mui/material/Typography';
 
 function Users() {
 
     const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState(null);
     const cookies = new Cookies();
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
+
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
         let decodedToken = jwt_decode(tokenStr);
@@ -41,7 +64,14 @@ function Users() {
         }
         axios.get(baseURL + "follow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
-                alert("Successfully followed the user."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Successfully followed the user."),
                 window.location.reload()
             );
     }
@@ -56,7 +86,14 @@ function Users() {
         }
         axios.get(baseURL + "unfollow/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) =>
-                alert("Successfully unfollowed the user."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Successfully unfollowed the user."),
                 window.location.reload()
             );
     }
@@ -74,7 +111,7 @@ function Users() {
 
         return (
             <div>
-                <h2>Who to Follow: </h2>
+                <h2 className="font-link">Who to Follow: </h2>
                 <List sx={{ width: '100%', maxWidth: 360, }}>
                     {
                         data['Users'].slice(0, 3).map(item => (
@@ -95,18 +132,18 @@ function Users() {
                           
                                 </BrowserRouter>
                                 <ListItemText sx={{ textTransform: 'capitalize' }}
-                                    primary={item.Username}
+                                    primary={<Typography sx={{ fontFamily: "Playfair Display" }}>{item.Username}</Typography>}
                                     secondary={
                                         <React.Fragment>
-                                            {item.About}
+                                           {<Typography sx={{ fontFamily: "Playfair Display" }}>{item.About}</Typography>}
                                         </React.Fragment>
                                     }
                                 />
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id={item.UserId + "unfollow"}  edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" id={item.UserId + "unfollow"} edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id={item.UserId + "follow"} edge="end" sx={{ marginTop: "5%" }} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" id={item.UserId + "follow"} edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
                                 )
                                 }
                             </ListItem>
@@ -114,17 +151,25 @@ function Users() {
                     }
                 </List>
 
-                <Button href="/alluser" sx={{ ':hover': { background: '#b3e6ff' }, textTransform: 'none', marginLeft: "10px" }}>
+                <Button href="/alluser" sx={{ ':hover': { background: '#b3e6ff' }, textTransform: 'none', marginLeft: "10px", fontFamily: "Playfair Display"  }}>
                     See More Suggestions..
                 </Button>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>{apiResponse}</Alert>
+                </Snackbar>
             </div>
         )
     }
     else {
         return (
             <div>
-                <h2>Who to Follow: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20 }}>
+                <h2 className="font-link">Who to Follow: </h2>
+                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display"  }}>
                     No active users
                 </Button>
             </div>

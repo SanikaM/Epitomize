@@ -118,8 +118,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
-      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Playfair Display' }}>Profile</MenuItem>
+      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Playfair Display' }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -150,7 +150,7 @@ export default function Header() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p >Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -167,7 +167,7 @@ export default function Header() {
               noWrap
               component="div"
               sx={{ display: { xs: 'none', sm: 'block' } }}
-              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26 }}>
+              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26, fontFamily: "Playfair Display"  }}>
               Epitomize
             </Typography>
           </a>
