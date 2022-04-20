@@ -417,6 +417,70 @@ POST  /readinglist/{post_id}
 -   **503**: Service Unavailable
 
 
+#### 13. GET reading list of current user API
+This API gets all posts that the current user has added to their reading list
+
+    GET  /readinglist
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    [
+        {
+            "PostsUId": 1,
+            "Type": "Blockchain",
+            "Title": "Trade on Margin with 0% Interest",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "TagList": null,
+            "Tags": "Crypto,Bitcoin,Life"
+        },
+        {
+            "PostsUId": 2,
+            "Type": "Cricket",
+            "Title": "Cricket 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "TagList": null,
+            "Tags": "Cricket, Life"
+        },
+        {
+            "PostsUId": 3,
+            "Type": "Football",
+            "Title": "Football 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "TagList": null,
+            "Tags": "Football, Life"
+        }
+    ]
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
