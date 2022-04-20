@@ -299,6 +299,71 @@ GET  /allnotification
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
 
+
+#### 10. Get Posts for a Tag API
+This API gets all posts that have the given tag
+
+    GET  /post/tag/{tag_name}
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    [
+        {
+            "PostsUId": 1,
+            "Type": "Blockchain",
+            "Title": "Trade on Margin with 0% Interest",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
+            "TagList": null,
+            "Tags": "Crypto,Bitcoin,Life"
+        },
+        {
+            "PostsUId": 2,
+            "Type": "Cricket",
+            "Title": "Cricket 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
+            "TagList": null,
+            "Tags": "Cricket, Life"
+        },
+        {
+            "PostsUId": 3,
+            "Type": "Football",
+            "Title": "Football 123",
+            "Summary": "Get up to 5x leverage with 0% interest ",
+            "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
+            "Linked_Post": 0,
+            "Status": "Post",
+            "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
+            "TagList": null,
+            "Tags": "Football, Life"
+        }
+    ]
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
+
+
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
