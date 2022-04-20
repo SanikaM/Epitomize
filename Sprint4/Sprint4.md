@@ -361,6 +361,30 @@ This API gets all posts that have the given tag
 -   **400**: Bad Request
 
 
+#### 11. Get Other User Profile API
+This API gets the profile details of a registered User
+
+    GET  /user/profile/{user_id}
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    {
+        "Username": "user",
+        "About": "About user",
+	"Profile Picture": "{image_path}"
+    }
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+
 
 
 
