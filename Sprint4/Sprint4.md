@@ -299,6 +299,30 @@ GET  /allnotification
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
 
+## Back-end tests
+
+To run the unit test, following command is to be used -
+
+    go test -v
+
+1. TestCreateDraft - In this test, we create a mock draft in our database and compare if required responses on creating a new draft is received.
+
+2. TestGetDraft  - In this test, we get all of the drafts created by the user and compare the response with our expected response.
+
+3. TestUserProfile -In this test, we mock and create a dummy user in database and get the user's profile using this test case.
+
+4. TestAddReaction- In this test, we add reactions to created dummy post data in our mock db.
+
+5. TestGetReaction - In this test, we get the list of users reacted to our given post, we receive the data from our mock db and compare it with expected list of users.
+
+6. TestGetNotification - In this test, we retieve all notifications from our mock db and compare the notification message with expected.
+
+7. TestDeleteReaction- In this test case, we delete one of the reaction from our mock db.
+
+### Main_test.go
+
+
+### All Test Cases
 
 
 # Frontend:
