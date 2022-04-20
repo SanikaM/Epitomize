@@ -66,10 +66,10 @@ export default function Notifications() {
             <div>
                 <Grid container spacing={2}>
                     <Grid item xs={9}>
-                        <h1>Notifications</h1>
+                        <h1 className="font-link">Notifications</h1>
                     </Grid>
                     <Grid item xs={3}>
-                        <Typography variant="subtitle1" sx={{ marginTop: '30px', marginLeft: "50px" }} onClick={() => handleAllRead()}>
+                        <Typography variant="subtitle1" sx={{ marginTop: '30px', marginLeft: "50px", fontFamily: "Playfair Display" }} onClick={() => handleAllRead()}>
                             Mark All Read <DraftsIcon style={{ verticalAlign: "middle" }} />
                         </Typography>
                     </Grid>
@@ -81,7 +81,7 @@ export default function Notifications() {
                             <React.Fragment key={item.NId}>
                                 {item.Read ?
 
-                                    <ListItem sx={{ bgcolor: 'background.paper' }} key={item.NId}
+                                    <ListItem sx={{ bgcolor: 'background.paper', fontFamily: "Playfair Display" }} key={item.NId}
                                         secondaryAction={
                                             <IconButton edge="end" aria-label="delete">
                                                 <DeleteSweepIcon onClick={() => handleDeleteNotification(item.NId)} id="delete" />
@@ -91,8 +91,8 @@ export default function Notifications() {
                                             <NotificationsIcon />
                                         </ListItemIcon>
                                         <ListItemText
-                                            primary={item.Message}
-                                            secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
+                                            primary={<Typography sx={{ fontFamily: "Playfair Display" }}>{item.Message}</Typography>}
+                                            secondary={<Typography sx={{ fontFamily: "Playfair Display" }}>{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</Typography>} />
 
                                     </ListItem>
                                     :
@@ -106,8 +106,8 @@ export default function Notifications() {
                                             <NotificationsIcon />
                                         </ListItemIcon>
                                         <ListItemText onClick={() => handleNotificationRead(item.NId, item.Path)} id="read"
-                                            primary={item.Message}
-                                            secondary={new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} />
+                                            primary={<Typography sx={{ fontFamily: "Playfair Display" }}>{item.Message}</Typography>}
+                                            secondary={<Typography sx={{ fontFamily: "Playfair Display" }}>{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</Typography>} />
 
                                     </ListItem>
                                 }
@@ -122,8 +122,8 @@ export default function Notifications() {
 
     else return (
         <Stack spacing={2}>
-            <h1>Notifications</h1>
-            <h4>No notifications</h4>
+            <h1 className="font-link">Notifications</h1>
+            <h4 className="font-link">No notifications</h4>
         </Stack>
     )
 }

@@ -1,0 +1,1 @@
+Folder to store profile pictures of users.

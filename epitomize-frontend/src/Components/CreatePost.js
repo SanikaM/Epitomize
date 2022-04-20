@@ -4,6 +4,8 @@ import axios from "axios";
 import Cookies from 'universal-cookie';
 import jwt_decode from "jwt-decode";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 export default function CreatePost() {
 
@@ -17,6 +19,25 @@ export default function CreatePost() {
     const [Tags, setTags] = useState("")
     const [myFile, setFile] = useState("")
     let Status = 0
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     function handleSubmit(e) {
         const tokenStr = cookies.get('access_token')
@@ -37,13 +58,18 @@ export default function CreatePost() {
         data.append("Status", Status);
         data.append("myFile", myFile);
 
-
-
         axios
-            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .post(baseURL + 'post', data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
             .then(response => {
                 console.log(response.data);
-                alert("Post successfully created.")
+                setSeverity("success")
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                });
+                setResponse("Post successfully created.")
                 window.location = '/myposts';
 
             }).catch(error => {
@@ -70,10 +96,17 @@ export default function CreatePost() {
         data.append("myFile", myFile);
 
         axios
-            .post(baseURL, data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+            .post(baseURL + 'post', data, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
             .then(response => {
                 console.log(response.data);
-                alert("Draft created.")
+                setSeverity("success")
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                });
+                setResponse("Draft successfully created.")
                 window.location = '/mydrafts';
 
             }).catch(error => {
@@ -132,6 +165,14 @@ export default function CreatePost() {
                 </div>
 
             </form>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={open}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert severity={severity}>{apiResponse}</Alert>
+            </Snackbar>
         </div>
     )
 }

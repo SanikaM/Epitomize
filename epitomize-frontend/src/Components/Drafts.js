@@ -13,11 +13,32 @@ import CardMedia from '@mui/material/CardMedia';
 import Publish from '@mui/icons-material/Publish';
 import jwt_decode from 'jwt-decode';
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function Drafts() {
     const baseURL = configData.BACKEND_URL
     const cookies = new Cookies();
     const [data, setData] = React.useState(null);
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     React.useEffect(() => {
         const tokenStr = cookies.get('access_token')
@@ -46,7 +67,14 @@ function Drafts() {
         }
         axios.delete(baseURL + "deleteposts/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("Draft successfully deleted."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Draft successfully deleted."),
                 window.location.reload()
             );
     }
@@ -61,7 +89,14 @@ function Drafts() {
         }
         axios.get(baseURL + "toPost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(() =>
-                alert("Draft successfully published."),
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Draft successfully published."),
                 window.location = '/myposts'
             );
     }
@@ -71,18 +106,18 @@ function Drafts() {
         return (
 
             <Stack spacing={2}>
-                <h1>My Drafts</h1>
+                <h1 className="font-link">My Drafts</h1>
 
                 {data['Posts'].map(item => (
                     <Card sx={{ maxWidth: "auto", boxShadow: "5px 5px #e0e0e0" }} key={item.PostsUId}>
                         <CardActionArea>
                             <CardContent>
-                                <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
-                                    <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
+                                <Link to={"/draft/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
+                                    <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display" }} gutterBottom variant="h5" component="div">
                                         {item.Title}
                                     </Typography>
                                 </Link>
-                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                     {item.Summary}
                                 </Typography>
                             </CardContent>
@@ -96,9 +131,9 @@ function Drafts() {
                             />
                         }
                         <CardActions sx={{ fontSize: 11 }}>
-                            <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+                            <div className="font-link">{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                             <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-                            <div>
+                            <div className="font-link">
                                 {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                             </div>
 
@@ -115,14 +150,22 @@ function Drafts() {
                     </Card>
 
                 ))}
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>{apiResponse}</Alert>
+                </Snackbar>
             </Stack>
 
         );
 
     else return (
         <Stack spacing={2}>
-            <h1>My Drafts</h1>
-            <h4>No drafts</h4>
+            <h1 className="font-link">My Drafts</h1>
+            <h4 className="font-link">No drafts</h4>
         </Stack>
     )
 }

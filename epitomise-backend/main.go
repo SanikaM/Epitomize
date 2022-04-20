@@ -199,7 +199,10 @@ func GetPostsWithTag(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	tag := params["tag"]
 	posts := controller.GetPostsWithTag(tag)
-	json.NewEncoder(w).Encode(posts)
+	result := model.TagPostResponse{
+		TagPosts: posts,
+	}
+	json.NewEncoder(w).Encode(result)
 }
 
 func AllNotifications(w http.ResponseWriter, r *http.Request) {
@@ -443,19 +446,6 @@ func SearchUserPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LoginUserTest(w http.ResponseWriter, r *http.Request) {
-	var login model.Login
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&login)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		responseType := controller.Login(login, false)
-		json.NewEncoder(w).Encode(responseType)
-	}
-}
-
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -614,7 +604,7 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
-	post, responseType := controller.GetPost(1, false)
+	post, responseType := controller.GetPost(1, 1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return
@@ -636,7 +626,7 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	post, responseType := controller.GetPost(postId, true)
+	post, responseType := controller.GetPost(code, postId, true)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return
@@ -748,7 +738,7 @@ func ConvertToPost(w http.ResponseWriter, r *http.Request) {
 	var post model.Post
 	_, responseType := controller.ConvertDraft(postId, post, code, true)
 	if responseType == http.StatusOK {
-		json.NewEncoder(w).Encode(post)
+		json.NewEncoder(w).Encode(responseType)
 		return
 	} else {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -958,7 +948,7 @@ func HandleRequests() {
 	myRouter.HandleFunc("/readinglist/{id}", RemoveFromReadingList).Methods("DELETE")
 	myRouter.HandleFunc("/user/profile/{id}", GetUserProfile).Methods("GET")
 	myRouter.HandleFunc("/react/{id}", AddReactionToPost).Methods("GET")
-	myRouter.HandleFunc("/react/{id}", GetReactionsUserList).Methods("GET")
+	myRouter.HandleFunc("/allreact/{id}", GetReactionsUserList).Methods("GET")
 	myRouter.HandleFunc("/react/{id}", RemoveReactionFromPost).Methods("DELETE")
 	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
 	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")

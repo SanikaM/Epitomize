@@ -1,6 +1,6 @@
-/* .App {
-  text-align: center;
-} */
+.App {
+  font-family: 'Playfair Display', serif;
+}
 
 .App-logo {
   height: 40vmin;
@@ -8,7 +8,7 @@
 }
 
 h2 {
-  font-family: 'Raleway';
+  font-family: 'Playfair Display', serif;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -39,4 +39,9 @@ h2 {
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.font-link {
+  font-family: 'Playfair Display', serif;
 }

@@ -7,6 +7,8 @@ import {
 } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 export default function EditPost() {
 
@@ -18,6 +20,24 @@ export default function EditPost() {
     const [myFile, setFile] = useState("")
     const [newFile, setNewFile] = useState("")
 
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     const initialValues = {
         Title: dataItem.Title,
@@ -84,9 +104,16 @@ export default function EditPost() {
         }
 
         axios
-            .put(baseURL + id, data, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .put(baseURL + 'post/' + id, data, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then(response => {
-                alert("Post successfully edited.")
+                setSeverity("success")
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                });
+                setResponse("Post successfully edited.")
                 window.location = '/myposts';
             }).catch(error => {
                 console.log(error)
@@ -147,6 +174,14 @@ export default function EditPost() {
                 </div>
 
             </form>
+            <Snackbar
+                anchorOrigin={{ vertical, horizontal }}
+                open={open}
+                onClose={handleClose}
+                key={vertical + horizontal}
+            >
+                <Alert severity={severity}>{apiResponse}</Alert>
+            </Snackbar>
         </div>
     )
 }

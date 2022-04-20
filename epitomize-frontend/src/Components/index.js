@@ -24,6 +24,7 @@ import ReadingList from './ReadingList';
 import Notifications from './Notifications';
 import OtherUserProfile from './OtherUserProfile';
 import TagsPosts from './TagsPosts';
+import Draft from './Draft';
 
 const Components = () => {
     return (
@@ -42,8 +43,9 @@ const Components = () => {
                 <Route path="/mydrafts" element={<Drafts />} />
                 <Route path="/myreadinglist" element={<ReadingList />} />
                 <Route path="/notifications" element={<Notifications />} />
-                <Route path="/otheruser/:id" element={<OtherUserProfile />} />
+                <Route path="/user/:id" element={<OtherUserProfile />} />
                 <Route path="/tagsposts/:tag" element={<TagsPosts />} />
+                <Route path="/draft/:id" element={<Draft />} />
             </Routes>
         </Router>
     );

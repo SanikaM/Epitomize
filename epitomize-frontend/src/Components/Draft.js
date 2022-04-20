@@ -11,7 +11,7 @@ import jwt_decode from "jwt-decode";
 import Typography from '@mui/material/Typography';
 import configData from "../config.json";
 
-function Post() {
+function Draft() {
     const baseURL = configData.BACKEND_URL
     const [data, setData] = React.useState();
     const cookies = new Cookies();
@@ -27,7 +27,7 @@ function Post() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-        axios.get(baseURL + 'post/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+        axios.get(baseURL + 'draft/' + id, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
                 setData(response.data);
@@ -45,15 +45,14 @@ function Post() {
                     <h1 sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} style={{ textTransform: "capitalize" }} className="font-link">{data.Title}</h1>
                     <Divider style={{ marginBottom: "20px" }} />
                     <Stack direction="row" spacing={2} style={{ textTransform: "capitalize" }}>
-                        <Chip label={<Typography  sx={{ fontFamily: "Playfair Display" }}>{data.ReactionCount} likes </Typography>} color="secondary" variant="outlined" />
-                        <Chip style={{ fontFamily: "Playfair Display" }} label={data.Tags} color="primary" variant="outlined" />
-                        <Chip style={{ fontFamily: "Playfair Display" }} label={new Date(data.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} color="success" variant="outlined" />
+                        <Chip style={{fontFamily: "Playfair Display"}} label={data.Tags} color="primary" variant="outlined" />
+                        <Chip style={{fontFamily: "Playfair Display"}} label={new Date(data.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)} color="success" variant="outlined" />
                     </Stack>
                     <Divider style={{ marginTop: "20px", marginBottom: "20px" }} />
                     <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
-                        Author - {data.Username}
-                    </Typography>
-                    <Divider style={{ marginTop: "20px", marginBottom: "20px" }} />
+                        Author - {data.userId}
+                     </Typography>
+                     <Divider style={{ marginTop: "20px", marginBottom: "20px" }} />
                     <div sx={{ textAlign: "justify", fontFamily: "Playfair Display" }}>
                         {data.Content}
                     </div>
@@ -65,4 +64,4 @@ function Post() {
     )
 }
 
-export default Post
+export default Draft

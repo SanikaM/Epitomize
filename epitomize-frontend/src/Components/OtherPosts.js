@@ -15,11 +15,11 @@ import { CardActionArea, CardActions, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CardMedia from '@mui/material/CardMedia';
 import jwt_decode from 'jwt-decode';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import configData from "../config.json";
-
-var likeFlag = true;
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function OtherPosts() {
 
@@ -27,8 +27,26 @@ function OtherPosts() {
     const cookies = new Cookies();
     const [followingData, setFollowingData] = React.useState(null);
     const [recommendedData, setRecommendedData] = React.useState(null);
-
     const [value, setValue] = React.useState('1');
+
+    const Alert = React.forwardRef(function Alert(props, ref) {
+        return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    });
+
+    const [severity, setSeverity] = React.useState();
+    const [apiResponse, setResponse] = React.useState();
+
+    const [state, setState] = React.useState({
+        open: false,
+        vertical: 'top',
+        horizontal: 'center',
+    });
+
+    const { vertical, horizontal, open } = state;
+
+    const handleClose = () => {
+        setState({ ...state, open: false });
+    };
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
@@ -54,7 +72,6 @@ function OtherPosts() {
         axios.get(baseURL + 'user/recommended', { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
                 console.log(response.data)
-
                 setRecommendedData(response.data);
             });
 
@@ -70,7 +87,14 @@ function OtherPosts() {
         }
         axios.get(baseURL + "readinglist/" + postid, { headers: { "Authorization": `Bearer ${tokenStr}` } })
             .then((response) => {
-                alert("Added to reading list")
+                setSeverity("success")
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                });
+                setResponse("Added to reading list")
                 window.location = "/myreadinglist"
             })
             .catch((error) => {
@@ -87,26 +111,44 @@ function OtherPosts() {
             cookies.remove("access_token", { path: '/' })
             window.location = "/"
         }
-       
-         axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
-           .then(() =>
-             alert("this item is liked"),
-           );
-          
-         /*
-         else
-         {
-           axios.delete(baseURL + "likepost/" + value.toString(), { headers: { "Authorization": `Bearer ${tokenStr}` } })
-           .then(() =>
-             alert("this item is unliked"),
-            
-           );
-         } */
 
-        //  this.data.likeFlag = !this.data.likeFlag;
+        axios.get(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then(() =>
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post liked"),
+                window.location.reload()
+            );
     }
 
-    // if (followingData && followingData !== "undefined" && recommendedData && recommendedData !== "undefined") {
+    function handleUnLikeClick(value) {
+        const tokenStr = cookies.get('access_token')
+        let decodedToken = jwt_decode(tokenStr);
+        let currentDate = new Date();
+        if (decodedToken.exp * 1000 < currentDate.getTime()) {
+            cookies.remove("access_token", { path: '/' })
+            window.location = "/"
+        }
+
+        axios.delete(baseURL + "react/" + value, { headers: { "Authorization": `Bearer ${tokenStr}` } })
+            .then(() =>
+                setSeverity("success"),
+                setState({
+                    open: true, ...{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }
+                }),
+                setResponse("Post unliked"),
+                window.location.reload()
+            );
+    }
+
     if (followingData && followingData.length > 0) {
 
         return (
@@ -114,9 +156,9 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" />
+                            <Tab label="Following" value="1" style={{ fontFamily: "Playfair Display" }} />
                             <Divider orientation="vertical" flexItem style={{ height: "25px", marginTop: "10px" }} />
-                            <Tab label="Recommended" value="2" />
+                            <Tab label="Recommended" value="2" style={{ fontFamily: "Playfair Display" }} />
                         </TabList>
                     </Box>
                     <TabPanel value="1">
@@ -126,48 +168,50 @@ function OtherPosts() {
                                     <CardActionArea>
                                         <CardContent>
                                             <Link to={"/post/" + item.PostsUId} key={item.PostsUId} style={{ textDecoration: 'none', color: "black" }}>
-                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left' }} gutterBottom variant="h5" component="div">
+                                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontFamily: "Playfair Display" }} gutterBottom variant="h5" component="div">
                                                     {item.Title}
                                                 </Typography>
                                             </Link>
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                                 {item.Summary}
                                             </Typography>
 
-                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex' }} >
+                                            <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontFamily: "Playfair Display" }} >
                                                 Author - {item.Username}
                                             </Typography>
 
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardMedia
-                                        component="img"
-                                        height="150"
-                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
-                                        alt={item.Title}
-                                    />
+                                    {item.Image &&
+                                        <CardMedia
+                                            component="img"
+                                            height="150"
+                                            image={require("../images/" + item.Image)}
+                                            alt={item.Title}
+                                        />
+                                    }
                                     <CardActions sx={{ fontSize: 11 }}>
-                                        <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
+                                        <div style={{ fontFamily: "Playfair Display" }} >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
-                                        <div>
+                                        <div style={{ fontFamily: "Playfair Display" }}>
                                             {item.TagList && item.TagList.length ? item.TagList.join(", ") : "No Tags"}
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
 
-                                            {likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
-                                            }
-                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                                                <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
-                                            </Button>}
+                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
-                                            {!likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
+                                            {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="unlikeId">
+                                                <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>
+                                                :
+                                                <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                    <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                                </Button>
+
                                             }
-                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                                                <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
-                                            </Button>}
 
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
-                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
+                                                <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>
                                     </CardActions>
@@ -195,12 +239,14 @@ function OtherPosts() {
                                             </Typography>
                                         </CardContent>
                                     </CardActionArea>
-                                    <CardMedia
-                                        component="img"
-                                        height="150"
-                                        image={require('../images/Screen Shot 2022-01-17 at 9.16.48 PM.png')}
-                                        alt={item.Title}
-                                    />
+                                    {item.Image &&
+                                        <CardMedia
+                                            component="img"
+                                            height="150"
+                                            image={require("../images/" + item.Image)}
+                                            alt={item.Title}
+                                        />
+                                    }
                                     <CardActions sx={{ fontSize: 11 }}>
                                         <div >{new Date(item.CreatedAt.split('-').join('/').split('T')[0]).toLocaleDateString('en-US', DATE_OPTIONS)}</div>
                                         <Divider orientation="vertical" flexItem style={{ marginLeft: "10px" }} />
@@ -209,18 +255,17 @@ function OtherPosts() {
                                         </div>
                                         <div style={{ marginLeft: 'auto' }}>
 
-                                            {likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
-                                            }
-                                            {likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                                                <ThumbUpOutlinedIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
-                                            </Button>}
+                                            <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
-                                            {!likeFlag && <label style={{ color: "#2E86C1", fontSize: 18 }}> 10 &nbsp;</label>
-                                            }
-                                            {!likeFlag && <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
-                                                <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
-                                            </Button>}
+                                            {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="lunikeId">
+                                                <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                            </Button>
+                                                :
+                                                <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                    <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
+                                                </Button>
 
+                                            }
                                             <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
                                                 <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Raleway" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
@@ -232,7 +277,16 @@ function OtherPosts() {
                         </Stack>
                     </TabPanel>
                 </TabContext>
+                <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    key={vertical + horizontal}
+                >
+                    <Alert severity={severity}>{apiResponse}</Alert>
+                </Snackbar>
             </Box>
+
         );
     }
     else {
@@ -241,15 +295,15 @@ function OtherPosts() {
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Posts">
-                            <Tab label="Following" value="1" />
-                            <Tab label="Recommended" value="2" />
+                            <Tab label="Following" value="1" style={{ fontFamily: "Playfair Display" }} />
+                            <Tab label="Recommended" value="2" style={{ fontFamily: "Playfair Display" }} />
                         </TabList>
                     </Box>
-                    <TabPanel value="1">
+                    <TabPanel value="1" style={{ fontFamily: "Playfair Display" }}>
                         Follow people to see their posts...
 
                     </TabPanel>
-                    <TabPanel vaue="2">
+                    <TabPanel vaue="2" style={{ fontFamily: "Playfair Display" }}>
                         Recommended tags posts will be available soon..
                     </TabPanel>
                 </TabContext>

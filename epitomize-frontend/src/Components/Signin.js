@@ -11,16 +11,33 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookies from 'universal-cookie';
 import axios from "axios";
 import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const theme = createTheme();
 const cookies = new Cookies();
 const baseURL = configData.BACKEND_URL
 
-// const changeRouteHome = () => {
-//   window.location = '/';
-// }
-
 function SignIn({ auth }) {
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const [severity, setSeverity] = React.useState();
+  const [apiResponse, setResponse] = React.useState();
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+
+  const { vertical, horizontal, open } = state;
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   const handleSubmit = (event) => {
 
@@ -31,20 +48,23 @@ function SignIn({ auth }) {
       Password: formdata.get('password'),
     });
     axios
-        .post(baseURL + "login", data)
-        .then(response => {
-          console.log(response.status)
-            console.log(response);
-            cookies.set('access_token', response.data['Access_Token'], { path: '/' });
-            window.location = '/';
+      .post(baseURL + "login", data)
+      .then(response => {
+        cookies.set('access_token', response.data['Access_Token'], { path: '/' });
+        window.location = '/';
 
-        }).catch(error => {
-          console.log("error", error.status)
-            console.log(error)
-            alert("Please check your login credentials. ")
+      }).catch(error => {
+        setSeverity("error")
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
         });
-    
-    
+        setResponse("Please check your login credentials. ")
+      });
+
+
   };
 
   return (
@@ -93,7 +113,7 @@ function SignIn({ auth }) {
               id="signin"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              // onClick={changeRouteHome}
+            // onClick={changeRouteHome}
             >
               Sign In
             </Button>
@@ -112,6 +132,14 @@ function SignIn({ auth }) {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+      >
+        <Alert severity={severity}>{apiResponse}</Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }

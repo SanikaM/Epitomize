@@ -1,9 +1,11 @@
 .createpost{
     padding-top:30px;
+    
 }
 
 .postForm{
     position:relative;
+    background-color: black;
 }
 
 .postImg{
@@ -18,6 +20,7 @@
     margin-left:150px;
     display: flex;
     align-items: center;
+    background-color: black;
 }
 .postInput{
     font-size: 35px;

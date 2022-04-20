@@ -8,5 +8,8 @@ export const constants = {
     USER_PROFILE: "/userprofile",
     DRAFTS: "/mydrafts",
     READING_LIST: "/myreadinglist",
-    NOTIFICATION: "/notifications"
+    NOTIFICATION: "/notifications",
+    TAGS_POSTS: "/tagsposts/Database",
+    OTHER_USER_PROFILE: "/user/1"
+
 };

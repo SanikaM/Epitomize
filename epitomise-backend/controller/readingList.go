@@ -70,7 +70,7 @@ func GetReadingList(userId uint) ([]model.Post, int) {
 		}
 	} else {
 		for _, postId := range readingList.Posts {
-			post, _ := GetPost(uint64(postId), true)
+			post, _ := GetPost(userId, uint64(postId), true)
 			Posts = append(Posts, post)
 		}
 		return Posts, http.StatusOK
