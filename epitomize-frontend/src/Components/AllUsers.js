@@ -15,6 +15,7 @@ import configData from "../config.json";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
 
 function AllUsers() {
@@ -119,13 +120,31 @@ function AllUsers() {
 
                                 <ListItemAvatar>
                                     <Link to={"/user/" + item.UserId} style={{ textDecoration: 'none', color: "black" }}>
+                                        {item.Profilepicture ?
+                                            <Box>
+                                                <img className="preview" src={require("../images/" + item.Profilepicture)} style={{
+                                                    borderRadius: "50%",
+                                                    width: 45,
+                                                    height: 45
+                                                }} />
 
+                                            </Box>
+                                            :
+                                            <Avatar style={{
+                                                backgroundColor: randomColor(),
+                                                width: 45,
+                                                height: 45
+                                            }}>
+                                                {item.Username.charAt(0).toUpperCase()}
+                                            </Avatar>
+                                        }
+{/* 
                                         <Avatar style={{
                                             backgroundColor: randomColor()
                                         }}>
                                             {item.Username.charAt(0).toUpperCase()}
 
-                                        </Avatar>
+                                        </Avatar> */}
                                     </Link>
                                 </ListItemAvatar>
 
@@ -139,10 +158,10 @@ function AllUsers() {
                                 />
 
                                 {item.Follow ? (
-                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}}/>
+                                    <Chip label="Unfollow" onClick={() => handleUnfollow(item.UserId)} color="default" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
 
                                 ) : (
-                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{fontFamily: "Playfair Display"}} />
+                                    <Chip label="Follow" onClick={() => handleFollow(item.UserId)} color="success" size="medium" variant="filled" edge="end" sx={{ marginTop: "5%" }} style={{ fontFamily: "Playfair Display" }} />
                                 )
                                 }
                             </ListItem>
