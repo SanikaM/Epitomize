@@ -480,6 +480,33 @@ This API gets all posts that the current user has added to their reading list
 -   **503**: Service Unavailable
 
 
+#### 14. Remove Post from reading list API
+
+This API is used to remove a post from the current users reading list.
+
+```
+DELETE  /readinglist/{post_id}
+```
+##### Header:
+
+    Authorization: Access token
+
+##### Example Responses:
+
+```
+{
+"message" : "Post removed from reading list"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+
 
 ## Back-end tests
 
