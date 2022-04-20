@@ -300,7 +300,7 @@ GET  /allnotification
 -   **503**: Service Unavailable
 
 
-#### 10. Get Posts for a Tag API
+#### 10. GET Posts for a Tag API
 This API gets all posts that have the given tag
 
     GET  /post/tag/{tag_name}
@@ -359,9 +359,11 @@ This API gets all posts that have the given tag
 
 -   **200**: Status OK
 -   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
 
 
-#### 11. Get Other User Profile API
+#### 11. GET Other User Profile API
 This API gets the profile details of a registered User
 
     GET  /user/profile/{user_id}
@@ -384,8 +386,35 @@ This API gets the profile details of a registered User
 
 -   **200**: Status OK
 -   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
 
 
+#### 12. Add Post to reading list API
+
+This API is used to add a post to the current users reading list.
+
+```
+POST  /readinglist/{post_id}
+```
+##### Header:
+
+    Authorization: Access token
+
+##### Example Responses:
+
+```
+{
+"message" : "Post added to reading list"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
 
 
 ## Back-end tests
