@@ -10,6 +10,6 @@ export const constants = {
     READING_LIST: "/myreadinglist",
     NOTIFICATION: "/notifications",
     TAGS_POSTS: "/tagsposts/Database",
-    OTHER_USER_PROFILE: "/user/1"
-
+    OTHER_USER_PROFILE: "/user/1",
+    MYPOSTS: "/myposts"
 };

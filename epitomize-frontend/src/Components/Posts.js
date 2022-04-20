@@ -124,7 +124,7 @@ function Posts() {
                 <EditIcon sx={{ color: "#b3e6ff" }} />
               </Link>
 
-              <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
+              <Button onClick={() => handleClick(item.PostsUId)} id={"delete" + item.PostsUId}>
                 <DeleteIcon sx={{ color: "#cb1010", marginBottom: "0.6em" }} />
               </Button>
             </div>
