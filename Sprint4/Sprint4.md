@@ -569,6 +569,45 @@ DELETE  /react/{post_id}
 -   **503**: Service Unavailable
 
 
+#### 17. GET list of Users who reacted on a post API
+This API gets the list of users who have reacted to the given post
+
+    GET  /react/{post_id}
+
+##### Header:
+
+    Authorization: Access token
+
+
+#### Example Responses:
+
+    [
+	    {
+		"Username": "user1",
+		"About": "About user1",
+		"Profile Picture": "{image_path}"
+	    },
+	    {
+		"Username": "user2",
+		"About": "About user2",
+		"Profile Picture": "{image_path}"
+	    },
+	    {
+		"Username": "user3",
+		"About": "About user3",
+		"Profile Picture": "{image_path}"
+	    }
+    ]
+
+
+#### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
