@@ -77,6 +77,7 @@ GET  /draft/{post_id}
 "Content": "test",
 "Linked_Post": 0,
 "Status": "1",
+"ReactionCount": 3,
 "CreatedAt": "2022-04-13T20:11:07.945939-04:00",
 "UpdatedAt": "2022-04-13T20:11:07.945939-04:00",
 "Image": "",
@@ -119,6 +120,7 @@ GET  /draft
 "Content": "test",
 "Linked_Post": 0,
 "Status": "1",
+"ReactionCount": 3,
 "CreatedAt": "2022-04-13T20:11:07.945939-04:00",
 "UpdatedAt": "2022-04-13T20:11:07.945939-04:00",
 "Image": "",
@@ -136,6 +138,7 @@ GET  /draft
 "Content": "test",
 "Linked_Post": 0,
 "Status": "1",
+"ReactionCount": 3,
 "CreatedAt": "2022-04-13T20:11:07.945939-04:00",
 "UpdatedAt": "2022-04-13T20:11:07.945939-04:00",
 "Image": "",
@@ -321,6 +324,7 @@ This API gets all posts that have the given tag
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
             "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
             "TagList": null,
@@ -334,6 +338,7 @@ This API gets all posts that have the given tag
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
             "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
             "TagList": null,
@@ -347,6 +352,7 @@ This API gets all posts that have the given tag
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
             "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
             "TagList": null,
@@ -438,6 +444,7 @@ This API gets all posts that the current user has added to their reading list
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:05.330474-04:00",
             "UpdatedAt": "2022-04-01T13:32:05.330474-04:00",
             "TagList": null,
@@ -451,6 +458,7 @@ This API gets all posts that the current user has added to their reading list
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:37.540434-04:00",
             "UpdatedAt": "2022-04-01T13:32:37.540434-04:00",
             "TagList": null,
@@ -464,6 +472,7 @@ This API gets all posts that the current user has added to their reading list
             "Content": "Last year we launched Margin Trading on the Blockchain.com Exchange, giving users in over 150 supported countries the ability to trade with up to 5x leverage.",
             "Linked_Post": 0,
             "Status": "Post",
+	    "ReactionCount": 3,
             "CreatedAt": "2022-04-01T13:32:56.863487-04:00",
             "UpdatedAt": "2022-04-01T13:32:56.863487-04:00",
             "TagList": null,
@@ -506,7 +515,31 @@ DELETE  /readinglist/{post_id}
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
 
+#### 15. Add reaction to Post API
 
+This API is used to add a reaction to a post by the current users.
+
+```
+POST  /react/{post_id}
+```
+##### Header:
+
+    Authorization: Access token
+
+##### Example Responses:
+
+```
+{
+"message" : "Reaction added to Post"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
 
 ## Back-end tests
 
