@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"testing"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/pilinux/gorest/database/model"
@@ -214,7 +215,105 @@ func TestCreatePost(t *testing.T) {
 			rr.Body.String(), expected)
 	}
 }
-
+func TestCreateDraft(t *testing.T) {
+	req, err := http.NewRequest(http.MethodPost, "/post", nil)
+	data := url.Values{}
+	data.Add("Type", "Chp 1")
+	data.Add("Title", "Matt Aimonetti David")
+	data.Add("Summary", "A ")
+	data.Add("Content", "L")
+	data.Add("Linked_Post", "0")
+	data.Add("Status", "1")
+	data.Add("Tags", "Crypto")
+	data.Add("myFile", "")
+	req.PostForm = data
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var post model.Post
+		req.ParseMultipartForm(10 << 20)
+		post.Title = r.FormValue("Title")
+		post.Content = r.FormValue("Content")
+		post.IDUser = 1
+		if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+			post.Linked_Post = uint(s)
+		}
+		post.Status = r.FormValue("Status")
+		post.Tags = r.FormValue("Tags")
+		post.Type = r.FormValue("Type")
+		post.Summary = r.FormValue("Summary")
+		db.Create(&post)
+		sd := model.StandardResponse{
+			Message: "Draft Successfully Created",
+		}
+		respondWithJSON(w, http.StatusOK, sd)
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `{"Message":"Draft Successfully Created"}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+func TestGetDraft(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "/draft", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tagArrays := []model.TagResponse{}
+		var Posts []model.Post
+		db.Where("id_user = ? AND status = ?", 1, 1).Find(&Posts)
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			posttags := []model.PostTag{}
+			var res []string
+			db.Where("post_id = ?", p.PostsUId).Find(&posttags)
+			for _, pt := range posttags {
+				var result []string
+				tags := []model.Tag{}
+				db.Where("tag_uid  = ?", pt.TagId).Find(&tags)
+				for _, t := range tags {
+					fmt.Println("ID", t.TagUId,
+						"Tag Type", t.Type,
+					)
+					result = append(result, t.Type)
+				}
+				var taglist []string = result
+				res = append(res, taglist...)
+			}
+			tagTemp.Type = res
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+		}
+		Posts[0].CreatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		Posts[0].UpdatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		drafts := model.GetAllPost{
+			Posts: Posts,
+		}
+		respondWithJSON(w, http.StatusOK, drafts)
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `{"Posts":[{"PostsUId":2,"Type":"Chp 1","Title":"Matt Aimonetti David","Summary":"A ","Content":"L","Linked_Post":0,"Status":"1","CreatedAt":"2009-11-17T20:34:58.651387237Z","UpdatedAt":"2009-11-17T20:34:58.651387237Z","Image":"","TagList":null,"Tags":"Crypto","ReactionCount":0,"Username":"","CurrentUserReact":false}]}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
 func TestGetPost(t *testing.T) {
 	req, err := http.NewRequest(http.MethodGet, "/post/1", nil)
 	if err != nil {
@@ -367,6 +466,159 @@ func TestSearchPost(t *testing.T) {
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
+	}
+}
+func TestUserProfile(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "/user/profile/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var userModel model.User
+		db.First(&userModel, "user_id = ?", 1)
+		userModel.Password = ""
+		userModel.CreatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		userModel.UpdatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		respondWithJSON(w, http.StatusOK, userModel)
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `{"UserId":1,"Username":"don","About":"about Sagar","Emailid":"test@abc.edu","Password":"","Profilepicture":"pp","Tags":"","CreatedAt":"2009-11-17T20:34:58.651387237Z","UpdatedAt":"2009-11-17T20:34:58.651387237Z","DeletedAt":"0001-01-01T00:00:00Z"}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+func TestAddReaction(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "/react/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var reaction model.Reaction
+		reaction.UserId = 1
+		reaction.PostId = 1
+		db.Create(&reaction)
+		var postModel model.Post
+		db.First(&postModel, "posts_uid = ? and status = ?", 1, 0)
+		postModel.ReactionCount += 1
+		db.Save(&postModel)
+		sd := model.StandardResponse{
+			Message: "Reaction Successfully Created",
+		}
+		respondWithJSON(w, http.StatusOK, sd)
+
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `{"Message":"Reaction Successfully Created"}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+func TestGetReaction(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "/allreact/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reactions := []model.Reaction{}
+		Profiles := []model.User{}
+		db.Where("post_id = ?", 1).Find(&reactions)
+		for _, reaction := range reactions {
+			var userModel model.User
+			db.First(&userModel, "user_id = ?", reaction.UserId)
+			profile := userModel
+			Profiles = append(Profiles, profile)
+		}
+		Profiles[0].Password = ""
+		Profiles[0].CreatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		Profiles[0].UpdatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		respondWithJSON(w, http.StatusOK, Profiles)
+
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `[{"UserId":1,"Username":"don","About":"about Sagar","Emailid":"test@abc.edu","Password":"","Profilepicture":"pp","Tags":"","CreatedAt":"2009-11-17T20:34:58.651387237Z","UpdatedAt":"2009-11-17T20:34:58.651387237Z","DeletedAt":"0001-01-01T00:00:00Z"}]`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+
+func TestGetNotification(t *testing.T) {
+	req, err := http.NewRequest(http.MethodGet, "/allnotification", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var Notications []model.Notification
+		notification := model.Notification{}
+		notification.Userid = 1
+		notification.Message = "User " + "1" + " posted a new post"
+		notification.Path = "/post/" + "1"
+		notification.Read = 0
+		db.Create(&notification)
+		db.Where("userid = ?", 1).Find(&Notications)
+		Notications[0].CreatedAt = time.Date(
+			2009, 11, 17, 20, 34, 58, 651387237, time.UTC)
+		respondWithJSON(w, http.StatusOK, Notications)
+
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `[{"NId":1,"Userid":1,"Message":"User 1 posted a new post","Path":"/post/1","CreatedAt":"2009-11-17T20:34:58.651387237Z","Read":0}]`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
+	}
+}
+func TestDeleteReaction(t *testing.T) {
+	req, err := http.NewRequest(http.MethodDelete, "/react/1", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var reaction model.Reaction
+		db.First(&reaction, "user_id = ? and post_id = ?", 1, 1)
+		db.Delete(reaction)
+		sd := model.StandardResponse{
+			Message: "Reaction Deleted Successfully",
+		}
+		respondWithJSON(w, http.StatusOK, sd)
+
+	})
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `{"Message":"Reaction Deleted Successfully"}`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v",
+			rr.Body.String(), expected)
 	}
 }
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
