@@ -321,9 +321,11 @@ To run the unit test, following command is to be used -
 
 ### Main_test.go
 
+![](Main_test.png)
 
 ### All Test Cases
 
+![](AllTestCases.png)
 
 # Frontend:
 
