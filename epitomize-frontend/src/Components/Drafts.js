@@ -138,11 +138,11 @@ function Drafts() {
                             </div>
 
                             <div style={{ marginLeft: 'auto' }}>
-                                <Button onClick={() => handlePublish(item.PostsUId)} id="publish">
+                                <Button onClick={() => handlePublish(item.PostsUId)} id={"publish" + item.PostsUId}>
                                     <Publish sx={{ color: "#2ea1da" }} />
                                 </Button>
 
-                                <Button onClick={() => handleClick(item.PostsUId)} id="delete1">
+                                <Button onClick={() => handleClick(item.PostsUId)} id={"delete" + item.PostsUId}>
                                     <DeleteIcon sx={{ color: "#cb1010" }} />
                                 </Button>
                             </div>

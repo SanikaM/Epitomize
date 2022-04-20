@@ -200,17 +200,17 @@ function OtherPosts() {
 
                                             <label style={{ color: "#2E86C1", fontSize: 18 }}> {item.ReactionCount} </label>
 
-                                            {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id="unlikeId">
+                                            {item.CurrentUserReact ? <Button onClick={() => handleUnLikeClick(item.PostsUId)} id={"unlikeId" + item.PostsUId}>
                                                 <ThumbDownOffAltIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
                                             </Button>
                                                 :
-                                                <Button onClick={() => handleLikeClick(item.PostsUId)} id="likeId">
+                                                <Button onClick={() => handleLikeClick(item.PostsUId)} id={"likeId" + item.PostsUId}>
                                                     <ThumbUpIcon sx={{ color: "#2E86C1", marginBottom: "0.6em" }} />
                                                 </Button>
 
                                             }
 
-                                            <Button sx={{ border: "0.01em solid #3f3f3f" }} id="readinglist">
+                                            <Button sx={{ border: "0.01em solid #3f3f3f" }} id={"readinglist" + item.PostsUId}>
                                                 <Typography sx={{ color: "#3f3f3f", textTransform: "capitalize", fontFamily: "Playfair Display" }} onClick={() => handleReadingList(item.PostsUId)}>Add to Reading List</Typography>
                                             </Button>
                                         </div>

@@ -217,7 +217,9 @@ export default function Header() {
             >
               {data && data.Profilepicture ?
                 <Box>
-                  <img className="preview" src={require("./images/" + data.Profilepicture)} style={{
+                  <img className="preview" src={require("./images/" + data.Profilepicture)} 
+                  alt={data.Username}
+                  style={{
                     borderRadius: "50%",
                     width: 40,
                     height: 40

@@ -182,7 +182,7 @@ function Users() {
         return (
             <div>
                 <h2 className="font-link">Who to Follow: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display" }}>
+                <Button sx={{ textTransform: 'none', color: "black",  fontSize: 20, fontFamily: "Playfair Display" }}>
                     No active users
                 </Button>
             </div>

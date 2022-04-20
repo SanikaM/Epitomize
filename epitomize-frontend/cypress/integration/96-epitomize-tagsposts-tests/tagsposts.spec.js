@@ -1,6 +1,6 @@
 import { constants } from "../../constants";
 
-describe("TAGS POSTS Tests", () => {
+describe("Tag Posts Tests", () => {
 
   it("Tags Posts Test", () => {
 

@@ -122,7 +122,7 @@ function AllUsers() {
                                     <Link to={"/user/" + item.UserId} style={{ textDecoration: 'none', color: "black" }}>
                                         {item.Profilepicture ?
                                             <Box>
-                                                <img className="preview" src={require("../images/" + item.Profilepicture)} style={{
+                                                <img className="preview" src={require("../images/" + item.Profilepicture)} alt={item.Username} style={{
                                                     borderRadius: "50%",
                                                     width: 45,
                                                     height: 45
@@ -183,7 +183,7 @@ function AllUsers() {
         return (
             <div>
                 <h2 className="font-link">Who to Follow: </h2>
-                <Button sx={{ textTransform: 'none', color: "black", fontFamily: 'Segoe UI', fontSize: 20, fontFamily: "Playfair Display" }}>
+                <Button sx={{ textTransform: 'none', color: "black", fontSize: 20, fontFamily: "Playfair Display" }}>
                     No active users
                 </Button>
             </div>

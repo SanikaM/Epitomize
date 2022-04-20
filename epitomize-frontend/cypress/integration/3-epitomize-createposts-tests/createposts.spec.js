@@ -17,7 +17,13 @@ describe("Posts Tests", () => {
     })
     cy.get("[id=title]").type("cypresstesting");
     cy.get("[id=summary]").type("testing through cypress");
-    cy.get("[id=tags]").type("tcypress");
+    cy.get("[id=tags]").type("tcypress,database");
+    cy.get("[id=posttype]").type("blog");
+    cy.get("[id=publish]").click();
+    cy.visit(`${constants.CREATE_POST}`);
+    cy.get("[id=title]").type("cypresstesting2");
+    cy.get("[id=summary]").type("testing through cypress2");
+    cy.get("[id=tags]").type("tcypress,database");
     cy.get("[id=posttype]").type("blog");
     cy.get("[id=publish]").click();
   });
