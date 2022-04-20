@@ -541,6 +541,34 @@ POST  /react/{post_id}
 -   **500**: Internal Server Error
 -   **503**: Service Unavailable
 
+
+#### 16. Remove reaction to Post API
+
+This API is used to remove a previously added reaction to a post by the current users.
+
+```
+DELETE  /react/{post_id}
+```
+##### Header:
+
+    Authorization: Access token
+
+##### Example Responses:
+
+```
+{
+"message" : "Reaction removed from Post"
+}
+```
+
+##### Status Codes:
+
+-   **200**: Status OK
+-   **400**: Bad Request
+-   **500**: Internal Server Error
+-   **503**: Service Unavailable
+
+
 ## Back-end tests
 
 To run the unit test, following command is to be used -
