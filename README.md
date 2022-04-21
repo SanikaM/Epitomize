@@ -49,6 +49,8 @@ Users have the ability to create posts. Users also have the ability to view, and
 5. View Other User Profile
 
 6. View Own Profile
+
+7. View, read and delete notifications 
  
 
 **Post:**
