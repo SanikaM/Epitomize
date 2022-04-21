@@ -10,12 +10,14 @@ This project will be a full-stack website for users to publish and view posts. T
 
 The users can view the list of other users and can follow/unfollow them to view the posts of those users. User can also view the profile of other users. Users receive notifications when they are followed by other users, or the user they are following posts a post or when a user likes their post.
 
-### Link to Documentation: https://github.com/SanikaM/Epitomize/wiki
-### Link to Backend API Documentation: https://github.com/SanikaM/Epitomize/wiki/Documention:-Backend#example-request-2
-### Link to Frontend Documentation: https://github.com/SanikaM/Epitomize/wiki/Documentation:-Frontend
-### Link to Project Board: https://github.com/SanikaM/Epitomize/projects/4
-### Link to Sprint 4 deliverables: https://github.com/SanikaM/Epitomize/blob/main/Sprint4/Sprint4.md
-### Endpoint (deployed): https://epitomize.me
+### Deliverables and Links
+
+#### Link to Documentation: https://github.com/SanikaM/Epitomize/wiki
+#### Link to Backend API Documentation: https://github.com/SanikaM/Epitomize/wiki/Documention:-Backend#example-request-2
+#### Link to Frontend Documentation: https://github.com/SanikaM/Epitomize/wiki/Documentation:-Frontend
+#### Link to Project Board: https://github.com/SanikaM/Epitomize/projects/4
+#### Link to Sprint 4 deliverables: https://github.com/SanikaM/Epitomize/blob/main/Sprint4/Sprint4.md
+#### Endpoint (deployed): https://epitomize.me
   
 
 ## Project Members
