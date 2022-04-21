@@ -51,3 +51,10 @@ Frontend:
 ## Resources
 
 Go starter kit credits - https://github.com/pilinux/gorest
+
+## Frontend Test Cases:
+
+
+https://user-images.githubusercontent.com/24410728/164364182-939d04f9-606e-4fd5-896e-604f45185ac8.mp4
+
+
