@@ -38,17 +38,17 @@ Frontend:
 
 Users have the ability to create posts. Users also have the ability to view, and react on posts of other users.
 
-1. Register User
+1. Register User - Usr can register to the application by providing the details in the form.
 
-2. Login User
+2. Login User - User can use the emailid and password to login into the application.
 
-3. Logout User
+3. Logout User - Logged-in user can logout from the application and will be taken to the Login screen again.
 
-4. Follow Another User
+4. Follow Another User - User can view other registered users of the application and follow them to see their posts.
 
-5. View Other User Profile
+5. View Other User Profile - User can view other registered users of the application and view their profile.
 
-6. View Own Profile
+6. View Own Profile - User can view their own profile information along with the profile image.
  
 
 **Post:**
