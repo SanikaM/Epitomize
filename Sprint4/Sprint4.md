@@ -786,3 +786,27 @@ The following tests are added in Sprint4:
 2. Edit Post - In this test we check if all the components in the edit post page are being displayed.
 3.  Draft Post - In this test we check if all the components in the create draft post page are being displayed.
 4. Header - In this test we check if all the components in the header page are being displayed.
+
+### Functional Tests (Using Cypress)
+
+To run the Functional tests, we run the following command -
+
+```
+    npx cypress open  
+```
+
+The following tests are added in Sprint4:
+
+ 1. Create Draft Test - In this test, we are checking if the user is able to create a draft.
+ 2. View Draft Test - In this test, we are checking if the user is able to view the list of drafts.
+ 3. Publish Draft Test - In this test, we are checking if the user is able to publish a draft and covert it to post.
+ 4. Delete Draft Test - In this test, we are checking if the user is able to delete a draft.
+ 5. View Notifications Test - In this test, we are checking if the user is able to view the notifications.
+ 6. Read Notifications Test - In this test, we are checking if the user is able to mark a notification read.
+ 7. Delete Notifications Test - In this test, we are checking if the user is able to delete a notification.
+ 8. View Other User Profile Test - In this test, we are checking if the user is able to view the profile of another user.
+ 9. View Posts of a Tag Test - In this test, we are checking if the user is able to view the posts of a tag.
+ 10. Like a Post Test - In this test, we are checking if the user is able to like another user's post.
+ 11. Unlike a Post Test - In this test, we are checking if the user is able to unlike another user's post.
+ 12. Add to Reading List Test - In this test, we are checking if the user is able to add a post to the reading list.
+ 13. View Reading List Test - In this test, we are checking if the user is able to view his reading list.
