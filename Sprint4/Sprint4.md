@@ -3,26 +3,47 @@
 In Sprint 4 the following user stories were successfully implemented:
 
 1. As a user, I should be able to view another users profile.
+-   In this user story, the user has the ability to view another users profile.
 2. As a user I should be able to add images for my posts.
+-   In this user story, the user has the ability to add images to their post.
 3. As a user, I should be able to add a profile picture.
+-  
 4. As a user, I should be able to view all posts with a tag.
+-  
 5. As a user, I should be able to create a draft of a post.
+-  
 6. As a user, I should be able to convert a draft to a post.
+-  
 7. As a user, I should be able to delete a draft. 
+-  
 8. As a user, I should be able to react to another users post.
+-  
 9. As a user, I should be able to add posts to my reading list.
+-  
 10. As a user, I should be able to receive notifications for reactions on my posts.
+-  
 11. As a user, I should be able to view image of the posts.
+-  
 12. As a user, I should be able to view the list of my drafts.
+-  
 13. As a user, I should be able to delete my notifications.
+-  
 14. As a user, I should be able to mark my notifications as read.
+-  
 15. As a user, I should be able to mark all my unread notifications as read. 
+-  
 16. As a user, I should be able to get my reading list.
+-  
 17. As a user, I should be able to delete a post from my reading list.
+-  
 18. As a user, I should be able to see the number of likes on a post. 
+-  
 19. As a user, I should be able to unlike a post.
+-  
 20. As a user, I should be able to view the author of a post.
+-  
 21. As a user, I should be able to edit/add image to post later. 
+-  
 
 ## Backend:
 
