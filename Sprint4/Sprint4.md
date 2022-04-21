@@ -767,3 +767,22 @@ Users can add other user's posts to their own reading list and can see this read
 #### Delete from Reading List
 
 ![](DeleteFromReadingList.gif)
+
+## Front-end tests
+
+### Unit Tests (Using JTest)
+
+To run the unit test, following command is to be used -
+
+```  
+npm test
+```
+
+To run all tests enter "a", to quit enter "q".
+  
+The following tests are added in Sprint4:
+
+1. Create Post - In this test we check if all the components in the create post page are being displayed.
+2. Edit Post - In this test we check if all the components in the edit post page are being displayed.
+3.  Draft Post - In this test we check if all the components in the create draft post page are being displayed.
+4. Header - In this test we check if all the components in the header page are being displayed.
