@@ -36,13 +36,40 @@ Frontend:
 
 **User:**
 
-- Users have the ability to create posts.  
-- Users also have the ability to view, and react on posts of other users.
+Users have the ability to create posts. Users also have the ability to view, and react on posts of other users.
+
+1. Register User
+
+2. Login User
+
+3. Logout User
+
+4. Follow Another User
+
+5. View Other User Profile
+
+6. View Own Profile
  
 
 **Post:**
 
- - Each post is made of multiple components - a title, a short summary, the content, the upload date, and a tag associated with it. A post may contain pictures and other posts associated with it.
+Each post is made of multiple components - a title, a short summary, the content, the upload date, and a tag associated with it. A post may contain pictures and other posts associated with it.
+
+1. View List of Posts
+
+2. Create a new Post
+
+3. Delete a Post
+
+4. View a Single Post
+
+5. Edit a Post
+
+6. Like a Post
+
+7. Unlike a Post
+
+8. View number of Likes of a Post
 
 **Search:**
 
