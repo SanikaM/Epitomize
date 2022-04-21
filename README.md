@@ -55,21 +55,21 @@ Users have the ability to create posts. Users also have the ability to view, and
 
 Each post is made of multiple components - a title, a short summary, the content, the upload date, and a tag associated with it. A post may contain pictures and other posts associated with it.
 
-1. View List of Posts
+1. View List of Posts - The user can view the list of their own posts, posts of users they follow, or posts of recommended tags.
 
-2. Create a new Post
+2. Create a new Post - The user can create a new post by adding a title, summary, image, tags, type, and content.
 
-3. Delete a Post
+3. Delete a Post - The user can delete a post.
 
-4. View a Single Post
+4. View a Single Post - The user can click on a post and view the whole post.
 
-5. Edit a Post
+5. Edit a Post - The user can edit the title, image, summary, and content of their posts.
 
-6. Like a Post
+6. Like a Post - The user can like the post of other users.
 
-7. Unlike a Post
+7. Unlike a Post - The user can unlike the post of other users
 
-8. View number of Likes of a Post
+8. View the number of Likes of a Post -  The number of likes of the post are visible as well.
 
 **Search:**
 
@@ -79,31 +79,31 @@ The posts appear on a user's dashboard. They can be filtered based on features l
 
 The user can create a draft while creating a post and can later publish it to his feed or delete it.
 
-1. Create a Draft
+1. Create a Draft - The user can create a draft while creating a new post.
 
-2. View a Draft
+2. View a Draft - The user can view a draft and its content.
 
-3. Delete a Draft
+3. Delete a Draft - The user can delete a draft.
 
-4. View all Drafts
+4. View all Drafts - The user can view all the drafts.
 
-5. Publish a Draft
+5. Publish a Draft - The user can convert the draft to a post.
 
 **Tags:**
 
-The user has the option to view posts of a tag and and has the option to add recommended tags to his profile to view posts related to those
+The user has the option to view posts of a tag and has the option to add recommended tags to his profile to view posts related to those
 
 **Notifications:**
 
 The user gets notified when another user likes their post, follows them or the user that they follow posts a new post.
 
-1. View all Notifications
+1. View all Notifications - The user can view all their notifications.
 
-2. Mark a Notification Read
+2. Mark a Notification Read -  The user can mark a single notification read.
 
-3. Mark all Notifications Read
+3. Mark all Notifications Read - The user can mark all his notifications read.
 
-4. Delete a Notification
+4. Delete a Notification - The user can delete a notification.
 
 ## Resources
 
