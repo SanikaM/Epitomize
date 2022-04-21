@@ -1,8 +1,8 @@
 import { constants } from "../../constants";
 
-describe("View Drafts Tests", () => {
+describe("Publish Drafts Tests", () => {
 
-  it("View Drafts Test", () => {
+  it("Publish Drafts Test", () => {
     cy.wait(1000);
     cy.visit(`${constants.DRAFTS}`);
     cy.get("[id=publish3]").click();
