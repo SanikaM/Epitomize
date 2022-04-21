@@ -8,6 +8,8 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
+import jwt_decode from "jwt-decode";
+import configData from "../config.json";
 
 const useStyles = makeStyles({
     root: {
@@ -28,7 +30,7 @@ const handleRouteChange = (post_id) => {
     window.location = "/post/" + post_id;
 }
 
-const baseURL = "http://0.0.0.0:8081/";
+const baseURL = configData.BACKEND_URL
 const cookies = new Cookies();
 
 function Search() {
@@ -40,6 +42,12 @@ function Search() {
         }
         else {
             const tokenStr = cookies.get('access_token')
+            let decodedToken = jwt_decode(tokenStr);
+            let currentDate = new Date();
+            if (decodedToken.exp * 1000 < currentDate.getTime()) {
+                cookies.remove("access_token", { path: '/' })
+                window.location = "/"
+            }
             let body = {
                 "Text": event.target.value
             }
@@ -59,7 +67,7 @@ function Search() {
 
     return (
         <div maxWidth="auto">
-            <h2>Search: </h2>
+            <h2 className="font-link">Search: </h2>
             <Box
                 display="flex"
             >
@@ -80,16 +88,16 @@ function Search() {
                     <Card sx={{ maxWidth: "auto", marginTop: "5px" }} key={item.PostsUId}>
                         <CardActionArea>
                             <CardContent>
-                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontSize: "16px" }} gutterBottom variant="h6" component="div" onClick={() => handleRouteChange(item.PostsUId)}>
+                                <Typography sx={{ display: 'flex', fontWeight: "bold", textAlign: 'left', fontSize: "16px", fontFamily: "Playfair Display" }} gutterBottom variant="h6" component="div" onClick={() => handleRouteChange(item.PostsUId)}>
                                     {item.Title}
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontSize: "14px" }} >
+                                <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', fontSize: "14px", fontFamily: "Playfair Display" }} >
                                     {item.Summary}
                                 </Typography>
                                 <Typography sx={{ marginTop: "5px" }}>
                                     {
                                         item.TagList.map(tag => (
-                                            <Chip label={tag} size="small" variant="outlined" key={tag} color="info" sx={{ marginRight: "5px" }} />
+                                            <Chip style={{fontFamily: "Playfair Display"}} label={tag} size="small" variant="outlined" key={tag} color="info" sx={{ marginRight: "5px" }} />
                                         ))
                                     }
 

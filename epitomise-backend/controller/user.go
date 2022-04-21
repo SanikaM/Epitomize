@@ -101,8 +101,10 @@ func GetUserFeed(userId uint, test bool) ([]model.Post, int) {
 		if err := db.Where("current_user_id = ?", userId).Find(&Followers).Error; err == gorm.ErrRecordNotFound {
 			return Posts, http.StatusOK
 		} else if err == nil {
+			fmt.Println(Followers)
 			for _, obj := range Followers {
-				Posts = append(Posts, GetPosts(obj.FollowingUserId, true)...)
+				Posts = append(Posts, GetReactionPosts(obj.FollowingUserId, userId, true)...)
+				fmt.Println(Posts)
 			}
 		}
 		Posts = SortPostsByDate(Posts)
@@ -142,4 +144,26 @@ func GetPostsWithTag(tag string) []model.Post {
 		return Posts
 	}
 	return Posts
+}
+func UpdateProfilePicture(userid uint, filePath string) int {
+	var userModel model.User
+	db := database.GetDB()
+	db.Model(userModel).Where(" user_id = ?", userid).Update("profilepicture", filePath)
+	return http.StatusAccepted
+
+}
+
+func GetUserProfile(userId uint) (model.User, int) {
+	var userModel model.User
+	db := database.GetDB()
+	if err := db.First(&userModel, "user_id = ?", userId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return userModel, http.StatusNotFound
+		} else {
+			return userModel, http.StatusBadRequest
+		}
+	}
+	fmt.Println(userModel)
+	userModel.Password = ""
+	return userModel, http.StatusOK
 }

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import Cookies from 'universal-cookie';
@@ -14,24 +14,107 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
+import jwt_decode from "jwt-decode";
+import EditIcon from '@mui/icons-material/Edit';
+import configData from "../config.json";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 const theme = createTheme();
+const initialState = { alt: "", src: "" };
 
 export default function UserProfile() {
 
   const cookies = new Cookies();
-  const baseURL = "http://localhost:8081/"
+  const baseURL = configData.BACKEND_URL
+  const [uploadFile, setUploadFile] = React.useState();
 
   const [data, setData] = React.useState(null);
+  const [{ alt, src }, setPreview] = useState(initialState);
+
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const [severity, setSeverity] = React.useState();
+  const [apiResponse, setResponse] = React.useState();
+
+  const [state, setState] = React.useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+
+  const { vertical, horizontal, open } = state;
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
 
   React.useEffect(() => {
     const tokenStr = cookies.get('access_token')
+
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
     axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
       .then((response) => {
-        console.log(response.data)
         setData(response.data);
+        setPreview(
+          response.data.Profilepicture
+            ? {
+              src: require(response.data.Profilepicture),
+              alt: response.data.Username
+            }
+            : initialState
+        )
+        console.log(src)
       });
   }, []);
+
+  const fileHandler = event => {
+    setUploadFile(event.target.files)
+    const { files } = event.target;
+    setPreview(
+      files.length
+        ? {
+          src: URL.createObjectURL(files[0]),
+          alt: files[0].name
+        }
+        : initialState
+    );
+    const dataImg = new FormData();
+    dataImg.append("myFile", files[0]);
+    const tokenStr = cookies.get('access_token')
+
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
+    axios
+      .post(baseURL + 'uploadImage', dataImg, { headers: { "Authorization": `Bearer ${tokenStr}`, "Content-Type": "multipart/form-data" } })
+      .then(response => {
+        setSeverity("success")
+        setState({
+          open: true, ...{
+            vertical: 'top',
+            horizontal: 'center',
+          }
+        });
+        setResponse("Image successfully updated.")
+        window.location.reload()
+
+      }).catch(error => {
+        console.log(error)
+      });
+  };
 
   if (!data) return null;
 
@@ -41,15 +124,33 @@ export default function UserProfile() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <img src="/favicon.ico" alt="logo" style={{ maxWidth: 50 }} />
-          </Avatar>
+          {data.Profilepicture ?
+            <Box>
+              <img className="preview" src={require("../images/" + data.Profilepicture)} alt={alt} style={{
+                borderRadius: "50%",
+                width: 100,
+                height: 100
+              }} />
+
+            </Box>
+            :
+            <Avatar style={{
+              backgroundColor: "gray",
+              width: 65,
+              height: 65
+            }}>{data.Username.charAt(0).toUpperCase()}</Avatar>
+          }
+
+          <label htmlFor="fileUpload" style={{
+            marginLeft: "4em"
+          }}><EditIcon /> </label>
+          <input type="file" id="fileUpload" onChange={fileHandler} style={{ display: 'none' }} />
+
           <Typography component="h1" variant="h5">
             Profile
           </Typography>
@@ -158,6 +259,14 @@ export default function UserProfile() {
           </Box>
         </Box>
       </Container>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal }}
+        open={open}
+        onClose={handleClose}
+        key={vertical + horizontal}
+      >
+        <Alert severity={severity}>{apiResponse}</Alert>
+      </Snackbar>
     </ThemeProvider>
   );
 }

@@ -14,54 +14,55 @@ func seedTag(db *gorm.DB) {
 	tags := []model.Tag{
 		{
 
-			Type: "Frontend",
+			Type: "frontend",
 		},
 		{
 
-			Type: "Backend",
+			Type: "backend",
 		},
 		{
 
-			Type: "Database",
+			Type: "database",
 		},
 		{
 
-			Type: "United States",
+			Type: "united states",
 		},
 		{
 
-			Type: "Finance",
+			Type: "finance",
 		},
 		{
 
-			Type: "BlockChain",
+			Type: "blockchain",
 		},
 		{
 
-			Type: "Crypto",
+			Type: "crypto",
 		},
 		{
 
-			Type: "Amazon Web Service",
+			Type: "amazon web service",
 		},
 		{
 
-			Type: "S3",
+			Type: "s3",
 		},
 		{
 
-			Type: "EC2",
+			Type: "ec2",
 		},
 		{
 
-			Type: "Golang",
+			Type: "golang",
 		},
 		{
 
-			Type: "Distributed Systems",
+			Type: "distributed systems",
 		},
 	}
 	for _, t := range tags {
+		t.Type = strings.ToLower(t.Type)
 		db.Create(&t)
 	}
 }

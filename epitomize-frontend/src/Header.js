@@ -9,10 +9,21 @@ import Menu from '@mui/material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import Cookies from 'universal-cookie';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+import SaveAsIcon from '@mui/icons-material/SaveAs';
+import BookIcon from '@mui/icons-material/Book';
+import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
+import configData from "./config.json";
 
 export default function Header() {
+  const baseURL = configData.BACKEND_URL
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [data, setData] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -39,6 +50,30 @@ export default function Header() {
     window.location = '/myposts';
   };
 
+  const mydrafts = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/mydrafts';
+  };
+
+  const notifications = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/notifications';
+  };
+
+  const myreadinglist = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/myreadinglist';
+  };
+
+  const create = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    window.location = '/create';
+  };
+
   const logout = () => {
     cookies.remove("access_token", { path: '/' })
     setAnchorEl(null);
@@ -49,6 +84,22 @@ export default function Header() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  React.useEffect(() => {
+    const tokenStr = cookies.get('access_token')
+
+    let decodedToken = jwt_decode(tokenStr);
+    let currentDate = new Date();
+    if (decodedToken.exp * 1000 < currentDate.getTime()) {
+      cookies.remove("access_token", { path: '/' })
+      window.location = "/"
+    }
+
+    axios.get(baseURL + 'user', { headers: { "Authorization": `Bearer ${tokenStr}` } })
+      .then((response) => {
+        setData(response.data);
+      });
+  }, []);
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -67,9 +118,8 @@ export default function Header() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Raleway' }}>Profile</MenuItem>
-      <MenuItem onClick={myposts} style={{ color: "black", fontFamily: 'Raleway' }}>My Posts</MenuItem>
-      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Raleway' }}>Logout</MenuItem>
+      <MenuItem onClick={handleMenuClose} style={{ color: "black", fontFamily: 'Playfair Display' }}>Profile</MenuItem>
+      <MenuItem onClick={logout} id="logout" style={{ color: "black", fontFamily: 'Playfair Display' }}>Logout</MenuItem>
     </Menu>
   );
 
@@ -100,7 +150,7 @@ export default function Header() {
         >
           <AccountCircle />
         </IconButton>
-        <p>Profile</p>
+        <p >Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -117,11 +167,42 @@ export default function Header() {
               noWrap
               component="div"
               sx={{ display: { xs: 'none', sm: 'block' } }}
-              style={{ color: "black", fontFamily: 'Raleway', fontWeight: 'bold', fontSize: 26 }}>
+              style={{ color: "black", fontWeight: 'bold', fontSize: 26, fontFamily: "Playfair Display"  }}>
               Epitomize
             </Typography>
           </a>
           <Box sx={{ flexGrow: 1 }} />
+          <IconButton
+            size="large"
+            aria-label="notifications"
+          >
+            <NotificationsIcon onClick={notifications} />
+            
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="posts"
+          >
+            <DriveFileRenameOutlineIcon onClick={create} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="posts"
+          >
+            <BookIcon onClick={myposts} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="drafts"
+          >
+            <SaveAsIcon onClick={mydrafts} />
+          </IconButton>
+          <IconButton
+            size="large"
+            aria-label="reading list"
+          >
+            <AutoStoriesIcon onClick={myreadinglist} />
+          </IconButton>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
             <IconButton
               size="large"
@@ -134,7 +215,21 @@ export default function Header() {
               id="account"
               style={{ color: "black" }}
             >
-              <AccountCircle />
+              {data && data.Profilepicture ?
+                <Box>
+                  <img className="preview" src={require("./images/" + data.Profilepicture)} 
+                  alt={data.Username}
+                  style={{
+                    borderRadius: "50%",
+                    width: 40,
+                    height: 40
+                  }} />
+
+                </Box>
+                :
+                <AccountCircle />
+              }
+
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' } }}>

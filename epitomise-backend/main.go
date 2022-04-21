@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"strings"
 
 	"log"
@@ -11,6 +13,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/mux"
+
 	"github.com/pilinux/gorest/controller"
 	"github.com/pilinux/gorest/database"
 	"github.com/pilinux/gorest/database/model"
@@ -53,6 +56,119 @@ func Authentification(w http.ResponseWriter, r *http.Request) uint {
 	fmt.Println("userid", claims.Userid)
 	return claims.Userid
 }
+
+func GetReactionsUserList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	users, responseType := controller.GetReactionsUserList(uint(postId))
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(users)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func AddReactionToPost(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.AddReaction(userid, uint(postId))
+	if responseType == http.StatusOK {
+		res := controller.NotifyonPostLike(userid, uint(postId))
+		json.NewEncoder(w).Encode(http.StatusText(res))
+
+	}
+}
+
+func RemoveReactionFromPost(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.RemoveReactionFromPost(userId, uint(postId))
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func GetReadingList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	posts, responseType := controller.GetReadingList(userid)
+	if responseType == http.StatusOK {
+		result := model.ReadingListResponse{
+			ReadingList: posts,
+		}
+		json.NewEncoder(w).Encode(result)
+		return
+	}
+	http.Error(w, "Invalid request", http.StatusBadRequest)
+}
+
+func AddToReadingList(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.AddToReadingList(userid, postId)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
+func RemoveFromReadingList(w http.ResponseWriter, r *http.Request) {
+	userId := Authentification(w, r)
+	if userId == http.StatusUnauthorized || userId == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userId)), int(userId))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.RemoveFromReadingList(userId, postId)
+	json.NewEncoder(w).Encode(http.StatusText(responseType))
+}
+
 func AllPostTest(w http.ResponseWriter, r *http.Request) {
 	posts := controller.GetPosts(1, false)
 	result := model.GetAllPost{
@@ -74,6 +190,116 @@ func AllPost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(result)
 }
 
+func GetPostsWithTag(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	params := mux.Vars(r)
+	tag := params["tag"]
+	posts := controller.GetPostsWithTag(tag)
+	result := model.TagPostResponse{
+		TagPosts: posts,
+	}
+	json.NewEncoder(w).Encode(result)
+}
+
+func AllNotifications(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	notify := controller.GetNotifications(userid)
+	result := model.NotifyResponse{
+		AllNotifications: notify,
+	}
+	json.NewEncoder(w).Encode(result)
+}
+func AllDraft(w http.ResponseWriter, r *http.Request) {
+	userid := Authentification(w, r)
+	if userid == http.StatusUnauthorized || userid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(userid)), int(userid))
+		return
+	}
+	fmt.Println(userid)
+	posts := controller.GetDrafts(userid, true)
+	result := model.GetAllPost{
+		Posts: posts,
+	}
+	json.NewEncoder(w).Encode(result)
+}
+func display(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(code)
+	user, _ := controller.GetUser(code)
+	var result model.ProfilePicResponse
+	result.Image_path = user.Profilepicture
+	json.NewEncoder(w).Encode(result)
+}
+func uploadFile(w http.ResponseWriter, r *http.Request) {
+	// Maximum upload of 10 MB files
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Println(code)
+	user, _ := controller.GetUser(code)
+	r.ParseMultipartForm(10 << 20)
+
+	// Get handler for filename, size and headers
+	file, handler, err := r.FormFile("myFile")
+	if err != nil {
+		fmt.Println("Error Retrieving the File")
+		fmt.Println(err)
+		return
+	}
+
+	defer file.Close()
+	fmt.Println("Hello")
+	fmt.Println(handler.Filename)
+	fmt.Println(user.Username)
+	// Create file
+	dir := "../epitomize-frontend/src/images"
+	if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+		os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
+	}
+	destination := dir + "/" + user.Username + "/" + handler.Filename
+	dst, err := os.Create(destination)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer dst.Close()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if _, err := io.Copy(dst, file); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	filedst := user.Username + "/" + handler.Filename
+	controller.UpdateProfilePicture(code, filedst)
+	fmt.Fprintf(w, "Successfully Uploaded File\n")
+}
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		uploadFile(w, r)
+	case "GET":
+		display(w, r)
+	}
+}
 func TopTagsTest(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	topTag, responseType := controller.GetTopTags(false)
@@ -124,7 +350,7 @@ func CreateNewPostTest(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	responseType := controller.CreatePost(post, 1, false)
+	responseType, _ := controller.CreatePost(post, false)
 	json.NewEncoder(w).Encode(http.StatusText(responseType))
 }
 
@@ -160,6 +386,30 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 	}
 }
+
+func GetUserProfile(w http.ResponseWriter, r *http.Request) {
+	loggedInUserid := Authentification(w, r)
+	if loggedInUserid == http.StatusUnauthorized || loggedInUserid == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(loggedInUserid)), int(loggedInUserid))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	userId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	user, responseType := controller.GetUserProfile(uint(userId))
+
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(user)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
 func SearchUserPostTest(w http.ResponseWriter, r *http.Request) {
 	var search model.Search
 	if r.Body != nil {
@@ -196,19 +446,6 @@ func SearchUserPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func LoginUserTest(w http.ResponseWriter, r *http.Request) {
-	var login model.Login
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&login)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		responseType := controller.Login(login, false)
-		json.NewEncoder(w).Encode(responseType)
-	}
-}
-
 func LoginUser(w http.ResponseWriter, r *http.Request) {
 	var login model.Login
 	if r.Body != nil {
@@ -218,7 +455,14 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		responseType := controller.Login(login, true)
-		json.NewEncoder(w).Encode(responseType)
+		fmt.Println(responseType.Result)
+		if responseType.Result == "Successfully logged in." {
+			json.NewEncoder(w).Encode(responseType)
+		}
+		if responseType.Result != "Successfully logged in." {
+			w.WriteHeader(http.StatusUnauthorized)
+		}
+
 	}
 }
 
@@ -288,22 +532,79 @@ func CreateNewPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, http.StatusText(int(userid)), int(userid))
 		return
 	}
-	fmt.Println(userid)
-	fmt.Println(userid)
 	var post model.Post
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&post)
+	user, _ := controller.GetUser(userid)
+	if (user != model.User{}) {
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("myFile")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = userid
+				post.Image = ""
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+				responseType, pid := controller.CreatePost(post, true)
+				fmt.Println(responseType)
+				if responseType == http.StatusCreated {
+					fmt.Println("hello")
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
+			}
 		}
-		responseType := controller.CreatePost(post, userid, true)
-		json.NewEncoder(w).Encode(http.StatusText(responseType))
+		if err == nil {
+			dir := "../epitomize-frontend/src/images"
+			if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+				os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
+			}
+			destination := dir + "/" + user.Username + "/" + handler.Filename
+			dst, err := os.Create(destination)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			filedst := user.Username + "/" + handler.Filename
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = userid
+				post.Image = filedst
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+
+				responseType, pid := controller.CreatePost(post, true)
+				if responseType == http.StatusCreated {
+					res := controller.NotifyonNewPost(userid, pid)
+					json.NewEncoder(w).Encode(http.StatusText(res))
+				}
+			}
+		}
 	}
 }
 
 func GetPostTest(w http.ResponseWriter, r *http.Request) {
-	post, responseType := controller.GetPost(1, false)
+	post, responseType := controller.GetPost(1, 1, false)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
 		return
@@ -325,9 +626,87 @@ func GetPost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	post, responseType := controller.GetPost(postId, true)
+	post, responseType := controller.GetPost(code, postId, true)
 	if responseType == http.StatusOK {
 		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func GetDraft(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	post, responseType := controller.GetDraft(postId, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(post)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func ReadNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.ReadNotification(uint(notifyId), code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+
+func ReadAllNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	responseType := controller.ReadAllNotification(code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
+}
+func DeleteNotification(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	notifyId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	responseType := controller.DeleteNotification(uint(notifyId), code)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
 		return
 	} else {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
@@ -343,7 +722,29 @@ func EditPostTest(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(http.StatusText(responseType))
 	}
 }
+func ConvertToPost(w http.ResponseWriter, r *http.Request) {
+	code := Authentification(w, r)
+	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
+		http.Error(w, http.StatusText(int(code)), int(code))
+		return
+	}
+	params := mux.Vars(r)
+	id := params["id"]
+	postId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var post model.Post
+	_, responseType := controller.ConvertDraft(postId, post, code, true)
+	if responseType == http.StatusOK {
+		json.NewEncoder(w).Encode(responseType)
+		return
+	} else {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+	}
 
+}
 func EditPost(w http.ResponseWriter, r *http.Request) {
 	code := Authentification(w, r)
 	if code == http.StatusUnauthorized || code == http.StatusBadRequest {
@@ -351,33 +752,86 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var post model.Post
-	if r.Body != nil {
-		err := json.NewDecoder(r.Body).Decode(&post)
+	user, _ := controller.GetUser(code)
+	if (user != model.User{}) {
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("myFile")
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = code
+				post.Image = ""
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+				params := mux.Vars(r)
+				id := params["id"]
+				postId, err := strconv.ParseUint(id, 10, 64)
+				if err != nil {
+					fmt.Println(err)
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				err, responseType := controller.EditPost(postId, post, code, true)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				} else {
+					json.NewEncoder(w).Encode(http.StatusText(responseType))
+				}
+			}
 		}
-		params := mux.Vars(r)
-		id := params["id"]
-		postId, err := strconv.ParseUint(id, 10, 64)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-		err, responseType := controller.EditPost(postId, post, code, true)
-		// result := http.Response{
-		// 	StatusCode: responseType,
-		// 	Body:       ioutil.NopCloser(bytes.NewBufferString(err.Error())),
-		// }
-		// if err != nil {
-		// 	json.NewEncoder(w).Encode(err.Error())
-		// } else {
-		// 	json.NewEncoder(w).Encode(result)
-		// }
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusServiceUnavailable)
-		} else {
-			json.NewEncoder(w).Encode(http.StatusText(responseType))
+		if err == nil {
+			dir := "../epitomize-frontend/src/images"
+			if _, err := os.Stat("../epitomize-frontend/src/images/" + user.Username); os.IsNotExist(err) {
+				os.Mkdir("../epitomize-frontend/src/images/"+user.Username, 0700)
+			}
+			destination := dir + "/" + user.Username + "/" + handler.Filename
+			dst, err := os.Create(destination)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			defer dst.Close()
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			if _, err := io.Copy(dst, file); err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			filedst := user.Username + "/" + handler.Filename
+			if r.Body != nil {
+				post.Title = r.FormValue("Title")
+				post.Content = r.FormValue("Content")
+				post.IDUser = code
+				post.Image = filedst
+				if s, err := strconv.ParseUint(r.FormValue("Linked_Post"), 2, 32); err == nil {
+					post.Linked_Post = uint(s)
+				}
+				post.Status = r.FormValue("Status")
+				post.Tags = r.FormValue("Tags")
+				post.Type = r.FormValue("Type")
+				post.Summary = r.FormValue("Summary")
+				params := mux.Vars(r)
+				id := params["id"]
+				postId, err := strconv.ParseUint(id, 10, 64)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+				err, responseType := controller.EditPost(postId, post, code, true)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusServiceUnavailable)
+				} else {
+					json.NewEncoder(w).Encode(http.StatusText(responseType))
+				}
+			}
 		}
 	}
 }
@@ -385,7 +839,7 @@ func EditPost(w http.ResponseWriter, r *http.Request) {
 func DeletePostTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
-	controller.DeletePost(id, false)
+	controller.DeletePost(id, 1, false)
 }
 func FollowUserTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -404,7 +858,11 @@ func FollowUser(w http.ResponseWriter, r *http.Request) {
 	id := params["userid"]
 	Val, _ := strconv.ParseUint(id, 10, 64)
 	responseType := controller.FollowUser(uint(Val), userid, true)
-	json.NewEncoder(w).Encode(http.StatusText(responseType))
+	fmt.Println(responseType)
+	if responseType == 201 {
+		controller.Notify("follow", userid, uint(Val), 0, true)
+		json.NewEncoder(w).Encode(http.StatusText(200))
+	}
 }
 func UnFollowUserTest(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
@@ -433,7 +891,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 	}
 	params := mux.Vars(r)
 	id := params["id"]
-	controller.DeletePost(id, true)
+	controller.DeletePost(id, code, true)
 }
 
 func HomePage(w http.ResponseWriter, r *http.Request) {
@@ -479,6 +937,24 @@ func HandleRequests() {
 	myRouter.HandleFunc("/user/feed", GetUserFeed).Methods("GET")
 	myRouter.HandleFunc("/user/recommended", GetUserRecommendations).Methods("GET")
 	myRouter.HandleFunc("/search", SearchUserPost).Methods("POST")
+	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("POST")
+	myRouter.HandleFunc("/uploadImage", uploadHandler).Methods("GET")
+	myRouter.HandleFunc("/draft", AllDraft).Methods("GET")
+	myRouter.HandleFunc("/draft/{id}", GetDraft).Methods("GET")
+	myRouter.HandleFunc("/toPost/{id}", ConvertToPost).Methods("GET")
+	myRouter.HandleFunc("/notification", AllNotifications).Methods("GET")
+	myRouter.HandleFunc("/readinglist/{id}", AddToReadingList).Methods("GET")
+	myRouter.HandleFunc("/readinglist", GetReadingList).Methods("GET")
+	myRouter.HandleFunc("/readinglist/{id}", RemoveFromReadingList).Methods("DELETE")
+	myRouter.HandleFunc("/user/profile/{id}", GetUserProfile).Methods("GET")
+	myRouter.HandleFunc("/react/{id}", AddReactionToPost).Methods("GET")
+	myRouter.HandleFunc("/allreact/{id}", GetReactionsUserList).Methods("GET")
+	myRouter.HandleFunc("/react/{id}", RemoveReactionFromPost).Methods("DELETE")
+	myRouter.HandleFunc("/notification/{id}", ReadNotification).Methods("GET")
+	myRouter.HandleFunc("/allnotification", ReadAllNotification).Methods("GET")
+	myRouter.HandleFunc("/notification/{id}", DeleteNotification).Methods("DELETE")
+	myRouter.HandleFunc("/post/tag/{tag}", GetPostsWithTag).Methods("GET")
+
 	log.Fatal(http.ListenAndServe(":8081", CorsMiddleware(myRouter)))
 }
 

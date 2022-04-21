@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"gorm.io/gorm"
 
@@ -17,6 +18,9 @@ type PostTag model.PostTag
 type post model.Post
 type user model.User
 type follow model.Follow
+type notification model.Notification
+type readinglist model.Readinglist
+type reaction model.Reaction
 
 var db *gorm.DB
 var errorState int
@@ -43,6 +47,7 @@ func main() {
 	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
 	// Automatically migrate all the tables
 	migrateTables()
+	addTagstoTables()
 
 	// Manually set foreign keys for MySQL and PostgreSQL
 	//db.Migrator().DropTable(&post{}, &Tag{}, &PostTag{})
@@ -55,7 +60,7 @@ func main() {
 
 func dropAllTables() {
 	// Careful! It will drop all the tables!
-	if err := db.Migrator().DropTable(&Tag{}, &PostTag{}, &post{}, &user{}, &follow{}); err != nil {
+	if err := db.Migrator().DropTable(&Tag{}, &PostTag{}, &post{}, &user{}, &follow{}, &notification{}, &readinglist{}, &reaction{}); err != nil {
 		errorState = 1
 		fmt.Println(err)
 	} else {
@@ -66,11 +71,70 @@ func dropAllTables() {
 func migrateTables() {
 
 	if err := db.AutoMigrate(&Tag{},
-		&post{}, &PostTag{}, &user{}, &follow{}); err != nil {
+		&post{}, &PostTag{}, &user{}, &follow{}, &notification{}, &readinglist{}, &reaction{}); err != nil {
 		errorState = 1
 		fmt.Println(err)
 	} else {
 		fmt.Println("New tables are  migrated successfully!")
 	}
 
+}
+func addTagstoTables() {
+	seedTag(db)
+}
+func seedTag(db *gorm.DB) {
+	tags := []model.Tag{
+		{
+
+			Type: "frontend",
+		},
+		{
+
+			Type: "backend",
+		},
+		{
+
+			Type: "database",
+		},
+		{
+
+			Type: "united states",
+		},
+		{
+
+			Type: "finance",
+		},
+		{
+
+			Type: "blockchain",
+		},
+		{
+
+			Type: "crypto",
+		},
+		{
+
+			Type: "amazon web service",
+		},
+		{
+
+			Type: "s3",
+		},
+		{
+
+			Type: "ec2",
+		},
+		{
+
+			Type: "golang",
+		},
+		{
+
+			Type: "distributed systems",
+		},
+	}
+	for _, t := range tags {
+		t.Type = strings.ToLower(t.Type)
+		db.Create(&t)
+	}
 }

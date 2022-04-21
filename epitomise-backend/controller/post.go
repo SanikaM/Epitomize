@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/pilinux/gorest/database"
@@ -67,7 +68,27 @@ func seed(db *gorm.DB) {
 		db.Create(&p)
 	}
 }
+func GetReactionPosts(followinguserid uint, curruserid uint, test bool) []model.Post {
+	if test {
+		db := database.GetDB()
+		// seed(db)
+		// GetPostTags(1)
+		tagArrays := []model.TagResponse{}
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ? AND status = ?", followinguserid, 0).Find(&Posts)
 
+		fmt.Println("From controller", Posts)
+
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			tagTemp.Type = GetPostTags(p.PostsUId)
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+			Posts[i].CurrentUserReact = checkUserReaction(curruserid, p.PostsUId)
+		}
+	}
+	return Posts
+}
 func GetPosts(userid uint, test bool) []model.Post {
 	if test {
 		db := database.GetDB()
@@ -75,7 +96,47 @@ func GetPosts(userid uint, test bool) []model.Post {
 		// GetPostTags(1)
 		tagArrays := []model.TagResponse{}
 		fmt.Println("From controller", Posts)
-		db.Where("id_user = ?", userid).Find(&Posts)
+		db.Where("id_user = ? AND status = ?", userid, 0).Find(&Posts)
+
+		fmt.Println("From controller", Posts)
+
+		for i, p := range Posts {
+			var tagTemp model.TagResponse
+			tagTemp.Type = GetPostTags(p.PostsUId)
+			tagArrays = append(tagArrays, tagTemp)
+			Posts[i].TagList = tagArrays[i].Type
+			Posts[i].CurrentUserReact = checkUserReaction(userid, p.PostsUId)
+		}
+	}
+	return Posts
+}
+
+func checkUserReaction(userId uint, postId uint) bool {
+	db := database.GetDB()
+	fmt.Println("Yaha hai hai id")
+	fmt.Println(userId)
+	var reaction model.Reaction
+
+	if err := db.First(&reaction, "user_id = ? and post_id = ?", userId, postId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false
+		} else {
+			fmt.Println("Hellow")
+			return false
+		}
+	} else {
+		return true
+	}
+}
+
+func GetDrafts(userid uint, test bool) []model.Post {
+	if test {
+		db := database.GetDB()
+		// seed(db)
+		// GetPostTags(1)
+		tagArrays := []model.TagResponse{}
+		fmt.Println("From controller", Posts)
+		db.Where("id_user = ? AND status = ?", userid, 1).Find(&Posts)
 
 		fmt.Println("From controller", Posts)
 
@@ -90,32 +151,50 @@ func GetPosts(userid uint, test bool) []model.Post {
 	return Posts
 }
 
-func CreatePost(post model.Post, userid uint, test bool) int {
+func CreatePost(post model.Post, test bool) (int, uint) {
 	if test {
 		db := database.GetDB()
-		fmt.Println(userid)
-		post.IDUser = userid
 		tags := strings.Split(post.Tags, ",")
 		post.TagList = tags
+		user, _ := GetUserProfile(post.IDUser)
+		post.Username = user.Username
 		if err := db.Create(&post).Error; err != nil {
-			return http.StatusBadRequest
+			return http.StatusBadRequest, 0
 		}
 
 		if createTag(tags) == http.StatusCreated {
 			fmt.Println("tags created - creating posttags!")
 			createPostTag(post.PostsUId, tags)
-			return http.StatusCreated
+			return http.StatusCreated, post.PostsUId
 		}
-		return http.StatusCreated
+		return http.StatusCreated, post.PostsUId
 	}
-	return http.StatusCreated
+	return http.StatusCreated, 0
 }
 
-func GetPost(id uint64, test bool) (model.Post, int) {
+func GetPost(UserId uint, PostId uint64, test bool) (model.Post, int) {
 	var postModel model.Post
 	if test {
 		db := database.GetDB()
-		if err := db.First(&postModel, "posts_uid = ?", id).Error; err != nil {
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", PostId, 0).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return postModel, http.StatusNotFound
+			} else {
+				return postModel, http.StatusBadRequest
+			}
+		}
+		postModel.CurrentUserReact = checkUserReaction(UserId, uint(PostId))
+		return postModel, http.StatusOK
+	}
+	return postModel, http.StatusOK
+
+}
+
+func GetDraft(id uint64, test bool) (model.Post, int) {
+	var postModel model.Post
+	if test {
+		db := database.GetDB()
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 1).Error; err != nil {
 			if err == gorm.ErrRecordNotFound {
 				return postModel, http.StatusNotFound
 			} else {
@@ -132,7 +211,7 @@ func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 	if test {
 		db := database.GetDB()
 		var postModel model.Post
-		if err := db.First(&postModel, "posts_uid = ?", id).Error; err == nil {
+		if err := db.First(&postModel, "posts_uid = ? and status = ?", id, 0).Error; err == nil {
 			post.IDUser = userid
 			post.PostsUId = uint(id)
 			if err := db.Save(&post).Error; err != nil {
@@ -141,6 +220,21 @@ func EditPost(id uint64, post model.Post, userid uint, test bool) (error, int) {
 			return nil, http.StatusOK
 		}
 		return nil, http.StatusNotFound
+	}
+	return nil, http.StatusOK
+}
+
+func ConvertDraft(id uint64, post model.Post, userid uint, test bool) (error, int) {
+	if test {
+		db := database.GetDB()
+		var postModel model.Post
+		if err := db.First(&postModel, "id_user = ? and posts_uid = ? and status = ?", userid, id, 1).Error; err == nil {
+			post.IDUser = userid
+			post.PostsUId = uint(id)
+			post.Status = strconv.Itoa(0)
+			db.Model(&postModel).Where("posts_uid = ?", id).Update("status", 0)
+		}
+		return nil, http.StatusOK
 	}
 	return nil, http.StatusOK
 }

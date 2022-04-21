@@ -11,9 +11,10 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import Autocomplete from '@mui/material/Autocomplete';
+import configData from "../config.json";
 
 
-const baseURL = "http://localhost:8081/"
+const baseURL = configData.BACKEND_URL
 
 const theme = createTheme();
 
@@ -128,18 +129,6 @@ export default function SignUp() {
                   id="Password"
                   data-testid="Password"
                   autoComplete="new-password"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  autoComplete="profilepic"
-                  name="Profilepicture"
-                  required
-                  fullWidth
-                  id="Profilepicture"
-                  label="Profile Picture"
-                  autoFocus
                 />
               </Grid>
               <Grid item xs={12}>

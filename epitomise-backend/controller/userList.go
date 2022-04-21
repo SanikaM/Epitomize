@@ -20,6 +20,7 @@ func UserList(userid uint, test bool) []model.UserList {
 			userTemp.UserId = p.UserId
 			userTemp.Username = p.Username
 			userTemp.About = p.About
+			userTemp.Profilepicture = p.Profilepicture
 			userTemp.Follow = 0
 			if count < len(follower) {
 				if follower[count].FollowingUserId == p.UserId {
