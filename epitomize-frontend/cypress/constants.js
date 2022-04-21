@@ -9,7 +9,7 @@ export const constants = {
     DRAFTS: "/mydrafts",
     READING_LIST: "/myreadinglist",
     NOTIFICATION: "/notifications",
-    TAGS_POSTS: "/tagsposts/Database",
+    TAGS_POSTS: "/tagsposts/database",
     OTHER_USER_PROFILE: "/user/1",
     MYPOSTS: "/myposts"
 };
