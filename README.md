@@ -54,8 +54,7 @@ Go starter kit credits - https://github.com/pilinux/gorest
 
 ## Frontend Test Cases:
 
-
-https://user-images.githubusercontent.com/24410728/164364182-939d04f9-606e-4fd5-896e-604f45185ac8.mp4
+https://user-images.githubusercontent.com/89871418/164366183-10bb2e91-8199-4738-9b28-1ed5bfcb853e.mp4
 
 ## Backend Test Cases:
 
