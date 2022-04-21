@@ -40,6 +40,7 @@ Frontend:
  1. Frontend: React
  2. Backend: Go
 
+https://user-images.githubusercontent.com/89871418/164373737-4b748bf0-cc0f-47b5-95d6-3d0605d848b2.mp4
    
 ## Features
 
