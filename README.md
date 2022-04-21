@@ -38,7 +38,7 @@ Frontend:
 
 Users have the ability to create posts. Users also have the ability to view, and react on posts of other users.
 
-1. Register User - Usr can register to the application by providing the details in the form.
+1. Register User - User can register to the application by providing the details in the form.
 
 2. Login User - User can use the emailid and password to login into the application.
 
