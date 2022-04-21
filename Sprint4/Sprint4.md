@@ -7,43 +7,43 @@ In Sprint 4 the following user stories were successfully implemented:
 2. As a user I should be able to add images for my posts.
 -   In this user story, the user has the ability to add images to their post.
 3. As a user, I should be able to add a profile picture.
--  
+-  In this user story, user can add his profile picture to his profile.
 4. As a user, I should be able to view all posts with a tag.
--  
+-  In this user story, the user has the ability to select a tag and all the post related to that tag is displayed.
 5. As a user, I should be able to create a draft of a post.
--  
+-  In this user story, the user has the ability to create a draft version of it's post.
 6. As a user, I should be able to convert a draft to a post.
--  
+-  In this user story, the user has the ability to publish the draft created by the user.
 7. As a user, I should be able to delete a draft. 
--  
+-  In this user story, the user has the ability to delete the draft created by the user.
 8. As a user, I should be able to react to another users post.
--  
+-  In this user story, the user has the ability to add reaction for example like other user's post.
 9. As a user, I should be able to add posts to my reading list.
--  
+-  In this user story, the user has the ability to add selected post to my reading list.
 10. As a user, I should be able to receive notifications for reactions on my posts.
--  
+-  In this user story, the user has the ability to get all the notifications related to reactions of his post.
 11. As a user, I should be able to view image of the posts.
--  
+-  In this user story, the user has the ability to view the images added to his post.
 12. As a user, I should be able to view the list of my drafts.
--  
+-  In this user story, the user has the ability to view the list of the drafts created by the user.
 13. As a user, I should be able to delete my notifications.
--  
+-  In this user story, the user has the ability to remove any of the notifications required.
 14. As a user, I should be able to mark my notifications as read.
--  
+-  In this user story, the user has the ability to read the given notifications and mark it as read.
 15. As a user, I should be able to mark all my unread notifications as read. 
--  
+-  In this user story, the user has the ability to mark all unread notifications as read.
 16. As a user, I should be able to get my reading list.
--  
+-  In this user story, the user has the ability to receive all the post added to his reading list
 17. As a user, I should be able to delete a post from my reading list.
--  
+-  In this user story, the user has the ability to delete any post from his reading list.
 18. As a user, I should be able to see the number of likes on a post. 
--  
+-  In this user story, the user has the ability to see number of likes under each post.
 19. As a user, I should be able to unlike a post.
--  
+-  In this user story, the user has the ability to unlike any post.
 20. As a user, I should be able to view the author of a post.
--  
+-  In this user story, the user has the ability to view author name for each post.
 21. As a user, I should be able to edit/add image to post later. 
--  
+-  In this user story, the user has the ability to upload a new image or edit image to my posts.
 
 ## Backend:
 
