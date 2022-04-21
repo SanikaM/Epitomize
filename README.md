@@ -49,8 +49,6 @@ Users have the ability to create posts. Users also have the ability to view, and
 5. View Other User Profile
 
 6. View Own Profile
-
-7. View, read and delete notifications 
  
 
 **Post:**
@@ -75,7 +73,37 @@ Each post is made of multiple components - a title, a short summary, the content
 
 **Search:**
 
- - The posts appear on a user's dashboard. They can be filtered based on features like - uploaded date, tags, users, etc.
+The posts appear on a user's dashboard. They can be filtered based on features like - uploaded date, tags, users, etc.
+
+**Draft:**
+
+The user can create a draft while creating a post and can later publish it to his feed or delete it.
+
+1. Create a Draft
+
+2. View a Draft
+
+3. Delete a Draft
+
+4. View all Drafts
+
+5. Publish a Draft
+
+**Tags:**
+
+The user has the option to view posts of a tag and and has the option to add recommended tags to his profile to view posts related to those
+
+**Notifications:**
+
+The user gets notified when another user likes their post, follows them or the user that they follow posts a new post.
+
+1. View all Notifications
+
+2. Mark a Notification Read
+
+3. Mark all Notifications Read
+
+4. Delete a Notification
 
 ## Resources
 
