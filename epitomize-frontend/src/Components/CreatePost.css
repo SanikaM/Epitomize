@@ -5,7 +5,7 @@
 
 .postForm{
     position:relative;
-    background-color: black;
+    background-color: white;
 }
 
 .postImg{
@@ -20,7 +20,7 @@
     margin-left:150px;
     display: flex;
     align-items: center;
-    background-color: black;
+    background-color: white;
 }
 .postInput{
     font-size: 35px;
